@@ -29,8 +29,10 @@
     <node pkg="map_server" name="map_server" type="map_server" args="$(arg map_file)"/>
 
     <!-- AMCL -->
-    <include file="$(find turtlebot3_navigation)/launch/amcl.launch"/>
-
+    <include file="$(find turtlebot3_navigation)/launch/amcl.launch">
+        <arg name="initial_pose_x" value="-2.0"/>
+        <arg name="initial_pose_y" value="-0.5"/>
+    </include>
     <!-- move_base -->
     <include file="$(find turtlebot3_navigation)/launch/move_base.launch">
         <arg name="model" value="$(arg model)" />
