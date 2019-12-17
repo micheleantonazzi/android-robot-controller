@@ -4,10 +4,8 @@
     android:layout_height="fill_parent"
     android:orientation="vertical" >
 
-    <org.ros.android.view.RosTextView
-        android:id="@+id/text"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:textSize="30dip" />
-
+    <org.ros.android.android_robot_controller.OpenGL.Views.OpenGLViewMap
+        android:id="@+id/OpenGLViewMa"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
 </LinearLayout>

@@ -20,7 +20,7 @@ import android.os.Bundle;
 import android.util.Log;
 
 import org.ros.android.RosActivity;
-import org.ros.android.view.RosTextView;
+import org.ros.android.android_robot_controller.OpenGL.Views.OpenGLViewMap;
 import org.ros.message.MessageListener;
 import org.ros.namespace.GraphName;
 import org.ros.node.AbstractNodeMain;
@@ -33,8 +33,9 @@ import nav_msgs.OccupancyGrid;
 
 public class MainActivity extends RosActivity {
 
-    AbstractNodeMain nodeMapReader;
-    RosTextView rosTextView;
+    private AbstractNodeMain nodeMapReader;
+
+    private OpenGLViewMap openGLViewMap;
 
     public MainActivity() {
         // The RosActivity constructor configures the notification title and ticker
@@ -66,8 +67,20 @@ public class MainActivity extends RosActivity {
             }
         };
 
-        //rosTextView.setText("ciao");
+        openGLViewMap = (OpenGLViewMap) findViewById(R.id.OpenGLViewMa);
 
+    }
+
+    @Override
+    public void onResume(){
+        super.onResume();
+        //this.openGLViewMap.onResume();
+    }
+
+    @Override
+    public void onPause(){
+        super.onPause();
+        //this.openGLViewMap.onPause();
     }
 
     @Override
@@ -75,7 +88,6 @@ public class MainActivity extends RosActivity {
         NodeConfiguration nodeConfiguration = NodeConfiguration.newPublic(getRosHostname());
         nodeConfiguration.setMasterUri(getMasterUri());
         nodeMainExecutor.execute(nodeMapReader, nodeConfiguration);
-
 
     }
 }
