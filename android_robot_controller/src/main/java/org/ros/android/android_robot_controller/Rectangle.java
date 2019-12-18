@@ -1,6 +1,6 @@
 package org.ros.android.android_robot_controller;
 
-import android.opengl.GLES20;
+import android.opengl.GLES30;
 
 import org.ros.android.android_robot_controller.OpenGL.Renderes.MapRenderer;
 
@@ -62,50 +62,50 @@ public class Rectangle {
         this.drawListBuffer.position(0);
 
         // Compile the shaders
-        int vertexShader = MapRenderer.loadShader(GLES20.GL_VERTEX_SHADER, vertexShaderCode);
-        int fragmentShader = MapRenderer.loadShader(GLES20.GL_FRAGMENT_SHADER, fragmentShaderCode);
+        int vertexShader = MapRenderer.loadShader(GLES30.GL_VERTEX_SHADER, vertexShaderCode);
+        int fragmentShader = MapRenderer.loadShader(GLES30.GL_FRAGMENT_SHADER, fragmentShaderCode);
 
         // Create empty OpenGL ES Program
-        this.openGLProgram = GLES20.glCreateProgram();
+        this.openGLProgram = GLES30.glCreateProgram();
 
         // add the vertex shader to program
-        GLES20.glAttachShader(this.openGLProgram, vertexShader);
+        GLES30.glAttachShader(this.openGLProgram, vertexShader);
 
         // add the fragment shader to program
-        GLES20.glAttachShader(this.openGLProgram, fragmentShader);
+        GLES30.glAttachShader(this.openGLProgram, fragmentShader);
 
         // creates OpenGL ES program executables
-        GLES20.glLinkProgram(this.openGLProgram);
+        GLES30.glLinkProgram(this.openGLProgram);
     }
 
     public void draw() {
         // Add program to OpenGL ES environment
-        GLES20.glUseProgram(this.openGLProgram);
+        GLES30.glUseProgram(this.openGLProgram);
 
         // get handle to vertex shader's vPosition member
-        this.positionHandle = GLES20.glGetAttribLocation(this.openGLProgram, "vPosition");
+        this.positionHandle = GLES30.glGetAttribLocation(this.openGLProgram, "vPosition");
 
         // Enable a handle to the triangle vertices
-        GLES20.glEnableVertexAttribArray(this.positionHandle);
+        GLES30.glEnableVertexAttribArray(this.positionHandle);
 
         // Prepare the triangle coordinate data
-        GLES20.glVertexAttribPointer(this.positionHandle, this.COORDS_PER_VERTEX,
-                GLES20.GL_FLOAT, false,
+        GLES30.glVertexAttribPointer(this.positionHandle, this.COORDS_PER_VERTEX,
+                GLES30.GL_FLOAT, false,
                 this.vertexStride, this.vertexBuffer);
 
         // get handle to fragment shader's vColor member
-        colorHandle = GLES20.glGetUniformLocation(this.openGLProgram, "vColor");
+        colorHandle = GLES30.glGetUniformLocation(this.openGLProgram, "vColor");
 
         // Set color for drawing the triangle
-        GLES20.glUniform4fv(colorHandle, 1, new float[]{0.63671875f, 0.76953125f, 0.22265625f, 1.0f}, 0);
+        GLES30.glUniform4fv(colorHandle, 1, new float[]{0.63671875f, 0.76953125f, 0.22265625f, 1.0f}, 0);
 
         // Draw the triangle
-        GLES20.glDrawElements(
-                GLES20.GL_TRIANGLES, this.drawOrder.length,
-                GLES20.GL_UNSIGNED_SHORT, this.drawListBuffer);
+        GLES30.glDrawElements(
+                GLES30.GL_TRIANGLES, this.drawOrder.length,
+                GLES30.GL_UNSIGNED_SHORT, this.drawListBuffer);
 
         // Disable vertex array
-        GLES20.glDisableVertexAttribArray(positionHandle);
+        GLES30.glDisableVertexAttribArray(this.positionHandle);
     }
 
 }
