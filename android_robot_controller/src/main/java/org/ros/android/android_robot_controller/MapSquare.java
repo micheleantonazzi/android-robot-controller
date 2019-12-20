@@ -9,7 +9,7 @@ import java.nio.ByteOrder;
 import java.nio.FloatBuffer;
 import java.nio.ShortBuffer;
 
-public class Rectangle {
+public class MapSquare {
 
     private final int COORDS_PER_VERTEX = 3;
     private final int vertexCount = rectangleCoordinates.length / COORDS_PER_VERTEX;
@@ -21,13 +21,21 @@ public class Rectangle {
     private int colorHandle;
 
     private FloatBuffer vertexBuffer;
+    private FloatBuffer vertexTextureBuffer;
     private ShortBuffer drawListBuffer;
 
     static float rectangleCoordinates[] = {
-            -1.0f,  1.0f, 0.0f,   // top left
-            -1.0f, -1.0f, 0.0f,   // bottom left
-            1.0f, -1.0f, 0.0f,    // bottom right
-            1.0f,  1.0f, 0.0f };  // top right
+            -1.0f,  0.5f, 0.0f,   // top left
+            -1.0f, -0.5f, 0.0f,   // bottom left
+            1.0f, -0.5f, 0.0f,    // bottom right
+            1.0f,  0.5f, 0.0f };  // top right
+
+    static float textureCoordinates[] = {
+            0.0f, 1.0f,  // top left
+            0.0f, 0.0f,  // bottom left
+            1.0f, 0.0f,  // bottom right
+            1.0f,  1.0f };  // top right
+
 
     private short drawOrder[] = { 0, 1, 2, 0, 2, 3 }; // The order in which to draw vertices
 
@@ -44,14 +52,22 @@ public class Rectangle {
                     "  gl_FragColor = vColor;" +
                     "}";
 
-    public Rectangle() {
+    public MapSquare() {
         // Initialize vertex byte buffer for shape coordinates
         ByteBuffer bb = ByteBuffer.allocateDirect(
-                this.rectangleCoordinates.length * 4); // 4 is float's length
+                rectangleCoordinates.length * 4); // 4 is float's length
         bb.order(ByteOrder.nativeOrder());
         this.vertexBuffer = bb.asFloatBuffer();
-        this.vertexBuffer.put(this.rectangleCoordinates);
+        this.vertexBuffer.put(rectangleCoordinates);
         this.vertexBuffer.position(0);
+
+        // Initialize texture vertex byte buffer for shape coordinates
+        ByteBuffer vb = ByteBuffer.allocateDirect(
+                textureCoordinates.length * 4); // 4 is float's length
+        vb.order(ByteOrder.nativeOrder());
+        this.vertexTextureBuffer = vb.asFloatBuffer();
+        this.vertexTextureBuffer.put(textureCoordinates);
+        this.vertexTextureBuffer.position(0);
 
         // initialize byte buffer for the draw list
         ByteBuffer dlb = ByteBuffer.allocateDirect(

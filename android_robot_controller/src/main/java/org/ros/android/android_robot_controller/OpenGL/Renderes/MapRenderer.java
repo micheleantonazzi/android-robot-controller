@@ -3,14 +3,14 @@ package org.ros.android.android_robot_controller.OpenGL.Renderes;
 import android.opengl.GLES30;
 import android.opengl.GLSurfaceView;
 
-import org.ros.android.android_robot_controller.Rectangle;
+import org.ros.android.android_robot_controller.MapSquare;
 
 import javax.microedition.khronos.egl.EGLConfig;
 import javax.microedition.khronos.opengles.GL10;
 
 public class MapRenderer implements GLSurfaceView.Renderer {
 
-    Rectangle rectangle;
+    MapSquare mapSquare;
 
     // This method compiles the OpenGL Shading Language
     // Create a vertex shader type (GLES30.GL_VERTEX_SHADER)
@@ -32,7 +32,7 @@ public class MapRenderer implements GLSurfaceView.Renderer {
     public void onSurfaceCreated(GL10 gl, EGLConfig config) {
         GLES30.glClearColor(1, 0, 0, 1);
 
-        this.rectangle = new Rectangle();
+        this.mapSquare = new MapSquare();
     }
 
     @Override
@@ -42,6 +42,6 @@ public class MapRenderer implements GLSurfaceView.Renderer {
 
     @Override
     public void onDrawFrame(GL10 gl) {
-        this.rectangle.draw();
+        this.mapSquare.draw();
     }
 }
