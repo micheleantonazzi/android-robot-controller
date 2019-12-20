@@ -67,7 +67,7 @@ public class MainActivity extends RosActivity {
             }
         };
 
-        openGLViewMap = (OpenGLViewMap) findViewById(R.id.OpenGLViewMa);
+        openGLViewMap = (OpenGLViewMap) findViewById(R.id.OpenGLViewMap);
 
     }
 
