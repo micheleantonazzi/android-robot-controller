@@ -18,6 +18,7 @@ public class MapSquare {
     private int openGLProgram;
 
     private int positionHandle;
+    private int textureVertexHandle;
     private int colorHandle;
 
     private FloatBuffer vertexBuffer;
@@ -41,13 +42,18 @@ public class MapSquare {
 
     private final String vertexShaderCode =
             "attribute vec4 vPosition;" +
+                    "attribute vec2 tPosition;" +
+                    "varying vec2 TexCoordinate;" +
                     "void main() {" +
                     "  gl_Position = vPosition;" +
+                    "  TexCoordinate = tPosition;" +
                     "}";
 
     private final String fragmentShaderCode =
             "precision mediump float;" +
                     "uniform vec4 vColor;" +
+                    "uniform sampler2D Texture;" +
+                    "varying vec2 TexCoordinate;" +
                     "void main() {" +
                     "  gl_FragColor = vColor;" +
                     "}";
@@ -98,16 +104,20 @@ public class MapSquare {
         // Add program to OpenGL ES environment
         GLES30.glUseProgram(this.openGLProgram);
 
-        // get handle to vertex shader's vPosition member
+        // VERTEX
         this.positionHandle = GLES30.glGetAttribLocation(this.openGLProgram, "vPosition");
-
-        // Enable a handle to the triangle vertices
         GLES30.glEnableVertexAttribArray(this.positionHandle);
-
-        // Prepare the triangle coordinate data
         GLES30.glVertexAttribPointer(this.positionHandle, this.COORDS_PER_VERTEX,
                 GLES30.GL_FLOAT, false,
                 this.vertexStride, this.vertexBuffer);
+
+        // TEXTURE VERTEX
+        this.textureVertexHandle = GLES30.glGetAttribLocation(this.openGLProgram, "tPosition");
+        GLES30.glEnableVertexAttribArray(this.textureVertexHandle);
+        GLES30.glVertexAttribPointer(this.textureVertexHandle, 2,
+                GLES30.GL_FLOAT, false,
+                2 * 4, this.vertexTextureBuffer);
+
 
         // get handle to fragment shader's vColor member
         colorHandle = GLES30.glGetUniformLocation(this.openGLProgram, "vColor");
@@ -122,6 +132,7 @@ public class MapSquare {
 
         // Disable vertex array
         GLES30.glDisableVertexAttribArray(this.positionHandle);
+        GLES30.glDisableVertexAttribArray(this.textureVertexHandle);
     }
 
 }
