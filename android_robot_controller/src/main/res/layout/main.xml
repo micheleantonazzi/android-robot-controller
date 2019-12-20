@@ -5,7 +5,7 @@
     android:orientation="vertical" >
 
     <org.ros.android.android_robot_controller.OpenGL.Views.OpenGLViewMap
-        android:id="@+id/OpenGLViewMa"
+        android:id="@+id/OpenGLViewMap"
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
 </LinearLayout>
