@@ -34,7 +34,6 @@ public class MapSquare extends AbstractNodeMain {
 
     private FloatBuffer vertexBuffer;
     private FloatBuffer vertexTextureBuffer;
-    private ShortBuffer drawListBuffer;
 
     private ByteBuffer textureBuffer = ByteBuffer.allocateDirect(0);
     private int textureDim = 0;
@@ -90,17 +89,6 @@ public class MapSquare extends AbstractNodeMain {
         this.vertexTextureBuffer = vb.asFloatBuffer();
         this.vertexTextureBuffer.put(textureCoordinates);
         this.vertexTextureBuffer.position(0);
-
-        /*
-        // initialize byte buffer for the draw list
-        ByteBuffer dlb = ByteBuffer.allocateDirect(
-                this.drawOrder.length * 2); // 2 is the shot's length
-        dlb.order(ByteOrder.nativeOrder());
-        this.drawListBuffer = dlb.asShortBuffer();
-        this.drawListBuffer.put(this.drawOrder);
-        this.drawListBuffer.position(0);
-
-         */
 
         // Compile the shaders
         int vertexShader = MapRenderer.loadShader(GLES30.GL_VERTEX_SHADER, vertexShaderCode);
@@ -185,7 +173,7 @@ public class MapSquare extends AbstractNodeMain {
         // Set color for drawing the triangle
         GLES30.glUniform4fv(colorHandle, 1, new float[]{0.63671875f, 0.76953125f, 0.22265625f, 1.0f}, 0);
 
-        // Draw the triangle
+        // Draw the triangles
         GLES30.glDrawArrays(
                 GLES30.GL_TRIANGLE_STRIP, 0, 4);
 
