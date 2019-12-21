@@ -37,16 +37,17 @@ public class MapSquare extends AbstractNodeMain {
     private int textureDim = 4;
 
     static float rectangleCoordinates[] = {
-            -1.0f,  0.5f, 0.0f,   // top left
             -1.0f, -0.5f, 0.0f,   // bottom left
+            -1.0f,  0.5f, 0.0f,   // top left
             1.0f, -0.5f, 0.0f,    // bottom right
             1.0f,  0.5f, 0.0f };  // top right
 
     static float textureCoordinates[] = {
-            0.0f, 1.0f,  // top left
-            0.0f, 0.0f,  // bottom left
-            1.0f, 0.0f,  // bottom right
-            1.0f,  1.0f };  // top right
+
+            0.0f, 0.0f, // bottom left
+            0.0f, 1.0f,     // top left
+            1.0f, 0.0f,// bottom right
+            1.0f, 1.0f  };  // top right
 
 
     private short drawOrder[] = { 0, 1, 2, 0, 2, 3 }; // The order in which to draw vertices
@@ -66,12 +67,13 @@ public class MapSquare extends AbstractNodeMain {
                     "uniform sampler2D Texture;" +
                     "varying vec2 TexCoordinate;" +
                     "void main() {" +
-                    "  gl_FragColor = texture2D(Texture, TexCoordinate);" +
+                    "  gl_FragColor = texture2D(Texture, TexCoordinate)*vColor;" +
                     "}";
 
     private MapSquare() {
         for(int i = 0; i < 16*3; i++)
-            this.textureBuffer.put((byte)255);
+            this.textureBuffer.put((byte)100);
+        this.textureBuffer.position(0);
         // Initialize vertex byte buffer for shape coordinates
         ByteBuffer bb = ByteBuffer.allocateDirect(
                 rectangleCoordinates.length * 4); // 4 is float's length
@@ -79,6 +81,7 @@ public class MapSquare extends AbstractNodeMain {
         this.vertexBuffer = bb.asFloatBuffer();
         this.vertexBuffer.put(rectangleCoordinates);
         this.vertexBuffer.position(0);
+
 
         // Initialize texture vertex byte buffer for shape coordinates
         ByteBuffer vb = ByteBuffer.allocateDirect(
@@ -88,6 +91,7 @@ public class MapSquare extends AbstractNodeMain {
         this.vertexTextureBuffer.put(textureCoordinates);
         this.vertexTextureBuffer.position(0);
 
+        /*
         // initialize byte buffer for the draw list
         ByteBuffer dlb = ByteBuffer.allocateDirect(
                 this.drawOrder.length * 2); // 2 is the shot's length
@@ -95,6 +99,8 @@ public class MapSquare extends AbstractNodeMain {
         this.drawListBuffer = dlb.asShortBuffer();
         this.drawListBuffer.put(this.drawOrder);
         this.drawListBuffer.position(0);
+
+         */
 
         // Compile the shaders
         int vertexShader = MapRenderer.loadShader(GLES30.GL_VERTEX_SHADER, vertexShaderCode);
@@ -120,12 +126,11 @@ public class MapSquare extends AbstractNodeMain {
         GLES30.glEnableVertexAttribArray(this.positionHandle);
 
         // TEXTURE VERTEX
-        /*this.textureVertexHandle = GLES30.glGetAttribLocation(this.openGLProgram, "tPosition");
+        this.textureVertexHandle = GLES30.glGetAttribLocation(this.openGLProgram, "tPosition");
         GLES30.glVertexAttribPointer(this.textureVertexHandle, 2,
                 GLES30.GL_FLOAT, false,
                 2 * 4, this.vertexTextureBuffer);
         GLES30.glEnableVertexAttribArray(this.textureVertexHandle);
-        */
 
 
         // TEXTURE
@@ -136,13 +141,15 @@ public class MapSquare extends AbstractNodeMain {
 
         GLES30.glTexParameteri(GLES30.GL_TEXTURE_2D, GLES30.GL_TEXTURE_WRAP_S, GLES30.GL_REPEAT);	// set texture wrapping to GL_REPEAT (default wrapping method)
         GLES30.glTexParameteri(GLES30.GL_TEXTURE_2D, GLES30.GL_TEXTURE_WRAP_T, GLES30.GL_REPEAT);
-        GLES30.glTexParameteri(GLES30.GL_TEXTURE_2D, GLES30.GL_TEXTURE_MIN_FILTER, GLES30.GL_LINEAR);
-        GLES30.glTexParameteri(GLES30.GL_TEXTURE_2D, GLES30.GL_TEXTURE_MAG_FILTER, GLES30.GL_LINEAR);
+        GLES30.glTexParameteri(GLES30.GL_TEXTURE_2D, GLES30.GL_TEXTURE_MIN_FILTER, GLES30.GL_NEAREST);
+        GLES30.glTexParameteri(GLES30.GL_TEXTURE_2D, GLES30.GL_TEXTURE_MAG_FILTER, GLES30.GL_NEAREST);
+
 
         if(this.textureBuffer.capacity() > 2) {
             GLES30.glTexImage2D(GLES30.GL_TEXTURE_2D, 0, GLES30.GL_RGB,
                     this.textureDim, this.textureDim, 0, GLES30.GL_RGB, GLES30.GL_UNSIGNED_BYTE, this.textureBuffer);
             GLES30.glGenerateMipmap(GLES30.GL_TEXTURE_2D);
+            Log.d("debugg", "copied");
         }
     }
 
@@ -162,7 +169,11 @@ public class MapSquare extends AbstractNodeMain {
         GLES30.glUseProgram(this.openGLProgram);
 
         // MAP TEXTURE
+        int mTextureUniformHandle = GLES30.glGetUniformLocation(this.openGLProgram, "Texture");
+        GLES30.glActiveTexture(GLES30.GL_TEXTURE0);
         GLES30.glBindTexture(GLES30.GL_TEXTURE_2D, this.textureHandle);
+        GLES30.glUniform1i(mTextureUniformHandle, 0);
+
 
         // get handle to fragment shader's vColor member
         colorHandle = GLES30.glGetUniformLocation(this.openGLProgram, "vColor");
@@ -172,7 +183,7 @@ public class MapSquare extends AbstractNodeMain {
 
         // Draw the triangle
         GLES30.glDrawArrays(
-                GLES30.GL_TRIANGLES, 0, 6);
+                GLES30.GL_TRIANGLE_STRIP, 0, 4);
 
     }
 
