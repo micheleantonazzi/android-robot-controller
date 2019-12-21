@@ -10,8 +10,6 @@ import javax.microedition.khronos.opengles.GL10;
 
 public class MapRenderer implements GLSurfaceView.Renderer {
 
-    MapSquare mapSquare;
-
     // This method compiles the OpenGL Shading Language
     // Create a vertex shader type (GLES30.GL_VERTEX_SHADER)
     // or a fragment shader type (GLES30.GL_FRAGMENT_SHADER)
@@ -31,8 +29,6 @@ public class MapRenderer implements GLSurfaceView.Renderer {
     @Override
     public void onSurfaceCreated(GL10 gl, EGLConfig config) {
         GLES30.glClearColor(1, 0, 0, 1);
-
-        this.mapSquare = new MapSquare();
     }
 
     @Override
@@ -42,6 +38,6 @@ public class MapRenderer implements GLSurfaceView.Renderer {
 
     @Override
     public void onDrawFrame(GL10 gl) {
-        this.mapSquare.draw();
+        MapSquare.getInstance().draw();
     }
 }

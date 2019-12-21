@@ -11,9 +11,7 @@ import java.nio.ShortBuffer;
 
 public class MapSquare {
 
-    private final int COORDS_PER_VERTEX = 3;
-    private final int vertexCount = rectangleCoordinates.length / COORDS_PER_VERTEX;
-    private final int vertexStride = COORDS_PER_VERTEX * 4; // 4 bytes per vertex
+    static private MapSquare instance;
 
     private int openGLProgram;
 
@@ -58,7 +56,7 @@ public class MapSquare {
                     "  gl_FragColor = vColor;" +
                     "}";
 
-    public MapSquare() {
+    private MapSquare() {
         // Initialize vertex byte buffer for shape coordinates
         ByteBuffer bb = ByteBuffer.allocateDirect(
                 rectangleCoordinates.length * 4); // 4 is float's length
@@ -100,6 +98,12 @@ public class MapSquare {
         GLES30.glLinkProgram(this.openGLProgram);
     }
 
+    public static MapSquare getInstance(){
+        if(instance == null)
+            instance = new MapSquare();
+        return instance;
+    }
+
     public void draw() {
         // Add program to OpenGL ES environment
         GLES30.glUseProgram(this.openGLProgram);
@@ -107,9 +111,9 @@ public class MapSquare {
         // VERTEX
         this.positionHandle = GLES30.glGetAttribLocation(this.openGLProgram, "vPosition");
         GLES30.glEnableVertexAttribArray(this.positionHandle);
-        GLES30.glVertexAttribPointer(this.positionHandle, this.COORDS_PER_VERTEX,
+        GLES30.glVertexAttribPointer(this.positionHandle, 3,
                 GLES30.GL_FLOAT, false,
-                this.vertexStride, this.vertexBuffer);
+                3 * 4, this.vertexBuffer);
 
         // TEXTURE VERTEX
         this.textureVertexHandle = GLES30.glGetAttribLocation(this.openGLProgram, "tPosition");
