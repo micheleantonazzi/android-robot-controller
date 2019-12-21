@@ -33,8 +33,8 @@ public class MapSquare extends AbstractNodeMain {
     private FloatBuffer vertexTextureBuffer;
     private ShortBuffer drawListBuffer;
 
-    private ByteBuffer textureBuffer = ByteBuffer.allocateDirect(0);
-    private int textureDim = 0;
+    private ByteBuffer textureBuffer = ByteBuffer.allocateDirect(16*3);
+    private int textureDim = 4;
 
     static float rectangleCoordinates[] = {
             -1.0f,  0.5f, 0.0f,   // top left
@@ -66,10 +66,12 @@ public class MapSquare extends AbstractNodeMain {
                     "uniform sampler2D Texture;" +
                     "varying vec2 TexCoordinate;" +
                     "void main() {" +
-                    "  gl_FragColor = vColor;" +
+                    "  gl_FragColor = texture2D(Texture, TexCoordinate);" +
                     "}";
 
     private MapSquare() {
+        for(int i = 0; i < 16*3; i++)
+            this.textureBuffer.put((byte)255);
         // Initialize vertex byte buffer for shape coordinates
         ByteBuffer bb = ByteBuffer.allocateDirect(
                 rectangleCoordinates.length * 4); // 4 is float's length
@@ -118,11 +120,12 @@ public class MapSquare extends AbstractNodeMain {
         GLES30.glEnableVertexAttribArray(this.positionHandle);
 
         // TEXTURE VERTEX
-        this.textureVertexHandle = GLES30.glGetAttribLocation(this.openGLProgram, "tPosition");
+        /*this.textureVertexHandle = GLES30.glGetAttribLocation(this.openGLProgram, "tPosition");
         GLES30.glVertexAttribPointer(this.textureVertexHandle, 2,
                 GLES30.GL_FLOAT, false,
                 2 * 4, this.vertexTextureBuffer);
         GLES30.glEnableVertexAttribArray(this.textureVertexHandle);
+        */
 
 
         // TEXTURE
@@ -168,9 +171,8 @@ public class MapSquare extends AbstractNodeMain {
         GLES30.glUniform4fv(colorHandle, 1, new float[]{0.63671875f, 0.76953125f, 0.22265625f, 1.0f}, 0);
 
         // Draw the triangle
-        GLES30.glDrawElements(
-                GLES30.GL_TRIANGLES, this.drawOrder.length,
-                GLES30.GL_UNSIGNED_SHORT, this.drawListBuffer);
+        GLES30.glDrawArrays(
+                GLES30.GL_TRIANGLES, 0, 6);
 
     }
 
@@ -199,7 +201,7 @@ public class MapSquare extends AbstractNodeMain {
                     textureBuffer.put(b < 0 ? 0: b);
                 }
 
-                setBufferData(textureBuffer, mapWidth);
+                //setBufferData(textureBuffer, mapWidth);
             }
         });
     }
