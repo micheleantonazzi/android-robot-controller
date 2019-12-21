@@ -33,8 +33,6 @@ import nav_msgs.OccupancyGrid;
 
 public class MainActivity extends RosActivity {
 
-    private AbstractNodeMain nodeMapReader;
-
     private OpenGLViewMap openGLViewMap;
 
     public MainActivity() {
@@ -49,23 +47,6 @@ public class MainActivity extends RosActivity {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.main);
-        nodeMapReader = new AbstractNodeMain() {
-            @Override
-            public GraphName getDefaultNodeName() {
-                return GraphName.of("android_robot_controller/node_map_reader");
-            }
-
-            @Override
-            public void onStart(ConnectedNode connectedNode) {
-                Subscriber<nav_msgs.OccupancyGrid> subscriber = connectedNode.newSubscriber("map", nav_msgs.OccupancyGrid._TYPE);
-                subscriber.addMessageListener(new MessageListener<OccupancyGrid>() {
-                    @Override
-                    public void onNewMessage (nav_msgs.OccupancyGrid message){
-                        Log.d("debugg", "new Map");
-                    }
-                });
-            }
-        };
 
         openGLViewMap = (OpenGLViewMap) findViewById(R.id.OpenGLViewMap);
 
@@ -87,7 +68,7 @@ public class MainActivity extends RosActivity {
     protected void init(NodeMainExecutor nodeMainExecutor) {
         NodeConfiguration nodeConfiguration = NodeConfiguration.newPublic(getRosHostname());
         nodeConfiguration.setMasterUri(getMasterUri());
-        nodeMainExecutor.execute(nodeMapReader, nodeConfiguration);
+        nodeMainExecutor.execute(MapSquare.getInstance(), nodeConfiguration);
 
     }
 }

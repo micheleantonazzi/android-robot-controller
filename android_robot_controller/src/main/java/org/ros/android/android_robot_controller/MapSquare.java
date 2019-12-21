@@ -1,15 +1,23 @@
 package org.ros.android.android_robot_controller;
 
 import android.opengl.GLES30;
+import android.util.Log;
 
 import org.ros.android.android_robot_controller.OpenGL.Renderes.MapRenderer;
+import org.ros.message.MessageListener;
+import org.ros.namespace.GraphName;
+import org.ros.node.AbstractNodeMain;
+import org.ros.node.ConnectedNode;
+import org.ros.node.topic.Subscriber;
 
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.nio.FloatBuffer;
 import java.nio.ShortBuffer;
 
-public class MapSquare {
+import nav_msgs.OccupancyGrid;
+
+public class MapSquare extends AbstractNodeMain {
 
     static private MapSquare instance;
 
@@ -137,6 +145,22 @@ public class MapSquare {
         // Disable vertex array
         GLES30.glDisableVertexAttribArray(this.positionHandle);
         GLES30.glDisableVertexAttribArray(this.textureVertexHandle);
+    }
+
+    @Override
+    public GraphName getDefaultNodeName() {
+        return GraphName.of("android_robot_controller/node_map_reader");
+    }
+
+    @Override
+    public void onStart(ConnectedNode connectedNode) {
+        Subscriber<OccupancyGrid> subscriber = connectedNode.newSubscriber("map", nav_msgs.OccupancyGrid._TYPE);
+        subscriber.addMessageListener(new MessageListener<OccupancyGrid>() {
+            @Override
+            public void onNewMessage (nav_msgs.OccupancyGrid message){
+                Log.d("debugg", "new Map");
+            }
+        });
     }
 
 }
