@@ -3,6 +3,7 @@ package org.ros.android.android_robot_controller;
 import android.opengl.GLES30;
 import android.util.Log;
 
+import org.jboss.netty.buffer.ChannelBuffer;
 import org.ros.android.android_robot_controller.OpenGL.Renderes.MapRenderer;
 import org.ros.message.MessageListener;
 import org.ros.namespace.GraphName;
@@ -25,11 +26,15 @@ public class MapSquare extends AbstractNodeMain {
 
     private int positionHandle;
     private int textureVertexHandle;
+    private int textureHandle;
     private int colorHandle;
 
     private FloatBuffer vertexBuffer;
     private FloatBuffer vertexTextureBuffer;
     private ShortBuffer drawListBuffer;
+
+    private ByteBuffer textureBuffer = ByteBuffer.allocateDirect(0);
+    private int textureDim = 0;
 
     static float rectangleCoordinates[] = {
             -1.0f,  0.5f, 0.0f,   // top left
@@ -104,17 +109,6 @@ public class MapSquare extends AbstractNodeMain {
 
         // creates OpenGL ES program executables
         GLES30.glLinkProgram(this.openGLProgram);
-    }
-
-    public static MapSquare getInstance(){
-        if(instance == null)
-            instance = new MapSquare();
-        return instance;
-    }
-
-    public void draw() {
-        // Add program to OpenGL ES environment
-        GLES30.glUseProgram(this.openGLProgram);
 
         // VERTEX
         this.positionHandle = GLES30.glGetAttribLocation(this.openGLProgram, "vPosition");
@@ -130,6 +124,38 @@ public class MapSquare extends AbstractNodeMain {
                 GLES30.GL_FLOAT, false,
                 2 * 4, this.vertexTextureBuffer);
 
+    }
+
+    private synchronized void setBufferData(ByteBuffer textureBuffer, int textureDim){
+        this.textureBuffer = textureBuffer;
+        this.textureDim = textureDim;
+    }
+
+    public static MapSquare getInstance(){
+        if(instance == null)
+            instance = new MapSquare();
+        return instance;
+    }
+
+    public void draw() {
+        // Add program to OpenGL ES environment
+        GLES30.glUseProgram(this.openGLProgram);
+
+        // MAP TEXTURE
+        int[] textures = new int[1];
+        GLES30.glGenTextures(1, textures, 0);
+        this.textureHandle = textures[0];
+        GLES30.glActiveTexture(GLES30.GL_TEXTURE0);
+        GLES30.glBindTexture(GLES30.GL_TEXTURE_2D, this.textureHandle);
+        GLES30.glGenerateMipmap(GLES30.GL_TEXTURE_2D);
+        int mTextureUniformHandle = GLES30.glGetUniformLocation(this.openGLProgram, "Texture");
+        GLES30.glUniform1i(mTextureUniformHandle, 0);
+        GLES30.glTexParameteri(GLES30.GL_TEXTURE_2D, GLES30.GL_TEXTURE_MIN_FILTER, GLES30.GL_NEAREST);
+        GLES30.glTexParameteri(GLES30.GL_TEXTURE_2D, GLES30.GL_TEXTURE_MAG_FILTER, GLES30.GL_NEAREST);
+        GLES30.glTexImage2D(GLES30.GL_TEXTURE_2D, 0, GLES30.GL_RGB,
+                this.textureDim, this.textureDim, 0, GLES30.GL_RGB, GLES30.GL_UNSIGNED_BYTE, this.textureBuffer);
+
+
 
         // get handle to fragment shader's vColor member
         colorHandle = GLES30.glGetUniformLocation(this.openGLProgram, "vColor");
@@ -142,9 +168,6 @@ public class MapSquare extends AbstractNodeMain {
                 GLES30.GL_TRIANGLES, this.drawOrder.length,
                 GLES30.GL_UNSIGNED_SHORT, this.drawListBuffer);
 
-        // Disable vertex array
-        GLES30.glDisableVertexAttribArray(this.positionHandle);
-        GLES30.glDisableVertexAttribArray(this.textureVertexHandle);
     }
 
     @Override
@@ -159,6 +182,20 @@ public class MapSquare extends AbstractNodeMain {
             @Override
             public void onNewMessage (nav_msgs.OccupancyGrid message){
                 Log.d("debugg", "new Map");
+
+                int mapWidth = message.getInfo().getWidth();
+
+                ChannelBuffer messageTexture = message.getData();
+                ByteBuffer textureBuffer = ByteBuffer.allocateDirect(mapWidth * mapWidth * 3);
+                textureBuffer.position(0);
+                for(int i = 0; i < message.getData().capacity(); i++){
+                    byte b = messageTexture.readByte();
+                    textureBuffer.put(b < 0 ? 0: b);
+                    textureBuffer.put(b < 0 ? 0: b);
+                    textureBuffer.put(b < 0 ? 0: b);
+                }
+
+                setBufferData(textureBuffer, mapWidth);
             }
         });
     }
