@@ -22,6 +22,9 @@ public class MapSquare extends AbstractNodeMain {
 
     static private MapSquare instance;
 
+    // This variable indicates if the map texture is updated
+    private boolean mapUpdate = false;
+
     private int openGLProgram;
 
     private int positionHandle;
@@ -33,8 +36,8 @@ public class MapSquare extends AbstractNodeMain {
     private FloatBuffer vertexTextureBuffer;
     private ShortBuffer drawListBuffer;
 
-    private ByteBuffer textureBuffer = ByteBuffer.allocateDirect(16*3);
-    private int textureDim = 4;
+    private ByteBuffer textureBuffer = ByteBuffer.allocateDirect(0);
+    private int textureDim = 0;
 
     static float rectangleCoordinates[] = {
             -1.0f, -0.5f, 0.0f,   // bottom left
@@ -43,11 +46,10 @@ public class MapSquare extends AbstractNodeMain {
             1.0f,  0.5f, 0.0f };  // top right
 
     static float textureCoordinates[] = {
-
+            0.0f, 1.0f, // top left
+            1.0f, 1.0f, // top right
             0.0f, 0.0f, // bottom left
-            0.0f, 1.0f,     // top left
-            1.0f, 0.0f,// bottom right
-            1.0f, 1.0f  };  // top right
+            1.0f, 0.0f};  // bottom right
 
 
     private short drawOrder[] = { 0, 1, 2, 0, 2, 3 }; // The order in which to draw vertices
@@ -67,12 +69,10 @@ public class MapSquare extends AbstractNodeMain {
                     "uniform sampler2D Texture;" +
                     "varying vec2 TexCoordinate;" +
                     "void main() {" +
-                    "  gl_FragColor = texture2D(Texture, TexCoordinate)*vColor;" +
+                    "  gl_FragColor = texture2D(Texture, TexCoordinate);" +
                     "}";
 
     private MapSquare() {
-        for(int i = 0; i < 16*3; i++)
-            this.textureBuffer.put((byte)100);
         this.textureBuffer.position(0);
         // Initialize vertex byte buffer for shape coordinates
         ByteBuffer bb = ByteBuffer.allocateDirect(
@@ -145,17 +145,14 @@ public class MapSquare extends AbstractNodeMain {
         GLES30.glTexParameteri(GLES30.GL_TEXTURE_2D, GLES30.GL_TEXTURE_MAG_FILTER, GLES30.GL_NEAREST);
 
 
-        if(this.textureBuffer.capacity() > 2) {
-            GLES30.glTexImage2D(GLES30.GL_TEXTURE_2D, 0, GLES30.GL_RGB,
-                    this.textureDim, this.textureDim, 0, GLES30.GL_RGB, GLES30.GL_UNSIGNED_BYTE, this.textureBuffer);
-            GLES30.glGenerateMipmap(GLES30.GL_TEXTURE_2D);
-            Log.d("debugg", "copied");
-        }
+
     }
 
     private synchronized void setBufferData(ByteBuffer textureBuffer, int textureDim){
         this.textureBuffer = textureBuffer;
         this.textureDim = textureDim;
+        this.mapUpdate = true;
+
     }
 
     public static MapSquare getInstance(){
@@ -164,11 +161,18 @@ public class MapSquare extends AbstractNodeMain {
         return instance;
     }
 
-    public void draw() {
+    public synchronized void draw() {
         // Add program to OpenGL ES environment
         GLES30.glUseProgram(this.openGLProgram);
 
         // MAP TEXTURE
+        if(this.mapUpdate == true && this.textureBuffer.capacity() > 0) {
+            GLES30.glTexImage2D(GLES30.GL_TEXTURE_2D, 0, GLES30.GL_RGB,
+                    this.textureDim, this.textureDim, 0, GLES30.GL_RGB, GLES30.GL_UNSIGNED_BYTE, this.textureBuffer);
+            GLES30.glGenerateMipmap(GLES30.GL_TEXTURE_2D);
+            this.mapUpdate = false;
+        }
+
         int mTextureUniformHandle = GLES30.glGetUniformLocation(this.openGLProgram, "Texture");
         GLES30.glActiveTexture(GLES30.GL_TEXTURE0);
         GLES30.glBindTexture(GLES30.GL_TEXTURE_2D, this.textureHandle);
@@ -207,12 +211,13 @@ public class MapSquare extends AbstractNodeMain {
                 textureBuffer.position(0);
                 for(int i = 0; i < message.getData().capacity(); i++){
                     byte b = messageTexture.readByte();
-                    textureBuffer.put(b < 0 ? 0: b);
-                    textureBuffer.put(b < 0 ? 0: b);
-                    textureBuffer.put(b < 0 ? 0: b);
+                    textureBuffer.put(b < 0 ? (byte) 205: (byte) (255 * (100-b) / 100));
+                    textureBuffer.put(b < 0 ? (byte) 205: (byte) (255 * (100-b) / 100));
+                    textureBuffer.put(b < 0 ? (byte) 205: (byte) (255 * (100-b) / 100));
                 }
+                textureBuffer.position(0);
 
-                //setBufferData(textureBuffer, mapWidth);
+                setBufferData(textureBuffer, mapWidth);
             }
         });
     }
