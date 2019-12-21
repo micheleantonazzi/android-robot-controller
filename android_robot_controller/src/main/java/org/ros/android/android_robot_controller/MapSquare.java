@@ -112,18 +112,35 @@ public class MapSquare extends AbstractNodeMain {
 
         // VERTEX
         this.positionHandle = GLES30.glGetAttribLocation(this.openGLProgram, "vPosition");
-        GLES30.glEnableVertexAttribArray(this.positionHandle);
         GLES30.glVertexAttribPointer(this.positionHandle, 3,
                 GLES30.GL_FLOAT, false,
                 3 * 4, this.vertexBuffer);
+        GLES30.glEnableVertexAttribArray(this.positionHandle);
 
         // TEXTURE VERTEX
         this.textureVertexHandle = GLES30.glGetAttribLocation(this.openGLProgram, "tPosition");
-        GLES30.glEnableVertexAttribArray(this.textureVertexHandle);
         GLES30.glVertexAttribPointer(this.textureVertexHandle, 2,
                 GLES30.GL_FLOAT, false,
                 2 * 4, this.vertexTextureBuffer);
+        GLES30.glEnableVertexAttribArray(this.textureVertexHandle);
 
+
+        // TEXTURE
+        int[] textures = new int[1];
+        GLES30.glGenTextures(1, textures, 0);
+        this.textureHandle = textures[0];
+        GLES30.glBindTexture(GLES30.GL_TEXTURE_2D, this.textureHandle);
+
+        GLES30.glTexParameteri(GLES30.GL_TEXTURE_2D, GLES30.GL_TEXTURE_WRAP_S, GLES30.GL_REPEAT);	// set texture wrapping to GL_REPEAT (default wrapping method)
+        GLES30.glTexParameteri(GLES30.GL_TEXTURE_2D, GLES30.GL_TEXTURE_WRAP_T, GLES30.GL_REPEAT);
+        GLES30.glTexParameteri(GLES30.GL_TEXTURE_2D, GLES30.GL_TEXTURE_MIN_FILTER, GLES30.GL_LINEAR);
+        GLES30.glTexParameteri(GLES30.GL_TEXTURE_2D, GLES30.GL_TEXTURE_MAG_FILTER, GLES30.GL_LINEAR);
+
+        if(this.textureBuffer.capacity() > 2) {
+            GLES30.glTexImage2D(GLES30.GL_TEXTURE_2D, 0, GLES30.GL_RGB,
+                    this.textureDim, this.textureDim, 0, GLES30.GL_RGB, GLES30.GL_UNSIGNED_BYTE, this.textureBuffer);
+            GLES30.glGenerateMipmap(GLES30.GL_TEXTURE_2D);
+        }
     }
 
     private synchronized void setBufferData(ByteBuffer textureBuffer, int textureDim){
@@ -142,20 +159,7 @@ public class MapSquare extends AbstractNodeMain {
         GLES30.glUseProgram(this.openGLProgram);
 
         // MAP TEXTURE
-        int[] textures = new int[1];
-        GLES30.glGenTextures(1, textures, 0);
-        this.textureHandle = textures[0];
-        GLES30.glActiveTexture(GLES30.GL_TEXTURE0);
         GLES30.glBindTexture(GLES30.GL_TEXTURE_2D, this.textureHandle);
-        GLES30.glGenerateMipmap(GLES30.GL_TEXTURE_2D);
-        int mTextureUniformHandle = GLES30.glGetUniformLocation(this.openGLProgram, "Texture");
-        GLES30.glUniform1i(mTextureUniformHandle, 0);
-        GLES30.glTexParameteri(GLES30.GL_TEXTURE_2D, GLES30.GL_TEXTURE_MIN_FILTER, GLES30.GL_NEAREST);
-        GLES30.glTexParameteri(GLES30.GL_TEXTURE_2D, GLES30.GL_TEXTURE_MAG_FILTER, GLES30.GL_NEAREST);
-        GLES30.glTexImage2D(GLES30.GL_TEXTURE_2D, 0, GLES30.GL_RGB,
-                this.textureDim, this.textureDim, 0, GLES30.GL_RGB, GLES30.GL_UNSIGNED_BYTE, this.textureBuffer);
-
-
 
         // get handle to fragment shader's vColor member
         colorHandle = GLES30.glGetUniformLocation(this.openGLProgram, "vColor");
