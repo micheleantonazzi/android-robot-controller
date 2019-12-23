@@ -4,14 +4,15 @@ import android.content.Context;
 import android.opengl.GLSurfaceView;
 import android.util.AttributeSet;
 import android.util.Log;
-import android.view.Display;
-import android.view.GestureDetector;
 import android.view.MotionEvent;
 import android.view.ScaleGestureDetector;
 
 import org.ros.android.android_robot_controller.OpenGL.Renderes.MapRenderer;
 
 public class OpenGLViewMap extends GLSurfaceView {
+
+    // This variable is true as long as all fingers leave the screen after a multitouch action
+    private boolean multiTouchInProgress = false;
 
     private MapRenderer renderer;
     private ScaleGestureDetector scaleGestureDetector;
@@ -45,14 +46,24 @@ public class OpenGLViewMap extends GLSurfaceView {
 
     @Override
     public boolean onTouchEvent(MotionEvent event) {
+
         this.scaleGestureDetector.onTouchEvent(event);
 
+        // Start a multitouch gesture
+        if(event.getPointerCount() > 1) {
+            this.multiTouchInProgress = true;
+        }
+
+        // Multitouch gesture terminates
+        if (this.multiTouchInProgress && event.getAction() == MotionEvent.ACTION_UP)
+            this.multiTouchInProgress = false;
+
         // Move the map
-        if(event.getPointerCount() == 1){
+        if(!this.multiTouchInProgress && event.getPointerCount() == 1){
             switch (event.getAction()){
                 case MotionEvent.ACTION_DOWN:
-                    oldX = event.getX();
-                    oldY = event.getY();
+                    this.oldX = event.getX();
+                    this.oldY = event.getY();
                     break;
                 case MotionEvent.ACTION_MOVE:
                     float deltaX = event.getX() - this.oldX;
@@ -60,13 +71,9 @@ public class OpenGLViewMap extends GLSurfaceView {
                     this.renderer.modifyMoveValues(deltaX / this.getWidth(), deltaY / this.getHeight());
                     this.oldX = event.getX();
                     this.oldY = event.getY();
-
                     break;
-
             }
         }
-            Log.d("debugg", "move "+ " " + this.getWidth() + " " +event.getX() + " " + event.getY() );
         return true;
     }
-
 }
