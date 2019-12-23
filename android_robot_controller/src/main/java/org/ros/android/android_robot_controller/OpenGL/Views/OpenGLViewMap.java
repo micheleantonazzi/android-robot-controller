@@ -27,7 +27,7 @@ public class OpenGLViewMap extends GLSurfaceView {
                         return true;
                     }
                 });
-        this.setRenderMode(OpenGLViewMap.RENDERMODE_CONTINUOUSLY);
+        //this.setRenderMode(OpenGLViewMap.RENDERMODE_CONTINUOUSLY);
     }
 
     public OpenGLViewMap(Context context) {

@@ -133,8 +133,6 @@ public class MapSquare extends AbstractNodeMain {
         GLES30.glTexParameteri(GLES30.GL_TEXTURE_2D, GLES30.GL_TEXTURE_MIN_FILTER, GLES30.GL_NEAREST);
         GLES30.glTexParameteri(GLES30.GL_TEXTURE_2D, GLES30.GL_TEXTURE_MAG_FILTER, GLES30.GL_NEAREST);
 
-
-
     }
 
     private synchronized void setBufferData(ByteBuffer textureBuffer, int textureDim){
@@ -182,6 +180,7 @@ public class MapSquare extends AbstractNodeMain {
         // Draw the triangles
         GLES30.glDrawArrays(
                 GLES30.GL_TRIANGLE_STRIP, 0, 4);
+
 
     }
 
