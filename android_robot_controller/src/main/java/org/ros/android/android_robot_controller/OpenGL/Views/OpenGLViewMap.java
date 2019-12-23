@@ -4,6 +4,8 @@ import android.content.Context;
 import android.opengl.GLSurfaceView;
 import android.util.AttributeSet;
 import android.util.Log;
+import android.view.Display;
+import android.view.GestureDetector;
 import android.view.MotionEvent;
 import android.view.ScaleGestureDetector;
 
@@ -13,6 +15,8 @@ public class OpenGLViewMap extends GLSurfaceView {
 
     private MapRenderer renderer;
     private ScaleGestureDetector scaleGestureDetector;
+
+    private float oldX, oldY;
 
     private void init(Context context) {
         this.setEGLContextClientVersion(3);
@@ -27,7 +31,6 @@ public class OpenGLViewMap extends GLSurfaceView {
                         return true;
                     }
                 });
-        //this.setRenderMode(OpenGLViewMap.RENDERMODE_CONTINUOUSLY);
     }
 
     public OpenGLViewMap(Context context) {
@@ -43,6 +46,26 @@ public class OpenGLViewMap extends GLSurfaceView {
     @Override
     public boolean onTouchEvent(MotionEvent event) {
         this.scaleGestureDetector.onTouchEvent(event);
+
+        // Move the map
+        if(event.getPointerCount() == 1){
+            switch (event.getAction()){
+                case MotionEvent.ACTION_DOWN:
+                    oldX = event.getX();
+                    oldY = event.getY();
+                    break;
+                case MotionEvent.ACTION_MOVE:
+                    float deltaX = event.getX() - this.oldX;
+                    float deltaY = this.oldY - event.getY();
+                    this.renderer.modifyMoveValues(deltaX / this.getWidth(), deltaY / this.getHeight());
+                    this.oldX = event.getX();
+                    this.oldY = event.getY();
+
+                    break;
+
+            }
+        }
+            Log.d("debugg", "move "+ " " + this.getWidth() + " " +event.getX() + " " + event.getY() );
         return true;
     }
 

@@ -3,8 +3,6 @@ package org.ros.android.android_robot_controller.OpenGL.Renderes;
 import android.opengl.GLES30;
 import android.opengl.GLSurfaceView;
 import android.opengl.Matrix;
-import android.util.Log;
-
 import org.ros.android.android_robot_controller.MapSquare;
 
 import javax.microedition.khronos.egl.EGLConfig;
@@ -12,7 +10,10 @@ import javax.microedition.khronos.opengles.GL10;
 
 public class MapRenderer implements GLSurfaceView.Renderer {
 
+    // Variables to move the map
     private float scaleFactor = 1;
+    private float moveX;
+    private float moveY;
 
     private float[] viewMatrix = new float[16];
 
@@ -53,13 +54,20 @@ public class MapRenderer implements GLSurfaceView.Renderer {
         }
     }
 
-    public void modifyScaleFactor(float scaleFactor) {
+    public synchronized void updateViewMatrix(){
+        Matrix.setIdentityM(this.viewMatrix, 0);
+        Matrix.scaleM(this.viewMatrix, 0, this.scaleFactor, this.scaleFactor, 0);
+        Matrix.translateM(this.viewMatrix, 0, this.moveX, this.moveY, 0);
+    }
+
+    public synchronized void modifyScaleFactor(float scaleFactor) {
         this.scaleFactor *= scaleFactor;
-        float[] scaleMatrix = new float[16];
-        Matrix.setIdentityM(scaleMatrix, 0);
-        Matrix.scaleM(scaleMatrix, 0, this.scaleFactor, this.scaleFactor, this.scaleFactor);
-        synchronized (this) {
-            this.viewMatrix = scaleMatrix;
-        }
+        this.updateViewMatrix();
+    }
+
+    public synchronized void modifyMoveValues(float moveX, float moveY){
+        this.moveX += moveX * 2 / this.scaleFactor;
+        this.moveY += moveY * 2 / this.scaleFactor;
+        this.updateViewMatrix();
     }
 }
