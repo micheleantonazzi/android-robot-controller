@@ -54,11 +54,12 @@ public class MapSquare extends AbstractNodeMain {
     private short drawOrder[] = { 0, 1, 2, 0, 2, 3 }; // The order in which to draw vertices
 
     private final String vertexShaderCode =
-            "attribute vec4 vPosition;" +
+            "uniform mat4 uMVPMatrix;" +
+                    "attribute vec4 vPosition;" +
                     "attribute vec2 tPosition;" +
                     "varying vec2 TexCoordinate;" +
                     "void main() {" +
-                    "  gl_Position = vPosition;" +
+                    "  gl_Position = uMVPMatrix * vPosition;" +
                     "  TexCoordinate = tPosition;" +
                     "}";
 
@@ -149,9 +150,15 @@ public class MapSquare extends AbstractNodeMain {
         return instance;
     }
 
-    public synchronized void draw() {
+    public synchronized void draw(float[] mvpMatrix) {
         // Add program to OpenGL ES environment
         GLES30.glUseProgram(this.openGLProgram);
+
+        // get handle to shape's transformation matrix
+        int vPMatrixHandle = GLES30.glGetUniformLocation(this.openGLProgram, "uMVPMatrix");
+
+        // Pass the projection and view transformation to the shader
+        GLES30.glUniformMatrix4fv(vPMatrixHandle, 1, false, mvpMatrix, 0);
 
         // MAP TEXTURE
         if(this.mapUpdate == true && this.textureBuffer.capacity() > 0) {
@@ -165,7 +172,6 @@ public class MapSquare extends AbstractNodeMain {
         GLES30.glActiveTexture(GLES30.GL_TEXTURE0);
         GLES30.glBindTexture(GLES30.GL_TEXTURE_2D, this.textureHandle);
         GLES30.glUniform1i(mTextureUniformHandle, 0);
-
 
         // get handle to fragment shader's vColor member
         colorHandle = GLES30.glGetUniformLocation(this.openGLProgram, "vColor");
