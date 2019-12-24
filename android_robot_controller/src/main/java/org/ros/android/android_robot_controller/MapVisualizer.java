@@ -1,5 +1,6 @@
 package org.ros.android.android_robot_controller;
 
+import android.opengl.GLES10;
 import android.opengl.GLES30;
 import android.util.Log;
 
@@ -38,10 +39,10 @@ public class MapVisualizer extends AbstractNodeMain {
     private int textureDim = 0;
 
     private float rectangleCoordinates[] = {
-            -1.0f, -0.5f, 0.0f,   // bottom left
-            -1.0f,  0.5f, 0.0f,   // top left
-            1.0f, -0.5f, 0.0f,    // bottom right
-            1.0f,  0.5f, 0.0f };  // top right
+            -1.0f, -1f, 0.0f,   // bottom left
+            -1.0f,  1f, 0.0f,   // top left
+            1.0f, -1f, 0.0f,    // bottom right
+            1.0f,  1f, 0.0f };  // top right
 
     private float textureCoordinates[] = {
             0.0f, 1.0f, // top left
@@ -163,7 +164,7 @@ public class MapVisualizer extends AbstractNodeMain {
         GLES30.glBindTexture(GLES30.GL_TEXTURE_2D, this.textureHandle);
         GLES30.glUniform1i(mTextureUniformHandle, 0);
 
-        // et handle to fragment shader's vColor member
+        // Get handle to fragment shader's vColor member
         colorHandle = GLES30.glGetUniformLocation(this.openGLProgram, "vColor");
 
         // Set color for drawing the triangle
@@ -172,7 +173,6 @@ public class MapVisualizer extends AbstractNodeMain {
         // Draw the triangles
         GLES30.glDrawArrays(
                 GLES30.GL_TRIANGLE_STRIP, 0, 4);
-
 
     }
 

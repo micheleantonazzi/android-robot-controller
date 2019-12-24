@@ -3,8 +3,11 @@ package org.ros.android.android_robot_controller.OpenGL.Views;
 import android.content.Context;
 import android.opengl.GLSurfaceView;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.MotionEvent;
 import android.view.ScaleGestureDetector;
+
+import com.almeros.android.multitouch.RotateGestureDetector;
 
 import org.ros.android.android_robot_controller.OpenGL.Renderes.RosRenderer;
 import org.ros.node.AbstractNodeMain;
@@ -18,7 +21,9 @@ public class RosOpenGLView extends GLSurfaceView {
     private boolean multiTouchInProgress = false;
 
     private RosRenderer renderer;
+
     private ScaleGestureDetector scaleGestureDetector;
+    private RotateGestureDetector rotateGestureDetector;
 
     private float oldX, oldY;
 
@@ -35,6 +40,24 @@ public class RosOpenGLView extends GLSurfaceView {
                         return true;
                     }
                 });
+
+        this.rotateGestureDetector = new RotateGestureDetector(context, new RotateGestureDetector.OnRotateGestureListener() {
+            @Override
+            public boolean onRotate(RotateGestureDetector detector) {
+                renderer.modifyRotationAngle(detector.getRotationDegreesDelta());
+                return true;
+            }
+
+            @Override
+            public boolean onRotateBegin(RotateGestureDetector detector) {
+                return true;
+            }
+
+            @Override
+            public void onRotateEnd(RotateGestureDetector detector) {
+
+            }
+        });
     }
 
     public RosOpenGLView(Context context) {
@@ -51,7 +74,7 @@ public class RosOpenGLView extends GLSurfaceView {
     public boolean onTouchEvent(MotionEvent event) {
 
         this.scaleGestureDetector.onTouchEvent(event);
-
+        this.rotateGestureDetector.onTouchEvent(event);
         // Start a multitouch gesture
         if(event.getPointerCount() > 1) {
             this.multiTouchInProgress = true;
