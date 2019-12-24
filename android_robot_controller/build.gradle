@@ -16,6 +16,21 @@
 
 dependencies {
   compile 'org.ros.android_core:android_core_components:[0.4,0.5)'
+  compile 'com.github.Almeros:android-gesture-detectors:v1.0'
+}
+
+buildscript {
+  repositories {
+
+    maven { url 'https://jitpack.io' }
+  }
+}
+
+allprojects {
+  repositories {
+
+    maven { url 'https://jitpack.io' }
+  }
 }
 
 apply plugin: 'com.android.application'
