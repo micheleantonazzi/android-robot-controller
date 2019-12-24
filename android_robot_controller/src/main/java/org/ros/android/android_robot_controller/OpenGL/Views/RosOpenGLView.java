@@ -7,6 +7,10 @@ import android.view.MotionEvent;
 import android.view.ScaleGestureDetector;
 
 import org.ros.android.android_robot_controller.OpenGL.Renderes.RosRenderer;
+import org.ros.node.AbstractNodeMain;
+
+import java.util.Arrays;
+import java.util.List;
 
 public class RosOpenGLView extends GLSurfaceView {
 
@@ -74,5 +78,9 @@ public class RosOpenGLView extends GLSurfaceView {
             }
         }
         return true;
+    }
+
+    public List<AbstractNodeMain> getVisualizer(){
+        return this.renderer.getVisualizer();
     }
 }

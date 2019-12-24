@@ -37,13 +37,13 @@ public class MapVisualizer extends AbstractNodeMain {
     private ByteBuffer textureBuffer = ByteBuffer.allocateDirect(0);
     private int textureDim = 0;
 
-    static float rectangleCoordinates[] = {
+    private float rectangleCoordinates[] = {
             -1.0f, -0.5f, 0.0f,   // bottom left
             -1.0f,  0.5f, 0.0f,   // top left
             1.0f, -0.5f, 0.0f,    // bottom right
             1.0f,  0.5f, 0.0f };  // top right
 
-    static float textureCoordinates[] = {
+    private float textureCoordinates[] = {
             0.0f, 1.0f, // top left
             1.0f, 1.0f, // top right
             0.0f, 0.0f, // bottom left
@@ -71,20 +71,19 @@ public class MapVisualizer extends AbstractNodeMain {
                     "  gl_FragColor = texture2D(Texture, TexCoordinate);" +
                     "}";
 
-    private MapVisualizer() {
+    public MapVisualizer() {
         this.textureBuffer.position(0);
         // Initialize vertex byte buffer for shape coordinates
         ByteBuffer bb = ByteBuffer.allocateDirect(
-                rectangleCoordinates.length * 4); // 4 is float's length
+                this.rectangleCoordinates.length * 4); // 4 is float's length
         bb.order(ByteOrder.nativeOrder());
         this.vertexBuffer = bb.asFloatBuffer();
-        this.vertexBuffer.put(rectangleCoordinates);
+        this.vertexBuffer.put(this.rectangleCoordinates);
         this.vertexBuffer.position(0);
-
 
         // Initialize texture vertex byte buffer for shape coordinates
         ByteBuffer vb = ByteBuffer.allocateDirect(
-                textureCoordinates.length * 4); // 4 is float's length
+                this.textureCoordinates.length * 4); // 4 is float's length
         vb.order(ByteOrder.nativeOrder());
         this.vertexTextureBuffer = vb.asFloatBuffer();
         this.vertexTextureBuffer.put(textureCoordinates);
@@ -131,7 +130,6 @@ public class MapVisualizer extends AbstractNodeMain {
         GLES30.glTexParameteri(GLES30.GL_TEXTURE_2D, GLES30.GL_TEXTURE_WRAP_T, GLES30.GL_REPEAT);
         GLES30.glTexParameteri(GLES30.GL_TEXTURE_2D, GLES30.GL_TEXTURE_MIN_FILTER, GLES30.GL_NEAREST);
         GLES30.glTexParameteri(GLES30.GL_TEXTURE_2D, GLES30.GL_TEXTURE_MAG_FILTER, GLES30.GL_NEAREST);
-
     }
 
     private synchronized void setBufferData(ByteBuffer textureBuffer, int textureDim){
@@ -141,13 +139,8 @@ public class MapVisualizer extends AbstractNodeMain {
 
     }
 
-    public static MapVisualizer getInstance(){
-        if(instance == null)
-            instance = new MapVisualizer();
-        return instance;
-    }
-
     public synchronized void draw(float[] mvpMatrix) {
+
         // Add program to OpenGL ES environment
         GLES30.glUseProgram(this.openGLProgram);
 
@@ -170,7 +163,7 @@ public class MapVisualizer extends AbstractNodeMain {
         GLES30.glBindTexture(GLES30.GL_TEXTURE_2D, this.textureHandle);
         GLES30.glUniform1i(mTextureUniformHandle, 0);
 
-        // get handle to fragment shader's vColor member
+        // et handle to fragment shader's vColor member
         colorHandle = GLES30.glGetUniformLocation(this.openGLProgram, "vColor");
 
         // Set color for drawing the triangle

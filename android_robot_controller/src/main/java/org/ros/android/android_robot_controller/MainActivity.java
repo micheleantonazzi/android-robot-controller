@@ -20,6 +20,7 @@ import android.os.Bundle;
 
 import org.ros.android.RosActivity;
 import org.ros.android.android_robot_controller.OpenGL.Views.RosOpenGLView;
+import org.ros.node.AbstractNodeMain;
 import org.ros.node.NodeConfiguration;
 import org.ros.node.NodeMainExecutor;
 
@@ -60,7 +61,9 @@ public class MainActivity extends RosActivity {
     protected void init(NodeMainExecutor nodeMainExecutor) {
         NodeConfiguration nodeConfiguration = NodeConfiguration.newPublic(getRosHostname());
         nodeConfiguration.setMasterUri(getMasterUri());
-        nodeMainExecutor.execute(MapVisualizer.getInstance(), nodeConfiguration);
 
+        for(AbstractNodeMain node : this.rosOpenGLView.getVisualizer()){
+            nodeMainExecutor.execute(node, nodeConfiguration);
+        }
     }
 }
