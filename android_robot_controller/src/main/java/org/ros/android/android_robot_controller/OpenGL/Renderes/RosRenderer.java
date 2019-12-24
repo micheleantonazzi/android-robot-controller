@@ -4,12 +4,10 @@ import android.opengl.GLES10;
 import android.opengl.GLES30;
 import android.opengl.GLSurfaceView;
 import android.opengl.Matrix;
-import android.util.Log;
 
 import org.ros.android.android_robot_controller.MapVisualizer;
 import org.ros.node.AbstractNodeMain;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -45,8 +43,8 @@ public class RosRenderer implements GLSurfaceView.Renderer {
     }
 
     public RosRenderer() {
-        Matrix.setIdentityM(this.resultMatrix, 0);
-        //Matrix.scaleM(this.resultMatrix, 0, 1f, 0.5f,1f);
+        Matrix.frustumM(projectionMatrix, 0, -1, 1, -1f, 1f, 1f, 7);
+        this.updateViewMatrix();
     }
 
     @Override
@@ -57,7 +55,6 @@ public class RosRenderer implements GLSurfaceView.Renderer {
 
     @Override
     public void onSurfaceChanged(GL10 gl, int width, int height) {
-        float ratio = (float) width / height;
 
         // this projection matrix is applied to object coordinates
         // in the onDrawFrame() method
@@ -74,37 +71,37 @@ public class RosRenderer implements GLSurfaceView.Renderer {
 
     }
 
+    // Scale * Rotation * Translation
     public synchronized void updateViewMatrix(){
-        /*
-        Matrix.setIdentityM(this.viewMatrix, 0);
-        //Matrix.scaleM(this.viewMatrix, 0, this.scaleFactor, this.scaleFactor, 0);
-        //Matrix.translateM(this.viewMatrix, 0, this.moveX, this.moveY, 0);
-        Matrix.setRotateEulerM(this.viewMatrix, 0, 0, 0, -30);
-         */
 
         // Set the camera position (View matrix)
         float[] viewMatrix = new float[16];
         float[] scaleMatrix = new float[16];
         float[] rotationMatrix = new float[16];
-        float[] intermediate = new float[16];
-        float[] intermediate2 = new float[16];
+        float[] rotationScaleMatrix = new float[16];
+        float[] projectionViewMatrix = new float[16];
 
+        // Set the view camera
         Matrix.setLookAtM(viewMatrix, 0, 0, 0, 1.0001f, 0f, 0f, 0f, 0f, 1.0f, 0f);
+
+        // Set rotation to rotation matrix
+        Matrix.setRotateM(rotationMatrix, 0, this.rotationAngle, 0f, 0f, 1.0f);
+
+        // Set scale matrix
         Matrix.setIdentityM(scaleMatrix, 0);
+        Matrix.scaleM(scaleMatrix, 0, this.scaleFactor, this.scaleFactor * 0.5f, 1.0f);
 
-        Matrix.scaleM(scaleMatrix, 0, 1, 0.5f, this.scaleFactor);
-        Matrix.translateM(scaleMatrix, 0, this.moveX, this.moveY, 0f);
-        Matrix.setRotateM(rotationMatrix, 0, 45, 0f, 0f, -1f);
-        float angleAbsolute = Math.abs(this.rotationAngle) % 91;
+        // Translate scale matrix
+        Matrix.translateM(scaleMatrix, 0, this.moveX, this.moveY, 0.0f);
 
-        float proportion = angleAbsolute * 0.5f / 90;
-        Log.d("debugg", proportion + "");
-        // Rescale in order to maintain the proportion
-        //Matrix.scaleM(scaleMatrix, 0, 0.75f, 1f, 0);
-        Matrix.multiplyMM(intermediate2, 0, scaleMatrix, 0, rotationMatrix, 0);
+        // Calculate scale rotation matrix
+        Matrix.multiplyMM(rotationScaleMatrix, 0, scaleMatrix, 0, rotationMatrix, 0);
+
         // Calculate the projection and view transformation
-        Matrix.multiplyMM(intermediate, 0, projectionMatrix, 0, viewMatrix, 0);
-        Matrix.multiplyMM(this.resultMatrix, 0, intermediate, 0, intermediate2, 0);
+        Matrix.multiplyMM(projectionViewMatrix, 0, projectionMatrix, 0, viewMatrix, 0);
+
+        // Result matrix
+        Matrix.multiplyMM(this.resultMatrix, 0, projectionViewMatrix, 0, rotationScaleMatrix, 0);
     }
 
     public synchronized void modifyScaleFactor(float scaleFactor) {
@@ -114,7 +111,7 @@ public class RosRenderer implements GLSurfaceView.Renderer {
 
     public synchronized void modifyMoveValues(float moveX, float moveY){
         this.moveX += moveX * 2 / this.scaleFactor;
-        this.moveY += moveY * 2 / this.scaleFactor;
+        this.moveY += moveY * 4 / this.scaleFactor;
         this.updateViewMatrix();
     }
 
