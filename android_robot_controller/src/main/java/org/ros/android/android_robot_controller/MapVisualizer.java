@@ -4,7 +4,7 @@ import android.opengl.GLES30;
 import android.util.Log;
 
 import org.jboss.netty.buffer.ChannelBuffer;
-import org.ros.android.android_robot_controller.OpenGL.Renderes.MapRenderer;
+import org.ros.android.android_robot_controller.OpenGL.Renderes.RosRenderer;
 import org.ros.message.MessageListener;
 import org.ros.namespace.GraphName;
 import org.ros.node.AbstractNodeMain;
@@ -14,13 +14,12 @@ import org.ros.node.topic.Subscriber;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.nio.FloatBuffer;
-import java.nio.ShortBuffer;
 
 import nav_msgs.OccupancyGrid;
 
-public class MapSquare extends AbstractNodeMain {
+public class MapVisualizer extends AbstractNodeMain {
 
-    static private MapSquare instance;
+    static private MapVisualizer instance;
 
     // This variable indicates if the map texture is updated
     private boolean mapUpdate = false;
@@ -72,7 +71,7 @@ public class MapSquare extends AbstractNodeMain {
                     "  gl_FragColor = texture2D(Texture, TexCoordinate);" +
                     "}";
 
-    private MapSquare() {
+    private MapVisualizer() {
         this.textureBuffer.position(0);
         // Initialize vertex byte buffer for shape coordinates
         ByteBuffer bb = ByteBuffer.allocateDirect(
@@ -92,8 +91,8 @@ public class MapSquare extends AbstractNodeMain {
         this.vertexTextureBuffer.position(0);
 
         // Compile the shaders
-        int vertexShader = MapRenderer.loadShader(GLES30.GL_VERTEX_SHADER, vertexShaderCode);
-        int fragmentShader = MapRenderer.loadShader(GLES30.GL_FRAGMENT_SHADER, fragmentShaderCode);
+        int vertexShader = RosRenderer.loadShader(GLES30.GL_VERTEX_SHADER, vertexShaderCode);
+        int fragmentShader = RosRenderer.loadShader(GLES30.GL_FRAGMENT_SHADER, fragmentShaderCode);
 
         // Create empty OpenGL ES Program
         this.openGLProgram = GLES30.glCreateProgram();
@@ -142,9 +141,9 @@ public class MapSquare extends AbstractNodeMain {
 
     }
 
-    public static MapSquare getInstance(){
+    public static MapVisualizer getInstance(){
         if(instance == null)
-            instance = new MapSquare();
+            instance = new MapVisualizer();
         return instance;
     }
 

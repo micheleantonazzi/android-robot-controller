@@ -3,25 +3,24 @@ package org.ros.android.android_robot_controller.OpenGL.Views;
 import android.content.Context;
 import android.opengl.GLSurfaceView;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.MotionEvent;
 import android.view.ScaleGestureDetector;
 
-import org.ros.android.android_robot_controller.OpenGL.Renderes.MapRenderer;
+import org.ros.android.android_robot_controller.OpenGL.Renderes.RosRenderer;
 
-public class OpenGLViewMap extends GLSurfaceView {
+public class RosOpenGLView extends GLSurfaceView {
 
     // This variable is true as long as all fingers leave the screen after a multitouch action
     private boolean multiTouchInProgress = false;
 
-    private MapRenderer renderer;
+    private RosRenderer renderer;
     private ScaleGestureDetector scaleGestureDetector;
 
     private float oldX, oldY;
 
     private void init(Context context) {
         this.setEGLContextClientVersion(3);
-        this.renderer = new MapRenderer();
+        this.renderer = new RosRenderer();
         this.setRenderer(this.renderer);
 
         this.scaleGestureDetector = new ScaleGestureDetector(context,
@@ -34,12 +33,12 @@ public class OpenGLViewMap extends GLSurfaceView {
                 });
     }
 
-    public OpenGLViewMap(Context context) {
+    public RosOpenGLView(Context context) {
         super(context);
         init(context);
     }
 
-    public OpenGLViewMap(Context context, AttributeSet attrs){
+    public RosOpenGLView(Context context, AttributeSet attrs){
         super(context, attrs);
         init(context);
     }

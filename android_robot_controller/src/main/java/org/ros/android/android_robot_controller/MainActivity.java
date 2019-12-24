@@ -17,23 +17,15 @@
 package org.ros.android.android_robot_controller;
 
 import android.os.Bundle;
-import android.util.Log;
 
 import org.ros.android.RosActivity;
-import org.ros.android.android_robot_controller.OpenGL.Views.OpenGLViewMap;
-import org.ros.message.MessageListener;
-import org.ros.namespace.GraphName;
-import org.ros.node.AbstractNodeMain;
-import org.ros.node.ConnectedNode;
+import org.ros.android.android_robot_controller.OpenGL.Views.RosOpenGLView;
 import org.ros.node.NodeConfiguration;
 import org.ros.node.NodeMainExecutor;
-import org.ros.node.topic.Subscriber;
-
-import nav_msgs.OccupancyGrid;
 
 public class MainActivity extends RosActivity {
 
-    private OpenGLViewMap openGLViewMap;
+    private RosOpenGLView rosOpenGLView;
 
     public MainActivity() {
         // The RosActivity constructor configures the notification title and ticker
@@ -48,7 +40,7 @@ public class MainActivity extends RosActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.main);
 
-        openGLViewMap = (OpenGLViewMap) findViewById(R.id.OpenGLViewMap);
+        rosOpenGLView = (RosOpenGLView) findViewById(R.id.RosOpenGLView);
 
     }
 
@@ -68,7 +60,7 @@ public class MainActivity extends RosActivity {
     protected void init(NodeMainExecutor nodeMainExecutor) {
         NodeConfiguration nodeConfiguration = NodeConfiguration.newPublic(getRosHostname());
         nodeConfiguration.setMasterUri(getMasterUri());
-        nodeMainExecutor.execute(MapSquare.getInstance(), nodeConfiguration);
+        nodeMainExecutor.execute(MapVisualizer.getInstance(), nodeConfiguration);
 
     }
 }

@@ -3,12 +3,12 @@ package org.ros.android.android_robot_controller.OpenGL.Renderes;
 import android.opengl.GLES30;
 import android.opengl.GLSurfaceView;
 import android.opengl.Matrix;
-import org.ros.android.android_robot_controller.MapSquare;
+import org.ros.android.android_robot_controller.MapVisualizer;
 
 import javax.microedition.khronos.egl.EGLConfig;
 import javax.microedition.khronos.opengles.GL10;
 
-public class MapRenderer implements GLSurfaceView.Renderer {
+public class RosRenderer implements GLSurfaceView.Renderer {
 
     // Variables to move the map
     private float scaleFactor = 1;
@@ -32,7 +32,7 @@ public class MapRenderer implements GLSurfaceView.Renderer {
         return shader;
     }
 
-    public MapRenderer() {
+    public RosRenderer() {
         Matrix.setIdentityM(this.viewMatrix, 0);
     }
 
@@ -50,7 +50,7 @@ public class MapRenderer implements GLSurfaceView.Renderer {
     public void onDrawFrame(GL10 gl) {
         GLES30.glClear(GLES30.GL_COLOR_BUFFER_BIT);
         synchronized (this) {
-            MapSquare.getInstance().draw(this.viewMatrix);
+            MapVisualizer.getInstance().draw(this.viewMatrix);
         }
     }
 
