@@ -1,11 +1,11 @@
 package org.ros.android.android_robot_controller.OpenGL.Renderes;
 
-import android.opengl.GLES10;
 import android.opengl.GLES30;
 import android.opengl.GLSurfaceView;
 import android.opengl.Matrix;
 
-import org.ros.android.android_robot_controller.MapVisualizer;
+import org.ros.android.android_robot_controller.OpenGL.Visualizers.MapVisualizer;
+import org.ros.android.android_robot_controller.OpenGL.Visualizers.PoseVisualizer;
 import org.ros.node.AbstractNodeMain;
 
 import java.util.Arrays;
@@ -17,6 +17,7 @@ import javax.microedition.khronos.opengles.GL10;
 public class RosRenderer implements GLSurfaceView.Renderer {
 
     private MapVisualizer mapVisualizer;
+    private PoseVisualizer poseVisualizer;
 
     // Variables to move the map
     private float scaleFactor = 1;
@@ -51,6 +52,7 @@ public class RosRenderer implements GLSurfaceView.Renderer {
     public void onSurfaceCreated(GL10 gl, EGLConfig config) {
         GLES30.glClearColor(0, 0, 0, 1);
         this.mapVisualizer = new MapVisualizer();
+        this.poseVisualizer = new PoseVisualizer();
     }
 
     @Override
@@ -66,7 +68,8 @@ public class RosRenderer implements GLSurfaceView.Renderer {
         GLES30.glClear(GLES30.GL_COLOR_BUFFER_BIT);
 
         synchronized (this) {
-            mapVisualizer.draw(this.resultMatrix.clone());
+            this.mapVisualizer.draw(this.resultMatrix.clone());
+            this.poseVisualizer.draw(this.resultMatrix.clone());
         }
 
     }
@@ -121,6 +124,6 @@ public class RosRenderer implements GLSurfaceView.Renderer {
     }
 
     public List<AbstractNodeMain> getVisualizer(){
-        return Arrays.asList((AbstractNodeMain) this.mapVisualizer);
+        return Arrays.asList(this.mapVisualizer, this.poseVisualizer);
     }
 }

@@ -58,6 +58,7 @@ public class RosOpenGLView extends GLSurfaceView {
 
             }
         });
+        setRenderMode(GLSurfaceView.RENDERMODE_CONTINUOUSLY);
     }
 
     public RosOpenGLView(Context context) {

@@ -1,8 +1,7 @@
-package org.ros.android.android_robot_controller;
+package org.ros.android.android_robot_controller.OpenGL.Visualizers;
 
 import android.opengl.GLES30;
 import android.opengl.Matrix;
-import android.util.Log;
 
 import org.jboss.netty.buffer.ChannelBuffer;
 import org.ros.android.android_robot_controller.OpenGL.Renderes.RosRenderer;
@@ -27,7 +26,7 @@ public class MapVisualizer extends AbstractNodeMain {
 
     private int openGLProgram;
 
-    private int positionHandle;
+    private int vertexHandle;
     private int textureVertexHandle;
     private int textureHandle;
     private int colorHandle;
@@ -79,6 +78,7 @@ public class MapVisualizer extends AbstractNodeMain {
         Matrix.scaleM(this.scaleMatrix, 0, 1.0f, 0.5f, 1.0f);
 
         this.textureBuffer.position(0);
+
         // Initialize vertex byte buffer for shape coordinates
         ByteBuffer bb = ByteBuffer.allocateDirect(
                 this.rectangleCoordinates.length * 4); // 4 is float's length
@@ -112,11 +112,11 @@ public class MapVisualizer extends AbstractNodeMain {
         GLES30.glLinkProgram(this.openGLProgram);
 
         // VERTEX
-        this.positionHandle = GLES30.glGetAttribLocation(this.openGLProgram, "vPosition");
-        GLES30.glVertexAttribPointer(this.positionHandle, 3,
+        this.vertexHandle = GLES30.glGetAttribLocation(this.openGLProgram, "vPosition");
+        GLES30.glVertexAttribPointer(this.vertexHandle, 3,
                 GLES30.GL_FLOAT, false,
                 3 * 4, this.vertexBuffer);
-        GLES30.glEnableVertexAttribArray(this.positionHandle);
+        GLES30.glEnableVertexAttribArray(this.vertexHandle);
 
         // TEXTURE VERTEX
         this.textureVertexHandle = GLES30.glGetAttribLocation(this.openGLProgram, "tPosition");
@@ -136,6 +136,7 @@ public class MapVisualizer extends AbstractNodeMain {
         GLES30.glTexParameteri(GLES30.GL_TEXTURE_2D, GLES30.GL_TEXTURE_WRAP_T, GLES30.GL_REPEAT);
         GLES30.glTexParameteri(GLES30.GL_TEXTURE_2D, GLES30.GL_TEXTURE_MIN_FILTER, GLES30.GL_NEAREST);
         GLES30.glTexParameteri(GLES30.GL_TEXTURE_2D, GLES30.GL_TEXTURE_MAG_FILTER, GLES30.GL_NEAREST);
+
     }
 
     private synchronized void setBufferData(ByteBuffer textureBuffer, int textureDim){
@@ -146,6 +147,19 @@ public class MapVisualizer extends AbstractNodeMain {
     }
 
     public synchronized void draw(float[] mvpMatrix) {
+        // VERTEX
+        this.vertexHandle = GLES30.glGetAttribLocation(this.openGLProgram, "vPosition");
+        GLES30.glVertexAttribPointer(this.vertexHandle, 3,
+                GLES30.GL_FLOAT, false,
+                3 * 4, this.vertexBuffer);
+        GLES30.glEnableVertexAttribArray(this.vertexHandle);
+
+        // TEXTURE VERTEX
+        this.textureVertexHandle = GLES30.glGetAttribLocation(this.openGLProgram, "tPosition");
+        GLES30.glVertexAttribPointer(this.textureVertexHandle, 2,
+                GLES30.GL_FLOAT, false,
+                2 * 4, this.vertexTextureBuffer);
+        GLES30.glEnableVertexAttribArray(this.textureVertexHandle);
 
         Matrix.multiplyMM(mvpMatrix, 0, this.scaleMatrix, 0, mvpMatrix, 0);
         // Add program to OpenGL ES environment
@@ -180,6 +194,7 @@ public class MapVisualizer extends AbstractNodeMain {
         GLES30.glDrawArrays(
                 GLES30.GL_TRIANGLE_STRIP, 0, 4);
 
+
     }
 
     @Override
@@ -193,7 +208,6 @@ public class MapVisualizer extends AbstractNodeMain {
         subscriber.addMessageListener(new MessageListener<OccupancyGrid>() {
             @Override
             public void onNewMessage (nav_msgs.OccupancyGrid message){
-                Log.d("debugg", "new Map");
 
                 int mapWidth = message.getInfo().getWidth();
 

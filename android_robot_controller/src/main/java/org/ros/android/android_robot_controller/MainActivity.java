@@ -63,7 +63,8 @@ public class MainActivity extends RosActivity {
         nodeConfiguration.setMasterUri(getMasterUri());
 
         for(AbstractNodeMain node : this.rosOpenGLView.getVisualizer()){
-            nodeMainExecutor.execute(node, nodeConfiguration);
+            if(node != null)
+                nodeMainExecutor.execute(node, nodeConfiguration);
         }
     }
 }
