@@ -27,6 +27,7 @@ public class RosRenderer implements GLSurfaceView.Renderer {
 
     private float[] resultMatrix = new float[16];
     private float[] projectionMatrix= new float[16];
+    private float ratio = 1;
 
     // This method compiles the OpenGL Shading Language
     // Create a vertex shader type (GLES30.GL_VERTEX_SHADER)
@@ -53,14 +54,18 @@ public class RosRenderer implements GLSurfaceView.Renderer {
         GLES30.glClearColor(0, 0, 0, 1);
         this.mapVisualizer = new MapVisualizer();
         this.poseVisualizer = new PoseVisualizer();
+
     }
 
     @Override
     public void onSurfaceChanged(GL10 gl, int width, int height) {
+        GLES30.glViewport(0, 0, width, height);
+
+        this.ratio = (float) height / width;
 
         // this projection matrix is applied to object coordinates
         // in the onDrawFrame() method
-        Matrix.frustumM(projectionMatrix, 0, -1, 1, -1f, 1f, 1f, 7);
+        Matrix.frustumM(projectionMatrix, 0, -1, 1, -ratio, ratio, 1f, 7);
     }
 
     @Override
@@ -95,7 +100,7 @@ public class RosRenderer implements GLSurfaceView.Renderer {
         Matrix.scaleM(scaleMatrix, 0, this.scaleFactor, this.scaleFactor, 1.0f);
 
         // Translate scale matrix
-        Matrix.translateM(scaleMatrix, 0, this.moveX, this.moveY, 0.0f);
+        Matrix.translateM(scaleMatrix, 0, this.moveX, this.moveY * this.ratio, 0.0f);
 
         // Calculate scale rotation matrix
         Matrix.multiplyMM(rotationScaleMatrix, 0, scaleMatrix, 0, rotationMatrix, 0);
@@ -114,7 +119,7 @@ public class RosRenderer implements GLSurfaceView.Renderer {
 
     public synchronized void modifyMoveValues(float moveX, float moveY){
         this.moveX += moveX * 2 / this.scaleFactor;
-        this.moveY += moveY * 4 / this.scaleFactor;
+        this.moveY += moveY * 2 / this.scaleFactor;
         this.updateViewMatrix();
     }
 
