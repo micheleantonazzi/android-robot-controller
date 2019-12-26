@@ -14,8 +14,10 @@ import org.ros.node.topic.Subscriber;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.nio.FloatBuffer;
+import java.util.List;
 
 import geometry_msgs.Quaternion;
+import geometry_msgs.TransformStamped;
 
 public class PoseVisualizer extends AbstractNodeMain {
 
@@ -122,17 +124,24 @@ public class PoseVisualizer extends AbstractNodeMain {
 
     @Override
     public void onStart(ConnectedNode connectedNode) {
-        Subscriber<geometry_msgs.PoseWithCovarianceStamped> subscriber = connectedNode.newSubscriber("amcl_pose", geometry_msgs.PoseWithCovarianceStamped._TYPE);
-        subscriber.addMessageListener(new MessageListener<geometry_msgs.PoseWithCovarianceStamped>() {
+        Subscriber<tf2_msgs.TFMessage> subscriber = connectedNode.newSubscriber("tf", tf2_msgs.TFMessage._TYPE);
+        subscriber.addMessageListener(new MessageListener<tf2_msgs.TFMessage>() {
             @Override
-            public void onNewMessage (geometry_msgs.PoseWithCovarianceStamped message){
+            public void onNewMessage (tf2_msgs.TFMessage message){
 
-                Quaternion q =  message.getPose().getPose().getOrientation();
-                double siny_cosp = 2 * (q.getW() * q.getZ() + q.getX() * q.getY());
-                double cosy_cosp = 1 - 2 * (q.getY() * q.getY() + q.getZ() * q.getZ());
-                float theta = (float) Math.atan2(siny_cosp, cosy_cosp);
-                rotationAngle = theta * 180f / (float) Math.PI ;
+                // Set rotation
 
+                for(TransformStamped transform : message.getTransforms()){
+                    if(transform.getChildFrameId().equals("base_footprint")){
+                        Quaternion q =  transform.getTransform().getRotation();
+                        double siny_cosp = 2 * (q.getW() * q.getZ() + q.getX() * q.getY());
+                        double cosy_cosp = 1 - 2 * (q.getY() * q.getY() + q.getZ() * q.getZ());
+                        float theta = (float) Math.atan2(siny_cosp, cosy_cosp);
+                        rotationAngle = theta * 180f / (float) Math.PI ;
+
+                        break;
+                    }
+                }
             }
         });
     }
