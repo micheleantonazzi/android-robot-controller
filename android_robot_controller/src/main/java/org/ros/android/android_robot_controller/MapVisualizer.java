@@ -1,7 +1,7 @@
 package org.ros.android.android_robot_controller;
 
-import android.opengl.GLES10;
 import android.opengl.GLES30;
+import android.opengl.Matrix;
 import android.util.Log;
 
 import org.jboss.netty.buffer.ChannelBuffer;
@@ -20,8 +20,8 @@ import nav_msgs.OccupancyGrid;
 
 public class MapVisualizer extends AbstractNodeMain {
 
-    static private MapVisualizer instance;
-
+    // Map visualizer is a square not a rectangle
+    float [] scaleMatrix;
     // This variable indicates if the map texture is updated
     private boolean mapUpdate = false;
 
@@ -73,6 +73,11 @@ public class MapVisualizer extends AbstractNodeMain {
                     "}";
 
     public MapVisualizer() {
+
+        this.scaleMatrix = new float[16];
+        Matrix.setIdentityM(this.scaleMatrix, 0);
+        Matrix.scaleM(this.scaleMatrix, 0, 1.0f, 0.5f, 1.0f);
+
         this.textureBuffer.position(0);
         // Initialize vertex byte buffer for shape coordinates
         ByteBuffer bb = ByteBuffer.allocateDirect(
@@ -142,6 +147,7 @@ public class MapVisualizer extends AbstractNodeMain {
 
     public synchronized void draw(float[] mvpMatrix) {
 
+        Matrix.multiplyMM(mvpMatrix, 0, this.scaleMatrix, 0, mvpMatrix, 0);
         // Add program to OpenGL ES environment
         GLES30.glUseProgram(this.openGLProgram);
 

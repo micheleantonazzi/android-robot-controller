@@ -66,7 +66,7 @@ public class RosRenderer implements GLSurfaceView.Renderer {
         GLES30.glClear(GLES30.GL_COLOR_BUFFER_BIT);
 
         synchronized (this) {
-            mapVisualizer.draw(this.resultMatrix);
+            mapVisualizer.draw(this.resultMatrix.clone());
         }
 
     }
@@ -89,7 +89,7 @@ public class RosRenderer implements GLSurfaceView.Renderer {
 
         // Set scale matrix
         Matrix.setIdentityM(scaleMatrix, 0);
-        Matrix.scaleM(scaleMatrix, 0, this.scaleFactor, this.scaleFactor * 0.5f, 1.0f);
+        Matrix.scaleM(scaleMatrix, 0, this.scaleFactor, this.scaleFactor, 1.0f);
 
         // Translate scale matrix
         Matrix.translateM(scaleMatrix, 0, this.moveX, this.moveY, 0.0f);
