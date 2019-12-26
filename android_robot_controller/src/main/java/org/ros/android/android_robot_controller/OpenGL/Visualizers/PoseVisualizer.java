@@ -15,9 +15,14 @@ import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.nio.FloatBuffer;
 
+import geometry_msgs.Quaternion;
+
 public class PoseVisualizer extends AbstractNodeMain {
 
-    float[] scaleMatrix;
+    float positionX = 0;
+    float positionY = 0;
+    float rotationAngle = 0;
+
     private int openGLProgram;
 
     private int vertexHandle;
@@ -47,10 +52,6 @@ public class PoseVisualizer extends AbstractNodeMain {
 
     public PoseVisualizer(){
 
-        this.scaleMatrix = new float[16];
-        Matrix.setIdentityM(this.scaleMatrix, 0);
-        Matrix.scaleM(this.scaleMatrix, 0, 0.2f, 0.2f, 1.0f);
-
         // Create the vertex buffer
         ByteBuffer bb = ByteBuffer.allocateDirect(
                 this.arrowCoordinates.length * 4); // 4 is float's length
@@ -77,12 +78,12 @@ public class PoseVisualizer extends AbstractNodeMain {
 
     }
 
-    public synchronized void draw(float[] mvpMatrix) {
+    public synchronized void draw(float[] resultMatrix) {
 
-        //Matrix.translateM(this.scaleMatrix, 0, 1/ 0.2f, 1/0.2f, 1);
-
-        Matrix.multiplyMM(mvpMatrix, 0, this.scaleMatrix, 0, mvpMatrix, 0);
-        //Matrix.translateM(this.scaleMatrix, 0, 0.2f, 0.2f, 1);
+        // Set robot position and scale
+        Matrix.translateM(resultMatrix, 0, this.positionX, this.positionY, 0);
+        Matrix.rotateM(resultMatrix, 0, this.rotationAngle, 0, 0, 1);
+        Matrix.scaleM(resultMatrix, 0, 0.027f , 0.027f, 1.0f);
 
         // VERTEX
         this.vertexHandle = GLES30.glGetAttribLocation(this.openGLProgram, "vPosition");
@@ -98,7 +99,7 @@ public class PoseVisualizer extends AbstractNodeMain {
         int vPMatrixHandle = GLES30.glGetUniformLocation(this.openGLProgram, "uMVPMatrix");
 
         // Pass the projection and view transformation to the shader
-        GLES30.glUniformMatrix4fv(vPMatrixHandle, 1, false, mvpMatrix, 0);
+        GLES30.glUniformMatrix4fv(vPMatrixHandle, 1, false, resultMatrix, 0);
 
         // Get handle to fragment shader's vColor member
         colorHandle = GLES30.glGetUniformLocation(this.openGLProgram, "vColor");
@@ -125,7 +126,12 @@ public class PoseVisualizer extends AbstractNodeMain {
         subscriber.addMessageListener(new MessageListener<geometry_msgs.PoseWithCovarianceStamped>() {
             @Override
             public void onNewMessage (geometry_msgs.PoseWithCovarianceStamped message){
-                Log.d("debugg", "new pose");
+
+                Quaternion q =  message.getPose().getPose().getOrientation();
+                double siny_cosp = 2 * (q.getW() * q.getZ() + q.getX() * q.getY());
+                double cosy_cosp = 1 - 2 * (q.getY() * q.getY() + q.getZ() * q.getZ());
+                float theta = (float) Math.atan2(siny_cosp, cosy_cosp);
+                rotationAngle = theta * 180f / (float) Math.PI ;
 
             }
         });
