@@ -2,7 +2,6 @@ package org.ros.android.android_robot_controller.OpenGL.Visualizers;
 
 import android.opengl.GLES30;
 import android.opengl.Matrix;
-import android.util.Log;
 
 import org.ros.android.android_robot_controller.OpenGL.Renderes.RosRenderer;
 import org.ros.message.MessageListener;
@@ -10,17 +9,19 @@ import org.ros.namespace.GraphName;
 import org.ros.node.AbstractNodeMain;
 import org.ros.node.ConnectedNode;
 import org.ros.node.topic.Subscriber;
+import org.ros.rosjava_geometry.FrameTransform;
+import org.ros.rosjava_geometry.FrameTransformTree;
+import org.ros.rosjava_geometry.Quaternion;
 
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.nio.FloatBuffer;
-import java.util.List;
-
-import geometry_msgs.Quaternion;
 import geometry_msgs.TransformStamped;
 
 public class PoseVisualizer extends AbstractNodeMain {
 
+    float mapDimension = 1;
+    float mapResolution = 1;
     float positionX = 0;
     float positionY = 0;
     float rotationAngle = 0;
@@ -85,7 +86,7 @@ public class PoseVisualizer extends AbstractNodeMain {
         // Set robot position and scale
         Matrix.translateM(resultMatrix, 0, this.positionX, this.positionY, 0);
         Matrix.rotateM(resultMatrix, 0, this.rotationAngle, 0, 0, 1);
-        Matrix.scaleM(resultMatrix, 0, 0.027f , 0.027f, 1.0f);
+        Matrix.scaleM(resultMatrix, 0, 0.017f , 0.017f, 1.0f);
 
         // VERTEX
         this.vertexHandle = GLES30.glGetAttribLocation(this.openGLProgram, "vPosition");
@@ -117,31 +118,56 @@ public class PoseVisualizer extends AbstractNodeMain {
 
     }
 
+    private synchronized void setMapMetaData(float mapDimension, float mapResolution){
+        this.mapDimension = mapDimension;
+        this.mapResolution = mapResolution;
+    }
+
+    private synchronized void setPositions(float positionX, float positionY){
+        this.positionX = -(positionY / (this.mapDimension * this.mapResolution / 2f)) - (10f / 384f) *2f;
+        this.positionY = (positionX / (this.mapDimension * this.mapResolution / 2f)) + (10f / 384f) *2f;
+    }
+
     @Override
     public GraphName getDefaultNodeName() {
         return GraphName.of("android_robot_controller/node_pose_reader");
     }
 
+    FrameTransformTree transformTree = new FrameTransformTree();
+
     @Override
     public void onStart(ConnectedNode connectedNode) {
-        Subscriber<tf2_msgs.TFMessage> subscriber = connectedNode.newSubscriber("tf", tf2_msgs.TFMessage._TYPE);
-        subscriber.addMessageListener(new MessageListener<tf2_msgs.TFMessage>() {
+
+        Subscriber<tf2_msgs.TFMessage> subscriberTF = connectedNode.newSubscriber("tf", tf2_msgs.TFMessage._TYPE);
+        subscriberTF.addMessageListener(new MessageListener<tf2_msgs.TFMessage>() {
             @Override
             public void onNewMessage (tf2_msgs.TFMessage message){
-
                 // Set rotation
-
                 for(TransformStamped transform : message.getTransforms()){
-                    if(transform.getChildFrameId().equals("base_footprint")){
-                        Quaternion q =  transform.getTransform().getRotation();
-                        double siny_cosp = 2 * (q.getW() * q.getZ() + q.getX() * q.getY());
-                        double cosy_cosp = 1 - 2 * (q.getY() * q.getY() + q.getZ() * q.getZ());
-                        float theta = (float) Math.atan2(siny_cosp, cosy_cosp);
-                        rotationAngle = theta * 180f / (float) Math.PI ;
 
-                        break;
+                    transformTree.update(transform);
+                    if(transform.getChildFrameId().equals("base_footprint")){
+                        FrameTransform frameTransform = transformTree.transform(GraphName.of("base_footprint"), GraphName.of("map"));
+                        if(frameTransform != null){
+                            Quaternion q =  frameTransform.getTransform().getRotationAndScale();
+                            double siny_cosp = 2 * (q.getW() * q.getZ() + q.getX() * q.getY());
+                            double cosy_cosp = 1 - 2 * (q.getY() * q.getY() + q.getZ() * q.getZ());
+                            float theta = (float) Math.atan2(siny_cosp, cosy_cosp);
+                            rotationAngle = theta * 180f / (float) Math.PI ;
+
+                            setPositions((float)frameTransform.getTransform().getTranslation().getX(),
+                                    (float) frameTransform.getTransform().getTranslation().getY());
+                        }
                     }
                 }
+            }
+        });
+
+        Subscriber<nav_msgs.MapMetaData> subscriberMapMetaData = connectedNode.newSubscriber("map_metadata", nav_msgs.MapMetaData._TYPE);
+        subscriberMapMetaData.addMessageListener(new MessageListener<nav_msgs.MapMetaData>() {
+            @Override
+            public void onNewMessage (nav_msgs.MapMetaData message){
+                setMapMetaData(message.getHeight(), message.getResolution());
             }
         });
     }

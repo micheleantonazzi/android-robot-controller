@@ -2,6 +2,7 @@ package org.ros.android.android_robot_controller.OpenGL.Visualizers;
 
 import android.opengl.GLES30;
 import android.opengl.Matrix;
+import android.util.Log;
 
 import org.jboss.netty.buffer.ChannelBuffer;
 import org.ros.android.android_robot_controller.OpenGL.Renderes.RosRenderer;
