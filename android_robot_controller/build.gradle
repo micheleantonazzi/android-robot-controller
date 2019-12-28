@@ -36,13 +36,18 @@ allprojects {
 apply plugin: 'com.android.application'
 
 android {
-  compileSdkVersion 28
+  compileSdkVersion 29
 
   defaultConfig {
-    minSdkVersion 16
+    minSdkVersion 23
     applicationId "org.ros.android.android_robot_controller"
-    targetSdkVersion 28
+    targetSdkVersion 29
     versionCode 1
     versionName "1.0"
   }
+    compileOptions {
+        sourceCompatibility = 1.8
+        targetCompatibility = 1.8
+    }
+    buildToolsVersion = '29.0.2'
 }
