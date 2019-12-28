@@ -17,6 +17,7 @@
 package org.ros.android.android_robot_controller;
 
 import android.os.Bundle;
+import android.util.Log;
 
 import org.ros.android.RosActivity;
 import org.ros.android.android_robot_controller.OpenGL.Views.RosOpenGLView;
@@ -32,7 +33,6 @@ public class MainActivity extends RosActivity {
         // The RosActivity constructor configures the notification title and ticker
         // messages.
         super("Robot controller", "Robot controller");
-
     }
 
     @SuppressWarnings("unchecked")
