@@ -21,15 +21,13 @@ import android.app.FragmentTransaction;
 import android.os.Bundle;
 
 import org.ros.android.RosActivity;
-import org.ros.android.android_robot_controller.OpenGL.Views.RosOpenGLView;
 import org.ros.android.android_robot_controller.fragments.FragmentMap;
-import org.ros.node.AbstractNodeMain;
 import org.ros.node.NodeConfiguration;
 import org.ros.node.NodeMainExecutor;
 
 public class MainActivity extends RosActivity {
 
-    private RosOpenGLView rosOpenGLView;
+    private FragmentMap fragmentMap;
 
     private NodeMainExecutor nodeMainExecutor;
     private NodeConfiguration nodeConfiguration;
@@ -46,13 +44,12 @@ public class MainActivity extends RosActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.main);
 
-        rosOpenGLView = (RosOpenGLView) findViewById(R.id.RosOpenGLView);
-
         FragmentManager fragmentManager = getFragmentManager();
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-        FragmentMap fragmentMap = new FragmentMap();
+        this.fragmentMap = new FragmentMap();
         fragmentTransaction.add(R.id.layout, fragmentMap);
         fragmentTransaction.commit();
+
     }
 
     @Override
@@ -72,11 +69,7 @@ public class MainActivity extends RosActivity {
         this.nodeConfiguration = NodeConfiguration.newPublic(getRosHostname());
         this.nodeConfiguration.setMasterUri(getMasterUri());
 
-        for(AbstractNodeMain node : this.rosOpenGLView.getVisualizer()){
-            if(node != null)
-                nodeMainExecutor.execute(node, this.nodeConfiguration);
-        }
-
         this.nodeMainExecutor = nodeMainExecutor;
+        fragmentMap.setNodeExecutor(this.nodeMainExecutor, nodeConfiguration);
     }
 }

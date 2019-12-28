@@ -3,11 +3,4 @@
     android:id="@+id/layout"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
-    android:orientation="vertical">
-
-    <org.ros.android.android_robot_controller.OpenGL.Views.RosOpenGLView
-        android:id="@+id/RosOpenGLView"
-        android:layout_width="match_parent"
-        android:layout_height="362dp" />
-
-</LinearLayout>
+    android:orientation="vertical"/>
