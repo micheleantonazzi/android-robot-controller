@@ -128,7 +128,7 @@ public class RosRenderer implements GLSurfaceView.Renderer {
         this.updateViewMatrix();
     }
 
-    public List<AbstractNodeMain> getVisualizer(){
+    public List<AbstractNodeMain> getVisualizers(){
         return Arrays.asList(this.mapVisualizer, this.poseVisualizer);
     }
 }
