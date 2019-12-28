@@ -2,6 +2,7 @@ package org.ros.android.android_robot_controller.OpenGL.Visualizers;
 
 import android.opengl.GLES30;
 import android.opengl.Matrix;
+import android.util.Log;
 
 import org.ros.android.android_robot_controller.OpenGL.Renderes.RosRenderer;
 import org.ros.message.MessageListener;
@@ -22,6 +23,8 @@ public class PoseVisualizer extends AbstractNodeMain {
 
     float mapDimension = 1;
     float mapResolution = 1;
+    float mapOriginX = 1;
+    float mapOriginY = 1;
     float positionX = 0;
     float positionY = 0;
     float rotationAngle = 0;
@@ -118,14 +121,17 @@ public class PoseVisualizer extends AbstractNodeMain {
 
     }
 
-    private synchronized void setMapMetaData(float mapDimension, float mapResolution){
+    private synchronized void setMapMetaData(float mapDimension, float mapResolution, float mapOriginX, float mapOriginY){
         this.mapDimension = mapDimension;
         this.mapResolution = mapResolution;
+        this.mapOriginX = mapOriginX;
+        this.mapOriginY = mapOriginY;
     }
 
     private synchronized void setPositions(float positionX, float positionY){
-        this.positionX = -(positionY / (this.mapDimension * this.mapResolution / 2f)) - (10f / 384f) *2f;
-        this.positionY = (positionX / (this.mapDimension * this.mapResolution / 2f)) + (10f / 384f) *2f;
+        this.positionX = -(positionY / (this.mapDimension * this.mapResolution / 2f)) + (this.mapOriginY / this.mapDimension);
+        this.positionY = (positionX / (this.mapDimension * this.mapResolution / 2f)) - (this.mapOriginX / this.mapDimension);
+
     }
 
     @Override
@@ -146,19 +152,19 @@ public class PoseVisualizer extends AbstractNodeMain {
                 for(TransformStamped transform : message.getTransforms()){
 
                     transformTree.update(transform);
-                    if(transform.getChildFrameId().equals("base_footprint")){
-                        FrameTransform frameTransform = transformTree.transform(GraphName.of("base_footprint"), GraphName.of("map"));
-                        if(frameTransform != null){
-                            Quaternion q =  frameTransform.getTransform().getRotationAndScale();
-                            double siny_cosp = 2 * (q.getW() * q.getZ() + q.getX() * q.getY());
-                            double cosy_cosp = 1 - 2 * (q.getY() * q.getY() + q.getZ() * q.getZ());
-                            float theta = (float) Math.atan2(siny_cosp, cosy_cosp);
-                            rotationAngle = theta * 180f / (float) Math.PI ;
 
-                            setPositions((float)frameTransform.getTransform().getTranslation().getX(),
-                                    (float) frameTransform.getTransform().getTranslation().getY());
-                        }
-                    }
+                }
+
+                FrameTransform frameTransform = transformTree.transform(GraphName.of("base_footprint"), GraphName.of("map"));
+                if(frameTransform != null){
+                    Quaternion q =  frameTransform.getTransform().getRotationAndScale();
+                    double siny_cosp = 2 * (q.getW() * q.getZ() + q.getX() * q.getY());
+                    double cosy_cosp = 1 - 2 * (q.getY() * q.getY() + q.getZ() * q.getZ());
+                    float theta = (float) Math.atan2(siny_cosp, cosy_cosp);
+                    rotationAngle = theta * 180f / (float) Math.PI ;
+
+                    setPositions((float)frameTransform.getTransform().getTranslation().getX(),
+                            (float) frameTransform.getTransform().getTranslation().getY());
                 }
             }
         });
@@ -167,7 +173,9 @@ public class PoseVisualizer extends AbstractNodeMain {
         subscriberMapMetaData.addMessageListener(new MessageListener<nav_msgs.MapMetaData>() {
             @Override
             public void onNewMessage (nav_msgs.MapMetaData message){
-                setMapMetaData(message.getHeight(), message.getResolution());
+                setMapMetaData(message.getHeight(), message.getResolution(),
+                        (float) message.getOrigin().getPosition().getX(),
+                        (float) message.getOrigin().getPosition().getY());
             }
         });
     }
