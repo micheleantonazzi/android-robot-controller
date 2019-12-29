@@ -59,7 +59,6 @@ public class RosRenderer implements GLSurfaceView.Renderer {
 
     @Override
     public void onSurfaceChanged(GL10 gl, int width, int height) {
-        GLES30.glViewport(0, 0, width, height);
 
         this.ratio = (float) height / width;
 

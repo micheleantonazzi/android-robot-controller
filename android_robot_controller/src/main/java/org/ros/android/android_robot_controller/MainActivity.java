@@ -19,6 +19,7 @@ package org.ros.android.android_robot_controller;
 import android.app.FragmentManager;
 import android.app.FragmentTransaction;
 import android.os.Bundle;
+import android.util.Log;
 
 import org.ros.android.RosActivity;
 import org.ros.android.android_robot_controller.fragments.FragmentMap;
@@ -42,6 +43,9 @@ public class MainActivity extends RosActivity {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        Log.d("debugg", "activity on create");
+
         setContentView(R.layout.main);
 
         FragmentManager fragmentManager = getFragmentManager();
@@ -55,21 +59,26 @@ public class MainActivity extends RosActivity {
     @Override
     public void onResume(){
         super.onResume();
+        Log.d("debugg", "activity resume");
         //this.openGLViewMap.onResume();
     }
 
     @Override
     public void onPause(){
         super.onPause();
+        Log.d("debugg", "activity pause");
+
         //this.openGLViewMap.onPause();
     }
 
     @Override
     protected void init(NodeMainExecutor nodeMainExecutor) {
+        Log.d("debugg", "init");
+
         this.nodeConfiguration = NodeConfiguration.newPublic(getRosHostname());
         this.nodeConfiguration.setMasterUri(getMasterUri());
 
         this.nodeMainExecutor = nodeMainExecutor;
-        fragmentMap.setNodeExecutor(this.nodeMainExecutor, nodeConfiguration);
+        fragmentMap.setNodeExecutor(this.nodeMainExecutor, this.nodeConfiguration);
     }
 }
