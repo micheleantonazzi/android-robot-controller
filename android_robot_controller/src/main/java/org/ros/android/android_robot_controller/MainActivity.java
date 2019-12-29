@@ -42,36 +42,35 @@ public class MainActivity extends RosActivity {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        Log.d("debugg", "activity on create");
-
         setContentView(R.layout.main);
 
-        FragmentManager fragmentManager = getFragmentManager();
-        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-        this.fragmentMap = new FragmentMap();
-        fragmentTransaction.add(R.id.layout, fragmentMap);
-        fragmentTransaction.commit();
+        // Control if fragment is already created
+        if(savedInstanceState == null){
+            FragmentManager fragmentManager = getFragmentManager();
+            FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+            this.fragmentMap = new FragmentMap();
+            fragmentTransaction.add(R.id.layout, fragmentMap, "map_fragment");
+            fragmentTransaction.commit();
+        }
+        else
+            this.fragmentMap = (FragmentMap) this.getFragmentManager().findFragmentByTag("map_fragment");
 
     }
 
     @Override
     public void onResume(){
         super.onResume();
-        Log.d("debugg", "activity resume");
         //this.openGLViewMap.onResume();
     }
 
     @Override
     public void onPause(){
         super.onPause();
-        Log.d("debugg", "activity pause");
-
         //this.openGLViewMap.onPause();
     }
 
     @Override
     protected void init(NodeMainExecutor nodeMainExecutor) {
-        Log.d("debugg", "init");
 
         NodeConfiguration nodeConfiguration = NodeConfiguration.newPublic(getRosHostname());
         nodeConfiguration.setMasterUri(getMasterUri());
