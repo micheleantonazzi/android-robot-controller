@@ -3,7 +3,6 @@ package org.ros.android.android_robot_controller.OpenGL.Renderes;
 import android.opengl.GLES30;
 import android.opengl.GLSurfaceView;
 import android.opengl.Matrix;
-import android.util.Log;
 
 import org.ros.android.android_robot_controller.OpenGL.Visualizers.MapVisualizer;
 import org.ros.android.android_robot_controller.OpenGL.Visualizers.PoseVisualizer;
@@ -23,8 +22,8 @@ public class RosRenderer implements GLSurfaceView.Renderer {
     // Variables to move the map
     private float scaleFactor = 1;
     private float rotationAngle = 0;
-    private float moveX;
-    private float moveY;
+    private float moveX = 0;
+    private float moveY = 0;
 
     private float[] resultMatrix = new float[16];
     private float[] projectionMatrix= new float[16];
@@ -56,8 +55,6 @@ public class RosRenderer implements GLSurfaceView.Renderer {
         GLES30.glClearColor(0, 0, 0, 1);
         this.mapVisualizer = new MapVisualizer();
         this.poseVisualizer = new PoseVisualizer();
-        Log.d("debugg", "serface created");
-
     }
 
     @Override
@@ -91,7 +88,7 @@ public class RosRenderer implements GLSurfaceView.Renderer {
     }
 
     // Scale * Rotation * Translation
-    public synchronized void updateViewMatrix(){
+    private synchronized void updateViewMatrix(){
 
         // Set the camera position (View matrix)
         float[] viewMatrix = new float[16];
@@ -136,6 +133,11 @@ public class RosRenderer implements GLSurfaceView.Renderer {
 
     public synchronized void modifyRotationAngle(float delta){
         this.rotationAngle += delta;
+        this.updateViewMatrix();
+    }
+
+    public void setViewDimensions(int width, int height){
+        this.onSurfaceChanged(null, width, height);
         this.updateViewMatrix();
     }
 

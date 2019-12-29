@@ -56,7 +56,6 @@ public class RosOpenGLView extends GLSurfaceView {
 
             }
         });
-
     }
 
     public RosOpenGLView(Context context) {
@@ -104,5 +103,12 @@ public class RosOpenGLView extends GLSurfaceView {
 
     public List<AbstractNodeMain> getVisualizers(){
         return this.renderer.getVisualizers();
+    }
+
+    @Override
+    protected void onSizeChanged(int xNew, int yNew, int xOld, int yOld)
+    {
+        super.onSizeChanged(xNew, yNew, xOld, yOld);
+        this.renderer.setViewDimensions(this.getWidth(), this.getHeight());
     }
 }
