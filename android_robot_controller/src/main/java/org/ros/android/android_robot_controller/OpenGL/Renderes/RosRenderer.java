@@ -48,6 +48,7 @@ public class RosRenderer implements GLSurfaceView.Renderer {
     public RosRenderer() {
         Matrix.frustumM(projectionMatrix, 0, -1, 1, -1f, 1f, 1f, 7);
         this.updateViewMatrix();
+
     }
 
     @Override
@@ -62,11 +63,20 @@ public class RosRenderer implements GLSurfaceView.Renderer {
     @Override
     public void onSurfaceChanged(GL10 gl, int width, int height) {
 
-        this.ratio = (float) height / width;
+        if(height >= width) {
+            this.ratio = (float) height / width;
 
-        // this projection matrix is applied to object coordinates
-        // in the onDrawFrame() method
-        Matrix.frustumM(projectionMatrix, 0, -1, 1, -ratio, ratio, 1f, 7);
+            // this projection matrix is applied to object coordinates
+            // in the onDrawFrame() method
+            Matrix.frustumM(projectionMatrix, 0, -1, 1, -ratio, ratio, 1f, 7);
+        }
+        else{
+            this.ratio = (float) width / height;
+
+            // this projection matrix is applied to object coordinates
+            // in the onDrawFrame() method
+            Matrix.frustumM(projectionMatrix, 0, -ratio, ratio, -1, 1, 1f, 7);
+        }
     }
 
     @Override
