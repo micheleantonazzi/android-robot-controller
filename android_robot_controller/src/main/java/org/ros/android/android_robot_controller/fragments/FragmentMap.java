@@ -33,8 +33,11 @@ public class FragmentMap extends Fragment {
 
     @Override
     public void onCreate (Bundle savedInstanceState){
-
         super.onCreate(savedInstanceState);
+
+        if(getView() != null){
+            this.rosOpenGLView = (RosOpenGLView) this.getView().findViewById(R.id.RosOpenGLView);
+        }
     }
 
     @Override
@@ -50,18 +53,7 @@ public class FragmentMap extends Fragment {
         Log.d("debugg", "fragment pause");
     }
 
-    public void setNodeExecutor(NodeMainExecutor nodeMainExecutor, NodeConfiguration nodeConfiguration){
-        this.nodeMainExecutor = nodeMainExecutor;
-        this.nodeConfiguration = nodeConfiguration;
-        Log.d("debugg", "xx");
-        if(this.nodeMainExecutor == null)
-            Log.d("debugg", "nullo");
-        if(this.rosOpenGLView == null){
-            Log.d("debugg", "view nulla");
-        }
-
-        for(AbstractNodeMain node : this.rosOpenGLView.getVisualizers()){
-            this.nodeMainExecutor.execute(node, this.nodeConfiguration);
-        }
+    public RosOpenGLView getRosOpenGLView(){
+        return this.rosOpenGLView;
     }
 }

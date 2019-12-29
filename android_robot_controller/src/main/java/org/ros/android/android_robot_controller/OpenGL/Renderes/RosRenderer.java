@@ -3,6 +3,7 @@ package org.ros.android.android_robot_controller.OpenGL.Renderes;
 import android.opengl.GLES30;
 import android.opengl.GLSurfaceView;
 import android.opengl.Matrix;
+import android.util.Log;
 
 import org.ros.android.android_robot_controller.OpenGL.Visualizers.MapVisualizer;
 import org.ros.android.android_robot_controller.OpenGL.Visualizers.PoseVisualizer;
@@ -54,6 +55,7 @@ public class RosRenderer implements GLSurfaceView.Renderer {
         GLES30.glClearColor(0, 0, 0, 1);
         this.mapVisualizer = new MapVisualizer();
         this.poseVisualizer = new PoseVisualizer();
+        Log.d("debugg", "serface created");
 
     }
 

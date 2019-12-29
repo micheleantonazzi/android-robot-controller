@@ -23,15 +23,13 @@ import android.util.Log;
 
 import org.ros.android.RosActivity;
 import org.ros.android.android_robot_controller.fragments.FragmentMap;
+import org.ros.node.AbstractNodeMain;
 import org.ros.node.NodeConfiguration;
 import org.ros.node.NodeMainExecutor;
 
 public class MainActivity extends RosActivity {
 
     private FragmentMap fragmentMap;
-
-    private NodeMainExecutor nodeMainExecutor;
-    private NodeConfiguration nodeConfiguration;
 
     public MainActivity() {
         // The RosActivity constructor configures the notification title and ticker
@@ -75,10 +73,13 @@ public class MainActivity extends RosActivity {
     protected void init(NodeMainExecutor nodeMainExecutor) {
         Log.d("debugg", "init");
 
-        this.nodeConfiguration = NodeConfiguration.newPublic(getRosHostname());
-        this.nodeConfiguration.setMasterUri(getMasterUri());
+        NodeConfiguration nodeConfiguration = NodeConfiguration.newPublic(getRosHostname());
+        nodeConfiguration.setMasterUri(getMasterUri());
 
-        this.nodeMainExecutor = nodeMainExecutor;
-        fragmentMap.setNodeExecutor(this.nodeMainExecutor, this.nodeConfiguration);
+        for (AbstractNodeMain node : this.fragmentMap.getRosOpenGLView().getVisualizers()){
+            if(node != null){
+                nodeMainExecutor.execute(node, nodeConfiguration);
+            }
+        }
     }
 }
