@@ -16,18 +16,20 @@
 
 package org.ros.android.android_robot_controller;
 
+import android.app.FragmentManager;
+import android.app.FragmentTransaction;
 import android.os.Bundle;
 import android.util.Log;
 
 import org.ros.android.RosActivity;
-import org.ros.android.android_robot_controller.OpenGL.Views.RosOpenGLView;
+import org.ros.android.android_robot_controller.fragments.FragmentMap;
 import org.ros.node.AbstractNodeMain;
 import org.ros.node.NodeConfiguration;
 import org.ros.node.NodeMainExecutor;
 
 public class MainActivity extends RosActivity {
 
-    private RosOpenGLView rosOpenGLView;
+    private FragmentMap fragmentMap;
 
     public MainActivity() {
         // The RosActivity constructor configures the notification title and ticker
@@ -39,9 +41,19 @@ public class MainActivity extends RosActivity {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
         setContentView(R.layout.main);
 
-        rosOpenGLView = (RosOpenGLView) findViewById(R.id.RosOpenGLView);
+        // Control if fragment is already created
+        if(savedInstanceState == null){
+            FragmentManager fragmentManager = getFragmentManager();
+            FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+            this.fragmentMap = new FragmentMap();
+            fragmentTransaction.add(R.id.layout, fragmentMap, "map_fragment");
+            fragmentTransaction.commit();
+        }
+        else
+            this.fragmentMap = (FragmentMap) this.getFragmentManager().findFragmentByTag("map_fragment");
 
     }
 
@@ -59,12 +71,14 @@ public class MainActivity extends RosActivity {
 
     @Override
     protected void init(NodeMainExecutor nodeMainExecutor) {
+
         NodeConfiguration nodeConfiguration = NodeConfiguration.newPublic(getRosHostname());
         nodeConfiguration.setMasterUri(getMasterUri());
 
-        for(AbstractNodeMain node : this.rosOpenGLView.getVisualizer()){
-            if(node != null)
+        for (AbstractNodeMain node : this.fragmentMap.getRosOpenGLView().getVisualizers()){
+            if(node != null){
                 nodeMainExecutor.execute(node, nodeConfiguration);
+            }
         }
     }
 }

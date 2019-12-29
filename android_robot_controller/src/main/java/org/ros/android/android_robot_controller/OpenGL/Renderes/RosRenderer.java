@@ -22,8 +22,8 @@ public class RosRenderer implements GLSurfaceView.Renderer {
     // Variables to move the map
     private float scaleFactor = 1;
     private float rotationAngle = 0;
-    private float moveX;
-    private float moveY;
+    private float moveX = 0;
+    private float moveY = 0;
 
     private float[] resultMatrix = new float[16];
     private float[] projectionMatrix= new float[16];
@@ -47,6 +47,7 @@ public class RosRenderer implements GLSurfaceView.Renderer {
     public RosRenderer() {
         Matrix.frustumM(projectionMatrix, 0, -1, 1, -1f, 1f, 1f, 7);
         this.updateViewMatrix();
+
     }
 
     @Override
@@ -54,18 +55,25 @@ public class RosRenderer implements GLSurfaceView.Renderer {
         GLES30.glClearColor(0, 0, 0, 1);
         this.mapVisualizer = new MapVisualizer();
         this.poseVisualizer = new PoseVisualizer();
-
     }
 
     @Override
     public void onSurfaceChanged(GL10 gl, int width, int height) {
-        GLES30.glViewport(0, 0, width, height);
 
-        this.ratio = (float) height / width;
+        if(height >= width) {
+            this.ratio = (float) height / width;
 
-        // this projection matrix is applied to object coordinates
-        // in the onDrawFrame() method
-        Matrix.frustumM(projectionMatrix, 0, -1, 1, -ratio, ratio, 1f, 7);
+            // this projection matrix is applied to object coordinates
+            // in the onDrawFrame() method
+            Matrix.frustumM(projectionMatrix, 0, -1, 1, -ratio, ratio, 1f, 7);
+        }
+        else{
+            this.ratio = (float) width / height;
+
+            // this projection matrix is applied to object coordinates
+            // in the onDrawFrame() method
+            Matrix.frustumM(projectionMatrix, 0, -ratio, ratio, -1, 1, 1f, 7);
+        }
     }
 
     @Override
@@ -80,7 +88,7 @@ public class RosRenderer implements GLSurfaceView.Renderer {
     }
 
     // Scale * Rotation * Translation
-    public synchronized void updateViewMatrix(){
+    private synchronized void updateViewMatrix(){
 
         // Set the camera position (View matrix)
         float[] viewMatrix = new float[16];
@@ -128,7 +136,12 @@ public class RosRenderer implements GLSurfaceView.Renderer {
         this.updateViewMatrix();
     }
 
-    public List<AbstractNodeMain> getVisualizer(){
+    public void setViewDimensions(int width, int height){
+        this.onSurfaceChanged(null, width, height);
+        this.updateViewMatrix();
+    }
+
+    public List<AbstractNodeMain> getVisualizers(){
         return Arrays.asList(this.mapVisualizer, this.poseVisualizer);
     }
 }

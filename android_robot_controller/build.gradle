@@ -27,8 +27,6 @@ dependencies {
   compile "androidx.navigation:navigation-ui:$navigationVersion"
   compile 'org.ros.android_core:android_core_components:[0.4,0.5)'
   compile 'com.github.Almeros:android-gesture-detectors:v1.0'
-  // Java language implementation
-
 }
 
 buildscript {
@@ -53,10 +51,15 @@ android {
   compileSdkVersion 29
 
   defaultConfig {
-    minSdkVersion 16
+    minSdkVersion 23
     applicationId "org.ros.android.android_robot_controller"
     targetSdkVersion 29
     versionCode 1
     versionName "1.0"
   }
+    compileOptions {
+        sourceCompatibility = 1.8
+        targetCompatibility = 1.8
+    }
+    buildToolsVersion = '29.0.2'
 }
