@@ -6,5 +6,6 @@
     <org.ros.android.android_robot_controller.OpenGL.Views.RosOpenGLView
         android:id="@+id/RosOpenGLView"
         android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+        android:layout_height="match_parent"
+        android:background="@android:color/transparent"/>
 </LinearLayout>
