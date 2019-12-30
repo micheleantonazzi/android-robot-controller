@@ -20,6 +20,7 @@ import android.app.FragmentManager;
 import android.app.FragmentTransaction;
 import android.os.Bundle;
 import android.util.Log;
+import android.widget.Toolbar;
 
 import org.ros.android.RosActivity;
 import org.ros.android.android_robot_controller.fragments.FragmentMap;
@@ -43,6 +44,9 @@ public class MainActivity extends RosActivity {
         super.onCreate(savedInstanceState);
 
         setContentView(R.layout.main);
+
+        // Toolbar
+
 
         // Control if fragment is already created
         if(savedInstanceState == null){
