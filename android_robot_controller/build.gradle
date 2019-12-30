@@ -27,6 +27,8 @@ dependencies {
   compile "androidx.navigation:navigation-ui:$navigationVersion"
   compile 'org.ros.android_core:android_core_components:[0.4,0.5)'
   compile 'com.github.Almeros:android-gesture-detectors:v1.0'
+  compile 'com.android.support:appcompat-v7:+.'
+  compile "com.android.support:support-core-utils:29.0.0"
 }
 
 buildscript {

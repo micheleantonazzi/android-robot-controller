@@ -18,8 +18,11 @@ package org.ros.android.android_robot_controller;
 
 import android.app.FragmentManager;
 import android.app.FragmentTransaction;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
+import android.widget.LinearLayout;
 import android.widget.Toolbar;
 
 import org.ros.android.RosActivity;
@@ -44,16 +47,30 @@ public class MainActivity extends RosActivity {
         super.onCreate(savedInstanceState);
 
         setContentView(R.layout.main);
+        /*
+        Toolbar toolbar = new Toolbar(this);
+        LinearLayout.LayoutParams toolBarParams = new LinearLayout.LayoutParams(
+                Toolbar.LayoutParams.MATCH_PARENT,
+                150
+        );
+        toolbar.setLayoutParams(toolBarParams);
+        toolbar.setBackgroundColor(Color.BLACK);
+        toolbar.setPopupTheme(R.style.MyAppTheme);
+        toolbar.setVisibility(View.VISIBLE);
 
-        // Toolbar
+
+        LinearLayout ll = findViewById(R.id.layout);
+        ll.addView(toolbar, 0);
+        toolbar.
 
 
+         */
         // Control if fragment is already created
         if(savedInstanceState == null){
             FragmentManager fragmentManager = getFragmentManager();
             FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
             this.fragmentMap = new FragmentMap();
-            fragmentTransaction.add(R.id.layout, fragmentMap, "map_fragment");
+            fragmentTransaction.add(R.id.LinearLayout, fragmentMap, "map_fragment");
             fragmentTransaction.commit();
         }
         else
