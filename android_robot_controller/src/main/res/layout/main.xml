@@ -4,7 +4,8 @@
     android:id="@+id/MainLayout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:fitsSystemWindows="true"
+    android:fitsSystemWindows="false"
+    android:checkableBehavior="none"
     style="@style/MyAppTheme">
 
     <LinearLayout
@@ -15,20 +16,23 @@
 
         <androidx.coordinatorlayout.widget.CoordinatorLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            android:fitsSystemWindows="false">
             <com.google.android.material.appbar.AppBarLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
                 <androidx.appcompat.widget.Toolbar
+                    android:id="@+id/Toolbar"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content">
+                    android:layout_height="@dimen/toolbarHeight"
+                    android:minHeight="@dimen/toolbarHeight">
 
                     <TextView
                         android:id="@+id/FragmentTitle"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="TextView"
-                        android:textSize="18sp"
+                        android:textSize="@dimen/fragmentTitle"
                         android:textStyle="bold" />
                 </androidx.appcompat.widget.Toolbar>
             </com.google.android.material.appbar.AppBarLayout>
@@ -40,7 +44,8 @@
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
         android:layout_gravity="start"
-        android:fitsSystemWindows="true"
+        android:fitsSystemWindows="false"
+        android:layout_marginTop="@dimen/toolbarHeight"
         app:menu="@menu/main_menu_items"
         app:headerLayout="@layout/main_menu_header">
 

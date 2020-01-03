@@ -21,6 +21,11 @@ import android.app.FragmentTransaction;
 import android.os.Bundle;
 import android.view.MenuItem;
 
+import androidx.appcompat.app.ActionBarDrawerToggle;
+import androidx.appcompat.widget.Toolbar;
+import androidx.core.view.GravityCompat;
+import androidx.drawerlayout.widget.DrawerLayout;
+
 import org.ros.android.RosActivity;
 import org.ros.android.android_robot_controller.fragments.FragmentMap;
 import org.ros.node.AbstractNodeMain;
@@ -51,10 +56,21 @@ public class MainActivity extends RosActivity {
             this.fragmentMap = new FragmentMap();
             fragmentTransaction.add(R.id.LinearLayout, fragmentMap, "map_fragment");
             fragmentTransaction.commit();
+
+
+
+
         }
         else
             this.fragmentMap = (FragmentMap) this.getFragmentManager().findFragmentByTag("map_fragment");
 
+        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.MainLayout);
+
+        Toolbar toolbar =  findViewById(R.id.Toolbar);
+        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
+                this, drawer, toolbar, R.string.app_name, R.string.app_name);
+        toggle.syncState();
+        drawer.addDrawerListener(toggle);
     }
 
     @Override

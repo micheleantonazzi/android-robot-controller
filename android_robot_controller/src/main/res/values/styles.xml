@@ -2,9 +2,15 @@
 <resources>
 
     <style name="MyAppTheme" parent="Theme.AppCompat.Light.DarkActionBar">
-        <item name="android:textColor">#ffffffff</item>
-        <item name="android:background">#212121</item>
-        <item name="mainMenuHeaderColor">@color/darkGray</item>
-        <item name="mainMenuTextBackgroundColor">@color/darkGray</item>
+        <!-- Specific attributes -->
+        <item name="mainMenuHeaderColor">@color/gray</item>
+        <item name="mainMenuTextBackgroundColor">@color/gray</item>
+
+        <!-- Generic attributes -->
+        <item name="android:textColor">@color/white</item>
+        <item name="android:background">@color/darkGray</item>
+        <item name="colorControlNormal">@color/white</item>
+        <item name="android:colorControlNormal">@color/white</item>
+
     </style>
 </resources>
