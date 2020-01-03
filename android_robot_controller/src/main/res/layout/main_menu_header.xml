@@ -1,28 +1,40 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:theme="@style/MyAppTheme"
     android:layout_width="match_parent"
-    android:layout_height="150dp"
+    android:layout_height="245dp"
     android:gravity="bottom"
     android:orientation="vertical"
-    android:background="#515151">
+    android:paddingLeft="30dp"
+    android:paddingBottom="25dp"
+    android:background="?mainMenuHeaderColor">
 
     <ImageView
         android:id="@+id/imageView"
         android:layout_width="80dp"
         android:layout_height="80dp"
-        android:background="#515151"
+        android:background="?mainMenuHeaderColor"
         android:src="@drawable/ic_main_logo" />
 
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="MViz"
-        android:textAppearance="@style/TextAppearance.AppCompat.Body1" />
+        android:textAppearance="@style/TextAppearance.AppCompat.Body2"
+        android:layout_marginTop="8dp"
+        android:background="?mainMenuHeaderColor"
+
+        android:textSize="17dp"/>
 
     <TextView
         android:id="@+id/textView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Mobile Ros Visualizer" />
+        android:text="Mobile Ros Visualizer"
+        android:textAppearance="@style/TextAppearance.AppCompat.Body1"
+
+        android:layout_marginTop="5dp"
+        android:background="?mainMenuHeaderColor"
+        />
 
 </LinearLayout>

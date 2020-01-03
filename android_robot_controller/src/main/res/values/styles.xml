@@ -4,5 +4,7 @@
     <style name="MyAppTheme" parent="Theme.AppCompat.Light.DarkActionBar">
         <item name="android:textColor">#ffffffff</item>
         <item name="android:background">#212121</item>
+        <item name="mainMenuHeaderColor">@color/darkGray</item>
+        <item name="mainMenuTextBackgroundColor">@color/darkGray</item>
     </style>
 </resources>
