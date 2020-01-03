@@ -5,5 +5,7 @@
     <!-- Main menu header-->
     <string name="application_name">MViz</string>
     <string name="application_acronym">Mobile Ros Visualizer</string>
+
+    <!-- Main menu items -->
     <string name="menu_item_monitoring">Monitoring</string>
 </resources>
