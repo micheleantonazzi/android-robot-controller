@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.drawerlayout.widget.DrawerLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:id="@+id/MainLayout"
+    android:id="@+id/main_layout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:fitsSystemWindows="false"
@@ -9,7 +9,7 @@
     style="@style/MyAppTheme">
 
     <LinearLayout
-        android:id="@+id/LinearLayout"
+        android:id="@+id/linear_layout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical">
@@ -22,13 +22,13 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
                 <androidx.appcompat.widget.Toolbar
-                    android:id="@+id/Toolbar"
+                    android:id="@+id/toolbar"
                     android:layout_width="match_parent"
                     android:layout_height="@dimen/toolbarHeight"
                     android:minHeight="@dimen/toolbarHeight">
 
                     <TextView
-                        android:id="@+id/FragmentTitle"
+                        android:id="@+id/text_view_fragment_title"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="TextView"
@@ -47,6 +47,7 @@
         android:fitsSystemWindows="false"
         android:layout_marginTop="@dimen/toolbarHeight"
         app:menu="@menu/main_menu_items"
+        app:itemIconTint="?menuItemIconColor"
         app:headerLayout="@layout/main_menu_header">
 
     </com.google.android.material.navigation.NavigationView>

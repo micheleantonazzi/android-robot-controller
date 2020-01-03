@@ -21,20 +21,23 @@ import android.app.FragmentTransaction;
 import android.os.Bundle;
 import android.view.MenuItem;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 
+import com.google.android.material.navigation.NavigationView;
+
 import org.ros.android.RosActivity;
-import org.ros.android.android_robot_controller.fragments.FragmentMap;
+import org.ros.android.android_robot_controller.fragments.FragmentMonitor;
 import org.ros.node.AbstractNodeMain;
 import org.ros.node.NodeConfiguration;
 import org.ros.node.NodeMainExecutor;
 
-public class MainActivity extends RosActivity {
+public class MainActivity extends RosActivity implements  NavigationView.OnNavigationItemSelectedListener {
 
-    private FragmentMap fragmentMap;
+    private FragmentMonitor fragmentMonitor;
 
     public MainActivity() {
         // The RosActivity constructor configures the notification title and ticker
@@ -53,20 +56,17 @@ public class MainActivity extends RosActivity {
         if(savedInstanceState == null){
             FragmentManager fragmentManager = getFragmentManager();
             FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-            this.fragmentMap = new FragmentMap();
-            fragmentTransaction.add(R.id.LinearLayout, fragmentMap, "map_fragment");
+            this.fragmentMonitor = new FragmentMonitor();
+            fragmentTransaction.add(R.id.linear_layout, fragmentMonitor, "map_fragment");
             fragmentTransaction.commit();
-
-
-
-
         }
         else
-            this.fragmentMap = (FragmentMap) this.getFragmentManager().findFragmentByTag("map_fragment");
+            this.fragmentMonitor = (FragmentMonitor) this.getFragmentManager().findFragmentByTag("map_fragment");
 
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.MainLayout);
+        // Create drawer toggle
+        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.main_layout);
 
-        Toolbar toolbar =  findViewById(R.id.Toolbar);
+        Toolbar toolbar =  findViewById(R.id.toolbar);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
                 this, drawer, toolbar, R.string.app_name, R.string.app_name);
         toggle.syncState();
@@ -91,11 +91,24 @@ public class MainActivity extends RosActivity {
         NodeConfiguration nodeConfiguration = NodeConfiguration.newPublic(getRosHostname());
         nodeConfiguration.setMasterUri(getMasterUri());
 
-        for (AbstractNodeMain node : this.fragmentMap.getRosOpenGLView().getVisualizers()){
+        for (AbstractNodeMain node : this.fragmentMonitor.getRosOpenGLView().getVisualizers()){
             if(node != null){
                 nodeMainExecutor.execute(node, nodeConfiguration);
             }
         }
     }
 
+    @Override
+    public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+
+        switch (item.getItemId()){
+            case R.id.menu_item_monitor:
+                break;
+            case R.id.menu_item_settings:
+                break;
+        }
+        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.main_layout);
+        drawer.closeDrawer(GravityCompat.START);
+        return true;
+    }
 }

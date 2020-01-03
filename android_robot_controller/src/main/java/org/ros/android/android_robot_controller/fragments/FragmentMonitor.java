@@ -9,7 +9,7 @@ import android.view.ViewGroup;
 import org.ros.android.android_robot_controller.OpenGL.Views.RosOpenGLView;
 import org.ros.android.android_robot_controller.R;
 
-public class FragmentMap extends Fragment {
+public class FragmentMonitor extends Fragment {
 
     private View view;
     private RosOpenGLView rosOpenGLView;
