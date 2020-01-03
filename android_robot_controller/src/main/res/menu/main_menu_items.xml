@@ -2,4 +2,8 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
 
     <item android:title="@string/menu_item_monitoring" />
+
+    <group>
+        <item android:title="Settings"/>
+    </group>
 </menu>
