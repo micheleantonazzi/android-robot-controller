@@ -39,5 +39,6 @@ public class FragmentMonitor extends Fragment {
     @Override
     public void onPause(){
         super.onPause();
+        this.rosOpenGLView.onPause();
     }
 }
