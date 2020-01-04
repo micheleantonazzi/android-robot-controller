@@ -101,10 +101,6 @@ public class RosOpenGLView extends GLSurfaceView {
         return true;
     }
 
-    public List<AbstractNodeMain> getVisualizers(){
-        return this.renderer.getVisualizers();
-    }
-
     @Override
     protected void onSizeChanged(int xNew, int yNew, int xOld, int yOld)
     {

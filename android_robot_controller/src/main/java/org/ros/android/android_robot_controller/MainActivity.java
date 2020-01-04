@@ -34,14 +34,10 @@ import org.ros.android.RosActivity;
 import org.ros.android.android_robot_controller.fragments.FragmentMonitor;
 import org.ros.android.android_robot_controller.fragments.FragmentSettings;
 import org.ros.android.android_robot_controller.fragments.RosFragment;
-import org.ros.node.AbstractNodeMain;
 import org.ros.node.NodeConfiguration;
 import org.ros.node.NodeMainExecutor;
 
 public class MainActivity extends RosActivity implements  NavigationView.OnNavigationItemSelectedListener {
-
-    private NodeConfiguration nodeConfiguration;
-    private NodeMainExecutor nodeMainExecutor;
 
     private FragmentMonitor fragmentMonitor;
     private FragmentSettings fragmentSettings;
@@ -81,10 +77,13 @@ public class MainActivity extends RosActivity implements  NavigationView.OnNavig
         }
         else{
             // Find the active fragment
+            /*
             if(this.fragmentMonitor != null && this.fragmentMonitor.isInLayout())
                 this.rosFragmentActive = this.fragmentMonitor;
             else if(this.fragmentSettings != null && this.fragmentSettings.isInLayout())
                 this.rosFragmentActive = this.fragmentSettings;
+
+             */
         }
     }
 
@@ -100,16 +99,14 @@ public class MainActivity extends RosActivity implements  NavigationView.OnNavig
         //this.openGLViewMap.onPause();
     }
 
+    NodeMainExecutor nodeMainExecutor;
+
     @Override
     protected void init(NodeMainExecutor nodeMainExecutor) {
-        Log.d("debugg", "init");
         NodeConfiguration nodeConfiguration = NodeConfiguration.newPublic(getRosHostname());
         nodeConfiguration.setMasterUri(getMasterUri());
-
-        this.nodeConfiguration = nodeConfiguration;
+        NodesExecutor.getInstance().setNodeConfigurationAndExecutor(nodeConfiguration, nodeMainExecutor);
         this.nodeMainExecutor = nodeMainExecutor;
-
-        this.rosFragmentActive.setNodeConfigurationAndExecutor(nodeConfiguration, nodeMainExecutor);
     }
 
     @Override
@@ -145,23 +142,4 @@ public class MainActivity extends RosActivity implements  NavigationView.OnNavig
 
         return true;
     }
-
-    // This method sets the current fragment
-    @Override
-    public void onAttachFragment(Fragment fragment) {
-        // TODO Auto-generated method stub
-        super.onAttachFragment(fragment);
-        Log.d("debugg", fragment.getTag());
-
-        if(fragment instanceof RosFragment)
-            this.rosFragmentActive = (RosFragment) fragment;
-
-        this.rosFragmentActive.setNodeConfigurationAndExecutor(this.nodeConfiguration, this.nodeMainExecutor);
-
-
-        //this.executeRosNode();
-
-    }
-
-
 }
