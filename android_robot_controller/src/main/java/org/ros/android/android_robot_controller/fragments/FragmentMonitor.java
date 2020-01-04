@@ -35,13 +35,11 @@ public class FragmentMonitor extends Fragment {
     @Override
     public void onStop(){
         super.onStop();
-        Log.d("debugg", "onstop");
     }
 
     @Override
     public void onDestroy(){
         super.onDestroy();
-        Log.d("debugg", "ondestroy");
         NodesExecutor.getInstance().shutDownNode(this.rosOpenGLView.getVisualizers());
     }
 }

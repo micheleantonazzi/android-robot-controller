@@ -55,7 +55,6 @@ public class RosRenderer implements GLSurfaceView.Renderer {
 
     @Override
     public void onSurfaceCreated(GL10 gl, EGLConfig config) {
-        Log.d("debugg", "surfacecreated");
         GLES30.glClearColor(0, 0, 0, 1);
         this.mapVisualizer = new MapVisualizer();
         this.poseVisualizer = new PoseVisualizer();
