@@ -5,14 +5,13 @@
         <!-- Specific attributes -->
         <item name="mainMenuHeaderColor">@color/gray</item>
         <item name="mainMenuTextBackgroundColor">@color/gray</item>
-        <item name="menuItemIconColor">@color/white</item>
+        <item name="menuItemColor">@color/white</item>
 
         <!-- Generic attributes -->
         <item name="android:textColor">@color/white</item>
-        <item name="android:textColorPrimary">@color/white</item>
         <item name="android:background">@color/darkGray</item>
         <item name="colorControlNormal">@color/white</item>
         <item name="android:colorControlNormal">@color/white</item>
-
+        <item name="colorControlHighlight">@color/white</item>
     </style>
 </resources>

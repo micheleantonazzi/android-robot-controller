@@ -2,5 +2,5 @@
 <resources>
     <attr name="mainMenuHeaderColor" format="reference|color"></attr>
     <attr name="mainMenuTextBackgroundColor" format="reference|color"></attr>
-    <attr name="menuItemIconColor" format="reference|color"></attr>
+    <attr name="menuItemColor" format="reference|color"></attr>
 </resources>

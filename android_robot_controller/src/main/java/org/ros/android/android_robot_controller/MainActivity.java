@@ -19,6 +19,7 @@ package org.ros.android.android_robot_controller;
 import android.app.FragmentManager;
 import android.app.FragmentTransaction;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.MenuItem;
 
 import androidx.annotation.NonNull;
@@ -71,6 +72,10 @@ public class MainActivity extends RosActivity implements  NavigationView.OnNavig
                 this, drawer, toolbar, R.string.app_name, R.string.app_name);
         toggle.syncState();
         drawer.addDrawerListener(toggle);
+
+        // Set navigation view (menu) onItemPressedListener
+        NavigationView navigationView = (NavigationView)findViewById(R.id.navigation_view);
+        navigationView.setNavigationItemSelectedListener(this);
     }
 
     @Override
@@ -108,7 +113,8 @@ public class MainActivity extends RosActivity implements  NavigationView.OnNavig
                 break;
         }
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.main_layout);
-        drawer.closeDrawer(GravityCompat.START);
+        drawer.closeDrawers();
+
         return true;
     }
 }
