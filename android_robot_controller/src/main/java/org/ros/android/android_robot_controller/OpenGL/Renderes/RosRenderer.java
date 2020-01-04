@@ -55,10 +55,12 @@ public class RosRenderer implements GLSurfaceView.Renderer {
 
     @Override
     public void onSurfaceCreated(GL10 gl, EGLConfig config) {
+        Log.d("debugg", "surfacecreated");
         GLES30.glClearColor(0, 0, 0, 1);
         this.mapVisualizer = new MapVisualizer();
         this.poseVisualizer = new PoseVisualizer();
         NodesExecutor.getInstance().setNodes(Arrays.asList(this.mapVisualizer, this.poseVisualizer));
+
     }
 
     @Override
@@ -145,7 +147,7 @@ public class RosRenderer implements GLSurfaceView.Renderer {
         this.updateViewMatrix();
     }
 
-    public List<AbstractNodeMain> getVisualizers(){
+    public synchronized List<AbstractNodeMain> getVisualizers(){
         return Arrays.asList(this.mapVisualizer, this.poseVisualizer);
     }
 }

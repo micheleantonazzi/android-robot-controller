@@ -7,6 +7,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import org.ros.android.android_robot_controller.NodesExecutor;
 import org.ros.android.android_robot_controller.OpenGL.Views.RosOpenGLView;
 import org.ros.android.android_robot_controller.R;
 
@@ -22,7 +23,7 @@ public class FragmentMonitor extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         this.view = inflater.inflate(R.layout.fragment_monitor, container, false);
-        this.rosOpenGLView = (RosOpenGLView) this.view.findViewById(R.id.RosOpenGLView);
+        this.rosOpenGLView = (RosOpenGLView) view.findViewById(R.id.RosOpenGLView);
         return view;
     }
 
@@ -32,13 +33,15 @@ public class FragmentMonitor extends Fragment {
     }
 
     @Override
-    public void onResume(){
-        super.onResume();
+    public void onStop(){
+        super.onStop();
+        Log.d("debugg", "onstop");
     }
 
     @Override
-    public void onPause(){
-        super.onPause();
-        this.rosOpenGLView.onPause();
+    public void onDestroy(){
+        super.onDestroy();
+        Log.d("debugg", "ondestroy");
+        NodesExecutor.getInstance().shutDownNode(this.rosOpenGLView.getVisualizers());
     }
 }

@@ -7,6 +7,8 @@ import org.ros.node.NodeConfiguration;
 import org.ros.node.NodeMain;
 import org.ros.node.NodeMainExecutor;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -26,16 +28,10 @@ public class NodesExecutor {
         Log.d("debugg", nodes.keySet().size() + "");
         if(this.nodeConfiguration != null && this.nodeMainExecutor != null){
             for (AbstractNodeMain node : this.nodes.keySet()){
-                if(node == null){
-                    this.nodes.remove(node);
-                    Log.d("debugg", "nodo null + " + node);
-                }
-
-                else if(!this.nodes.get(node)){
+                if(!this.nodes.get(node)){
                     this.nodeMainExecutor.execute(node, this.nodeConfiguration);
                     this.nodes.put(node, true);
                 }
-                Log.d("debugg", node.toString());
             }
         }
     }
@@ -48,6 +44,15 @@ public class NodesExecutor {
     }
 
     public synchronized void setNodeConfigurationAndExecutor(NodeConfiguration nodeConfiguration, NodeMainExecutor nodeMainExecutor){
+        Log.d("debugg", "setexecutor");
+        if(this.nodeMainExecutor != null){
+            for(AbstractNodeMain node : this.nodes.keySet()){
+                this.nodeMainExecutor.shutdownNodeMain(node);
+                this.nodes.put(node, false);
+            }
+
+        }
+
         this.nodeConfiguration = nodeConfiguration;
         this.nodeMainExecutor = nodeMainExecutor;
 
@@ -55,6 +60,7 @@ public class NodesExecutor {
     }
 
     public synchronized void setNodes(List<AbstractNodeMain> nodes){
+        Log.d("debugg", "setnodes");
         for(AbstractNodeMain node : nodes){
             if(node != null){
                 this.nodes.put(node, false);
@@ -64,9 +70,11 @@ public class NodesExecutor {
     }
 
     public synchronized void shutDownNode(List<AbstractNodeMain> nodesToShutdown){
-        if(this.nodeMainExecutor != null){
-            for (AbstractNodeMain node: nodesToShutdown) {
-                if(node != null){
+        if(this.nodeMainExecutor != null) {
+            Log.d("debugg", "shutdownnodes");
+            for (AbstractNodeMain node : nodesToShutdown) {
+                if (node != null) {
+                    Log.d("debugg", "noderemoved");
                     this.nodes.remove(node);
                     this.nodeMainExecutor.shutdownNodeMain(node);
                 }

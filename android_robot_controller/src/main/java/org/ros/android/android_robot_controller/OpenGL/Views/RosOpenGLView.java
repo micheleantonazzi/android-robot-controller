@@ -5,6 +5,7 @@ import android.opengl.GLSurfaceView;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
 import android.view.ScaleGestureDetector;
+import android.view.SurfaceHolder;
 
 import com.almeros.android.multitouch.RotateGestureDetector;
 
@@ -12,6 +13,7 @@ import org.ros.android.android_robot_controller.NodesExecutor;
 import org.ros.android.android_robot_controller.OpenGL.Renderes.RosRenderer;
 import org.ros.node.AbstractNodeMain;
 
+import java.util.Arrays;
 import java.util.List;
 
 public class RosOpenGLView extends GLSurfaceView {
@@ -109,8 +111,8 @@ public class RosOpenGLView extends GLSurfaceView {
         this.renderer.setViewDimensions(this.getWidth(), this.getHeight());
     }
 
-    @Override
-    public void onPause(){
-        NodesExecutor.getInstance().shutDownNode(this.renderer.getVisualizers());
+    public synchronized List<AbstractNodeMain> getVisualizers(){
+        return this.renderer.getVisualizers();
     }
+
 }
