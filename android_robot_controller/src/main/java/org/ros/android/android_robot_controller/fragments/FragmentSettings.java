@@ -8,8 +8,9 @@ import android.view.ViewGroup;
 
 import org.ros.android.android_robot_controller.R;
 
-public class FragmentSettings extends Fragment {
+public class FragmentSettings extends Fragment implements RosFragment {
 
+    public final static String TAG = "fragment_settings";
 
 
     @Override
@@ -28,7 +29,6 @@ public class FragmentSettings extends Fragment {
     @Override
     public void onResume(){
         super.onResume();
-
     }
 
     @Override

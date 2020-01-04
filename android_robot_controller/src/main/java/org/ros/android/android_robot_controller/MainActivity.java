@@ -16,6 +16,7 @@
 
 package org.ros.android.android_robot_controller;
 
+import android.app.Fragment;
 import android.app.FragmentManager;
 import android.app.FragmentTransaction;
 import android.os.Bundle;
@@ -31,13 +32,21 @@ import com.google.android.material.navigation.NavigationView;
 
 import org.ros.android.RosActivity;
 import org.ros.android.android_robot_controller.fragments.FragmentMonitor;
+import org.ros.android.android_robot_controller.fragments.FragmentSettings;
+import org.ros.android.android_robot_controller.fragments.RosFragment;
 import org.ros.node.AbstractNodeMain;
 import org.ros.node.NodeConfiguration;
 import org.ros.node.NodeMainExecutor;
 
 public class MainActivity extends RosActivity implements  NavigationView.OnNavigationItemSelectedListener {
 
+    private NodeConfiguration nodeConfiguration;
+    private NodeMainExecutor nodeMainExecutor;
+
     private FragmentMonitor fragmentMonitor;
+    private FragmentSettings fragmentSettings;
+
+    private RosFragment rosFragmentActive = null;
 
     public MainActivity() {
         // The RosActivity constructor configures the notification title and ticker
@@ -52,17 +61,6 @@ public class MainActivity extends RosActivity implements  NavigationView.OnNavig
 
         setContentView(R.layout.main);
 
-        // Control if fragment is already created
-        if(savedInstanceState == null){
-            FragmentManager fragmentManager = getFragmentManager();
-            FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-            this.fragmentMonitor = new FragmentMonitor();
-            fragmentTransaction.add(R.id.linear_layout, fragmentMonitor, "map_fragment");
-            fragmentTransaction.commit();
-        }
-        else
-            this.fragmentMonitor = (FragmentMonitor) this.getFragmentManager().findFragmentByTag("map_fragment");
-
         // Create drawer toggle
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.main_layout);
 
@@ -75,6 +73,19 @@ public class MainActivity extends RosActivity implements  NavigationView.OnNavig
         // Set navigation view (menu) onItemPressedListener
         NavigationView navigationView = (NavigationView)findViewById(R.id.navigation_view);
         navigationView.setNavigationItemSelectedListener(this);
+
+        // Control if fragment is already created
+        if(savedInstanceState == null) {
+            navigationView.setCheckedItem(navigationView.getMenu().getItem(0));
+            this.onNavigationItemSelected(navigationView.getCheckedItem());
+        }
+        else{
+            // Find the active fragment
+            if(this.fragmentMonitor != null && this.fragmentMonitor.isInLayout())
+                this.rosFragmentActive = this.fragmentMonitor;
+            else if(this.fragmentSettings != null && this.fragmentSettings.isInLayout())
+                this.rosFragmentActive = this.fragmentSettings;
+        }
     }
 
     @Override
@@ -91,29 +102,66 @@ public class MainActivity extends RosActivity implements  NavigationView.OnNavig
 
     @Override
     protected void init(NodeMainExecutor nodeMainExecutor) {
-
+        Log.d("debugg", "init");
         NodeConfiguration nodeConfiguration = NodeConfiguration.newPublic(getRosHostname());
         nodeConfiguration.setMasterUri(getMasterUri());
 
-        for (AbstractNodeMain node : this.fragmentMonitor.getRosOpenGLView().getVisualizers()){
-            if(node != null){
-                nodeMainExecutor.execute(node, nodeConfiguration);
-            }
-        }
+        this.nodeConfiguration = nodeConfiguration;
+        this.nodeMainExecutor = nodeMainExecutor;
+
+        this.rosFragmentActive.setNodeConfigurationAndExecutor(nodeConfiguration, nodeMainExecutor);
     }
 
     @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
 
+        FragmentManager fragmentManager = getFragmentManager();
+        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+
         switch (item.getItemId()){
             case R.id.menu_item_monitor:
+                if(this.getFragmentManager().findFragmentByTag("fragment_monitor") == null)
+                    this.fragmentMonitor = new FragmentMonitor();
+                else
+                    this.fragmentMonitor = (FragmentMonitor) this.getFragmentManager().findFragmentByTag("fragment_monitor");
+
+
+                fragmentTransaction.replace(R.id.linear_layout, this.fragmentMonitor, "fragment_monitor");
+                fragmentTransaction.commit();
                 break;
             case R.id.menu_item_settings:
+                if(this.getFragmentManager().findFragmentByTag("fragment_settings") == null)
+                    this.fragmentSettings = new FragmentSettings();
+                else
+                    this.fragmentSettings = (FragmentSettings) this.getFragmentManager().findFragmentByTag("fragment_settings");
+
+                fragmentTransaction.replace(R.id.linear_layout, this.fragmentSettings, "fragment_settings");
+                fragmentTransaction.commit();
                 break;
         }
+
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.main_layout);
         drawer.closeDrawers();
 
         return true;
     }
+
+    // This method sets the current fragment
+    @Override
+    public void onAttachFragment(Fragment fragment) {
+        // TODO Auto-generated method stub
+        super.onAttachFragment(fragment);
+        Log.d("debugg", fragment.getTag());
+
+        if(fragment instanceof RosFragment)
+            this.rosFragmentActive = (RosFragment) fragment;
+
+        this.rosFragmentActive.setNodeConfigurationAndExecutor(this.nodeConfiguration, this.nodeMainExecutor);
+
+
+        //this.executeRosNode();
+
+    }
+
+
 }
