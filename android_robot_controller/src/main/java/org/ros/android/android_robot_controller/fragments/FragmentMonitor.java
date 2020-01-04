@@ -2,12 +2,10 @@ package org.ros.android.android_robot_controller.fragments;
 
 import android.app.Fragment;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import org.ros.android.android_robot_controller.NodesExecutor;
 import org.ros.android.android_robot_controller.OpenGL.Views.RosOpenGLView;
 import org.ros.android.android_robot_controller.R;
 
@@ -40,6 +38,6 @@ public class FragmentMonitor extends Fragment {
     @Override
     public void onDestroy(){
         super.onDestroy();
-        NodesExecutor.getInstance().shutDownNode(this.rosOpenGLView.getVisualizers());
+        this.rosOpenGLView.onDestroy();
     }
 }

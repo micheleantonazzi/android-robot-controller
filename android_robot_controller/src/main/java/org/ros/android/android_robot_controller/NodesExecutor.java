@@ -1,14 +1,9 @@
 package org.ros.android.android_robot_controller;
 
-import android.util.Log;
-
 import org.ros.node.AbstractNodeMain;
 import org.ros.node.NodeConfiguration;
-import org.ros.node.NodeMain;
 import org.ros.node.NodeMainExecutor;
 
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -66,7 +61,7 @@ public class NodesExecutor {
         this.executeNodes();
     }
 
-    public synchronized void shutDownNode(List<AbstractNodeMain> nodesToShutdown){
+    public synchronized void shutDownNodes(List<AbstractNodeMain> nodesToShutdown){
         if(this.nodeMainExecutor != null) {
             for (AbstractNodeMain node : nodesToShutdown) {
                 if (node != null) {

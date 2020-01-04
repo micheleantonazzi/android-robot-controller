@@ -3,16 +3,12 @@ package org.ros.android.android_robot_controller.OpenGL.Renderes;
 import android.opengl.GLES30;
 import android.opengl.GLSurfaceView;
 import android.opengl.Matrix;
-import android.util.Log;
 
 import org.ros.android.android_robot_controller.NodesExecutor;
 import org.ros.android.android_robot_controller.OpenGL.Visualizers.MapVisualizer;
 import org.ros.android.android_robot_controller.OpenGL.Visualizers.PoseVisualizer;
-import org.ros.node.AbstractNodeMain;
-import org.ros.node.NodeMainExecutor;
 
 import java.util.Arrays;
-import java.util.List;
 
 import javax.microedition.khronos.egl.EGLConfig;
 import javax.microedition.khronos.opengles.GL10;
@@ -146,7 +142,8 @@ public class RosRenderer implements GLSurfaceView.Renderer {
         this.updateViewMatrix();
     }
 
-    public synchronized List<AbstractNodeMain> getVisualizers(){
-        return Arrays.asList(this.mapVisualizer, this.poseVisualizer);
+    public void onDestroy(){
+        NodesExecutor.getInstance().shutDownNodes(Arrays.asList(this.mapVisualizer, this.poseVisualizer));
+
     }
 }
