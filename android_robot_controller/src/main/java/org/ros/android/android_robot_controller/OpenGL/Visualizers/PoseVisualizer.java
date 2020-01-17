@@ -129,9 +129,8 @@ public class PoseVisualizer extends AbstractNodeMain {
     }
 
     private synchronized void setPositions(float positionX, float positionY){
-        this.positionX = -(positionY / (this.mapDimension * this.mapResolution / 2f)) + (this.mapOriginY / this.mapDimension);
-        this.positionY = (positionX / (this.mapDimension * this.mapResolution / 2f)) - (this.mapOriginX / this.mapDimension);
-
+        this.positionX = (this.mapDimension / 2f - ((positionY - this.mapOriginY) / this.mapResolution)) / (this.mapDimension / 2f);
+        this.positionY = (-this.mapDimension / 2f + ((positionX - this.mapOriginX) / this.mapResolution)) / (this.mapDimension / 2f);
     }
 
     @Override
