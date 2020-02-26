@@ -126,7 +126,7 @@ public class MapVisualizer extends AbstractNodeMain {
 
     }
 
-    public synchronized void draw(float[] mvpMatrix) {
+    public void draw(float[] mvpMatrix) {
 
         // VERTEX
         this.vertexHandle = GLES30.glGetAttribLocation(this.openGLProgram, "vPosition");
@@ -151,12 +151,14 @@ public class MapVisualizer extends AbstractNodeMain {
         // Pass the projection and view transformation to the shader
         GLES30.glUniformMatrix4fv(vPMatrixHandle, 1, false, mvpMatrix, 0);
 
-        // MAP TEXTURE
-        if(this.mapUpdate == true && this.textureBuffer.capacity() > 0) {
-            GLES30.glTexImage2D(GLES30.GL_TEXTURE_2D, 0, GLES30.GL_RGB,
-                    this.textureDim, this.textureDim, 0, GLES30.GL_RGB, GLES30.GL_UNSIGNED_BYTE, this.textureBuffer);
-            GLES30.glGenerateMipmap(GLES30.GL_TEXTURE_2D);
-            this.mapUpdate = false;
+        if (this.mapUpdate == true){
+            synchronized (this){
+                // Map texture
+                GLES30.glTexImage2D(GLES30.GL_TEXTURE_2D, 0, GLES30.GL_RGB,
+                        this.textureDim, this.textureDim, 0, GLES30.GL_RGB, GLES30.GL_UNSIGNED_BYTE, this.textureBuffer);
+                GLES30.glGenerateMipmap(GLES30.GL_TEXTURE_2D);
+                this.mapUpdate = false;
+            }
         }
 
         int mTextureUniformHandle = GLES30.glGetUniformLocation(this.openGLProgram, "Texture");
