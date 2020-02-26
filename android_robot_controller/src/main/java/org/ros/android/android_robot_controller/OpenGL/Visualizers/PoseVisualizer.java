@@ -85,12 +85,15 @@ public class PoseVisualizer extends AbstractNodeMain {
 
     }
 
-    public synchronized void draw(float[] resultMatrix) {
+    public void draw(float[] resultMatrix) {
 
-        // Set robot position and scale
-        Matrix.translateM(resultMatrix, 0, this.positionX, this.positionY, 0);
-        Matrix.rotateM(resultMatrix, 0, this.rotationAngle, 0, 0, 1);
-        Matrix.scaleM(resultMatrix, 0, this.scale , this.scale, 1.0f);
+        synchronized (this){
+            // Set robot position and scale
+            Matrix.translateM(resultMatrix, 0, this.positionX, this.positionY, 0);
+            Matrix.rotateM(resultMatrix, 0, this.rotationAngle, 0, 0, 1);
+            Matrix.scaleM(resultMatrix, 0, this.scale , this.scale, 1.0f);
+        }
+
 
         // VERTEX
         this.vertexHandle = GLES30.glGetAttribLocation(this.openGLProgram, "vPosition");
