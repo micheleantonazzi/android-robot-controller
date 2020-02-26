@@ -28,6 +28,7 @@ public class PoseVisualizer extends AbstractNodeMain {
     float positionX = 0;
     float positionY = 0;
     float rotationAngle = 0;
+    float scale = 0.05f;
 
     private int openGLProgram;
 
@@ -89,7 +90,7 @@ public class PoseVisualizer extends AbstractNodeMain {
         // Set robot position and scale
         Matrix.translateM(resultMatrix, 0, this.positionX, this.positionY, 0);
         Matrix.rotateM(resultMatrix, 0, this.rotationAngle, 0, 0, 1);
-        Matrix.scaleM(resultMatrix, 0, 0.017f , 0.017f, 1.0f);
+        Matrix.scaleM(resultMatrix, 0, this.scale , this.scale, 1.0f);
 
         // VERTEX
         this.vertexHandle = GLES30.glGetAttribLocation(this.openGLProgram, "vPosition");
@@ -131,6 +132,7 @@ public class PoseVisualizer extends AbstractNodeMain {
     private synchronized void setPositions(float positionX, float positionY){
         this.positionX = (this.mapDimension / 2f - ((positionY - this.mapOriginY) / this.mapResolution)) / (this.mapDimension / 2f);
         this.positionY = (-this.mapDimension / 2f + ((positionX - this.mapOriginX) / this.mapResolution)) / (this.mapDimension / 2f);
+        this.scale = 0.017f * 384f / this.mapDimension;
     }
 
     @Override
