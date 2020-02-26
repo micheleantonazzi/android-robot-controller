@@ -106,4 +106,9 @@ public class RosOpenGLView extends GLSurfaceView {
     public void onDestroy(){
         this.renderer.onDestroy();
     }
+
+    public void setScreenOrientation(int screenOrientation){
+
+        this.renderer.setScreenOrientation(screenOrientation);
+    }
 }

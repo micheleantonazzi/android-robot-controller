@@ -1,5 +1,6 @@
 package org.ros.android.android_robot_controller.OpenGL.Renderes;
 
+import android.content.res.Configuration;
 import android.opengl.GLES30;
 import android.opengl.GLSurfaceView;
 import android.opengl.Matrix;
@@ -23,6 +24,7 @@ public class RosRenderer implements GLSurfaceView.Renderer {
     private float rotationAngle = 0;
     private float moveX = 0;
     private float moveY = 0;
+    private int screenOrientation = Configuration.ORIENTATION_LANDSCAPE;
 
     private float[] resultMatrix = new float[16];
     private float[] projectionMatrix= new float[16];
@@ -85,7 +87,6 @@ public class RosRenderer implements GLSurfaceView.Renderer {
             this.mapVisualizer.draw(this.resultMatrix.clone());
             this.poseVisualizer.draw(this.resultMatrix.clone());
         }
-
     }
 
     // Scale * Rotation * Translation
@@ -109,7 +110,11 @@ public class RosRenderer implements GLSurfaceView.Renderer {
         Matrix.scaleM(scaleMatrix, 0, this.scaleFactor, this.scaleFactor, 1.0f);
 
         // Translate scale matrix
-        Matrix.translateM(scaleMatrix, 0, this.moveX, this.moveY * this.ratio, 0.0f);
+        if(this.screenOrientation == Configuration.ORIENTATION_LANDSCAPE)
+            Matrix.translateM(scaleMatrix, 0, this.moveX * this.ratio, this.moveY, 0.0f);
+        else if(this.screenOrientation == Configuration.ORIENTATION_PORTRAIT)
+            Matrix.translateM(scaleMatrix, 0, this.moveX, this.moveY * this.ratio, 0.0f);
+
 
         // Calculate scale rotation matrix
         Matrix.multiplyMM(rotationScaleMatrix, 0, scaleMatrix, 0, rotationMatrix, 0);
@@ -137,10 +142,16 @@ public class RosRenderer implements GLSurfaceView.Renderer {
         this.updateViewMatrix();
     }
 
+    public synchronized void setScreenOrientation(int screenOrientation){
+        this.screenOrientation = screenOrientation;
+    }
+
     public void setViewDimensions(int width, int height){
         this.onSurfaceChanged(null, width, height);
         this.updateViewMatrix();
     }
+
+
 
     public void onDestroy(){
         NodesExecutor.getInstance().shutDownNodes(Arrays.asList(this.mapVisualizer, this.poseVisualizer));

@@ -19,6 +19,7 @@ package org.ros.android.android_robot_controller;
 import android.app.Fragment;
 import android.app.FragmentManager;
 import android.app.FragmentTransaction;
+import android.content.res.Configuration;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.MenuItem;
@@ -31,6 +32,7 @@ import androidx.drawerlayout.widget.DrawerLayout;
 import com.google.android.material.navigation.NavigationView;
 
 import org.ros.android.RosActivity;
+import org.ros.android.android_robot_controller.OpenGL.Views.RosOpenGLView;
 import org.ros.android.android_robot_controller.fragments.FragmentMonitor;
 import org.ros.android.android_robot_controller.fragments.FragmentSettings;
 import org.ros.android.android_robot_controller.fragments.RosFragment;
@@ -75,22 +77,15 @@ public class MainActivity extends RosActivity implements  NavigationView.OnNavig
             navigationView.setCheckedItem(navigationView.getMenu().getItem(0));
             this.onNavigationItemSelected(navigationView.getCheckedItem());
         }
-        else{
-            // Find the active fragment
-            /*
-            if(this.fragmentMonitor != null && this.fragmentMonitor.isInLayout())
-                this.rosFragmentActive = this.fragmentMonitor;
-            else if(this.fragmentSettings != null && this.fragmentSettings.isInLayout())
-                this.rosFragmentActive = this.fragmentSettings;
-
-             */
-        }
     }
 
     @Override
     public void onResume(){
         super.onResume();
         //this.openGLViewMap.onResume();
+
+        // Set the screen orientation
+        ((RosOpenGLView) findViewById(R.id.RosOpenGLView)).setScreenOrientation(getResources().getConfiguration().orientation);
     }
 
     @Override
@@ -121,7 +116,6 @@ public class MainActivity extends RosActivity implements  NavigationView.OnNavig
                     this.fragmentMonitor = new FragmentMonitor();
                 else
                     this.fragmentMonitor = (FragmentMonitor) this.getFragmentManager().findFragmentByTag("fragment_monitor");
-
 
                 fragmentTransaction.replace(R.id.linear_layout, this.fragmentMonitor, "fragment_monitor");
                 fragmentTransaction.commit();
