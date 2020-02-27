@@ -5,9 +5,11 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 
 import org.ros.android.android_robot_controller.OpenGL.Views.RosOpenGLView;
 import org.ros.android.android_robot_controller.R;
+import org.ros.android.android_robot_controller.listeners.ClickListenerButtonGoal;
 
 public class FragmentMonitor extends Fragment {
 
@@ -16,12 +18,18 @@ public class FragmentMonitor extends Fragment {
     private View view;
     private RosOpenGLView rosOpenGLView;
 
+    // This variable is true if the user wants to set a goal
+    private boolean setGoal = false;
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         this.view = inflater.inflate(R.layout.fragment_monitor, container, false);
         this.rosOpenGLView = (RosOpenGLView) view.findViewById(R.id.RosOpenGLView);
+
+        Button buttonGoal = view.findViewById(R.id.ButtonGoal);
+        buttonGoal.setOnClickListener(new ClickListenerButtonGoal(buttonGoal));
         return view;
     }
 
