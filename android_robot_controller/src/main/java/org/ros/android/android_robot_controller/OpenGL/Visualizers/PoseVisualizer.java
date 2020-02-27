@@ -19,7 +19,7 @@ import java.nio.ByteOrder;
 import java.nio.FloatBuffer;
 import geometry_msgs.TransformStamped;
 
-public class PoseVisualizer extends AbstractNodeMain {
+public class PoseVisualizer extends AbstractNodeMain implements Visualizer{
 
     float mapDimension = 1;
     float mapResolution = 1;
@@ -85,6 +85,7 @@ public class PoseVisualizer extends AbstractNodeMain {
 
     }
 
+    @Override
     public void draw(float[] resultMatrix) {
 
         synchronized (this){

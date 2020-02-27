@@ -8,7 +8,7 @@ import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.nio.FloatBuffer;
 
-public class GoalVisualizer {
+public class GoalVisualizer implements Visualizer{
 
     private int openGLProgram;
 
@@ -68,6 +68,7 @@ public class GoalVisualizer {
         GLES30.glLinkProgram(this.openGLProgram);
     }
 
+    @Override
     public void draw(float[] resultMatrix) {
 
         // VERTEX

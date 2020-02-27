@@ -19,7 +19,7 @@ import java.nio.FloatBuffer;
 
 import nav_msgs.OccupancyGrid;
 
-public class MapVisualizer extends AbstractNodeMain {
+public class MapVisualizer extends AbstractNodeMain implements Visualizer{
 
     // This variable indicates if the map texture is updated
     private boolean mapUpdate = false;
@@ -123,9 +123,9 @@ public class MapVisualizer extends AbstractNodeMain {
         this.textureBuffer = textureBuffer;
         this.textureDim = textureDim;
         this.mapUpdate = true;
-
     }
 
+    @Override
     public void draw(float[] mvpMatrix) {
 
         // VERTEX
