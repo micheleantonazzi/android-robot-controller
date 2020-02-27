@@ -2,6 +2,7 @@
 <resources>
     <color name="white">#ffffff</color>
     <color name="darkGray">#212121</color>
+    <color name="mediumGray">#424242</color>
     <color name="gray">#515151</color>
     <color name="lightGray">#949494</color>
 </resources>
