@@ -3,8 +3,6 @@ package org.ros.android.android_robot_controller.listeners;
 import android.content.res.ColorStateList;
 import android.view.View;
 import android.widget.Button;
-
-import androidx.core.content.ContextCompat;
 import androidx.core.view.ViewCompat;
 
 import org.ros.android.android_robot_controller.R;
@@ -32,5 +30,9 @@ public class ClickListenerButtonGoal implements View.OnClickListener {
                     button,
                     ColorStateList.valueOf(v.getResources().getColor(R.color.mediumGray)));
         }
+    }
+
+    public boolean isSettingGoal(){
+        return this.setGoal;
     }
 }

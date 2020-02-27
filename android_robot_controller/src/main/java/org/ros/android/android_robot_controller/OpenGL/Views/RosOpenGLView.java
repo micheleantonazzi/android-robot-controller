@@ -7,8 +7,11 @@ import android.view.MotionEvent;
 import android.view.ScaleGestureDetector;
 import com.almeros.android.multitouch.RotateGestureDetector;
 import org.ros.android.android_robot_controller.OpenGL.Renderes.RosRenderer;
+import org.ros.android.android_robot_controller.listeners.ClickListenerButtonGoal;
 
 public class RosOpenGLView extends GLSurfaceView {
+
+    private ClickListenerButtonGoal clickListenerButtonGoal;
 
     // This variable is true as long as all fingers leave the screen after a multitouch action
     private boolean multiTouchInProgress = false;
@@ -66,32 +69,39 @@ public class RosOpenGLView extends GLSurfaceView {
     @Override
     public boolean onTouchEvent(MotionEvent event) {
 
-        this.scaleGestureDetector.onTouchEvent(event);
-        this.rotateGestureDetector.onTouchEvent(event);
-        // Start a multitouch gesture
-        if(event.getPointerCount() > 1) {
-            this.multiTouchInProgress = true;
-        }
-
-        // Multitouch gesture terminates
-        if (this.multiTouchInProgress && event.getAction() == MotionEvent.ACTION_UP)
-            this.multiTouchInProgress = false;
-
-        // Move the map
-        if(!this.multiTouchInProgress && event.getPointerCount() == 1){
-            switch (event.getAction()){
-                case MotionEvent.ACTION_DOWN:
-                    this.oldX = event.getX();
-                    this.oldY = event.getY();
-                    break;
-                case MotionEvent.ACTION_MOVE:
-                    float deltaX = event.getX() - this.oldX;
-                    float deltaY = this.oldY - event.getY();
-                    this.renderer.modifyMoveValues(deltaX / this.getWidth(), deltaY / this.getHeight());
-                    this.oldX = event.getX();
-                    this.oldY = event.getY();
-                    break;
+        // If you are not setting a goal
+        if(!this.clickListenerButtonGoal.isSettingGoal()) {
+            this.scaleGestureDetector.onTouchEvent(event);
+            this.rotateGestureDetector.onTouchEvent(event);
+            // Start a multitouch gesture
+            if (event.getPointerCount() > 1) {
+                this.multiTouchInProgress = true;
             }
+
+            // Multitouch gesture terminates
+            if (this.multiTouchInProgress && event.getAction() == MotionEvent.ACTION_UP)
+                this.multiTouchInProgress = false;
+
+            // Move the map
+            if (!this.multiTouchInProgress && event.getPointerCount() == 1) {
+                switch (event.getAction()) {
+                    case MotionEvent.ACTION_DOWN:
+                        this.oldX = event.getX();
+                        this.oldY = event.getY();
+                        break;
+                    case MotionEvent.ACTION_MOVE:
+                        float deltaX = event.getX() - this.oldX;
+                        float deltaY = this.oldY - event.getY();
+                        this.renderer.modifyMoveValues(deltaX / this.getWidth(), deltaY / this.getHeight());
+                        this.oldX = event.getX();
+                        this.oldY = event.getY();
+                        break;
+                }
+            }
+        }
+        // If you are setting a goal
+        else{
+
         }
         return true;
     }
@@ -110,5 +120,9 @@ public class RosOpenGLView extends GLSurfaceView {
     public void setScreenOrientation(int screenOrientation){
 
         this.renderer.setScreenOrientation(screenOrientation);
+    }
+
+    public void setClickListenerButtonGoal(ClickListenerButtonGoal clickListenerButtonGoal){
+        this.clickListenerButtonGoal = clickListenerButtonGoal;
     }
 }

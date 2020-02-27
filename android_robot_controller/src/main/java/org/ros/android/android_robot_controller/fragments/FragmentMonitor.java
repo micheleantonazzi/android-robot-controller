@@ -18,9 +18,6 @@ public class FragmentMonitor extends Fragment {
     private View view;
     private RosOpenGLView rosOpenGLView;
 
-    // This variable is true if the user wants to set a goal
-    private boolean setGoal = false;
-
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -29,7 +26,10 @@ public class FragmentMonitor extends Fragment {
         this.rosOpenGLView = (RosOpenGLView) view.findViewById(R.id.RosOpenGLView);
 
         Button buttonGoal = view.findViewById(R.id.ButtonGoal);
-        buttonGoal.setOnClickListener(new ClickListenerButtonGoal(buttonGoal));
+        ClickListenerButtonGoal clickListenerButtonGoal = new ClickListenerButtonGoal(buttonGoal);
+        buttonGoal.setOnClickListener(clickListenerButtonGoal);
+
+        this.rosOpenGLView.setClickListenerButtonGoal(clickListenerButtonGoal);
         return view;
     }
 
