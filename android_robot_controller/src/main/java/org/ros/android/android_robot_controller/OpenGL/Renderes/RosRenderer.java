@@ -4,13 +4,19 @@ import android.content.res.Configuration;
 import android.opengl.GLES30;
 import android.opengl.GLSurfaceView;
 import android.opengl.Matrix;
+import android.util.Log;
 
 import org.ros.android.android_robot_controller.NodesExecutor;
 import org.ros.android.android_robot_controller.OpenGL.Visualizers.GoalVisualizer;
 import org.ros.android.android_robot_controller.OpenGL.Visualizers.MapVisualizer;
 import org.ros.android.android_robot_controller.OpenGL.Visualizers.PoseVisualizer;
+import org.ros.android.android_robot_controller.OpenGL.Visualizers.Visualizer;
+import org.ros.node.AbstractNodeMain;
 
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashSet;
+import java.util.Set;
 
 import javax.microedition.khronos.egl.EGLConfig;
 import javax.microedition.khronos.opengles.GL10;
@@ -19,9 +25,8 @@ public class RosRenderer implements GLSurfaceView.Renderer {
 
     public static final float GLOBAL_SCALE = 0.017f * 384f;
 
-    private MapVisualizer mapVisualizer;
-    private PoseVisualizer poseVisualizer;
-    private GoalVisualizer goalVisualizer;
+    private Set<Visualizer> visualizers = new HashSet<>(0);
+    private Set<AbstractNodeMain> nodes = new HashSet<>(0);
 
     // Variables to move the map
     private float scaleFactor = 1;
@@ -58,10 +63,19 @@ public class RosRenderer implements GLSurfaceView.Renderer {
     @Override
     public void onSurfaceCreated(GL10 gl, EGLConfig config) {
         GLES30.glClearColor(0, 0, 0, 1);
-        this.mapVisualizer = new MapVisualizer();
-        this.poseVisualizer = new PoseVisualizer();
-        this.goalVisualizer = new GoalVisualizer();
-        NodesExecutor.getInstance().setNodes(Arrays.asList(this.mapVisualizer, this.poseVisualizer));
+
+        MapVisualizer mapVisualizer = new MapVisualizer();
+        this.nodes.add(mapVisualizer);
+        this.visualizers.add(mapVisualizer);
+
+        PoseVisualizer poseVisualizer = new PoseVisualizer();
+        this.nodes.add(poseVisualizer);
+        this.visualizers.add(poseVisualizer);
+
+        GoalVisualizer goalVisualizer = new GoalVisualizer();
+        this.visualizers.add(goalVisualizer);
+
+        NodesExecutor.getInstance().setNodes(new ArrayList<>(this.nodes));
     }
 
     @Override
@@ -88,9 +102,10 @@ public class RosRenderer implements GLSurfaceView.Renderer {
         GLES30.glClear(GLES30.GL_COLOR_BUFFER_BIT);
 
         synchronized (this) {
-            this.mapVisualizer.draw(this.resultMatrix.clone());
-            this.poseVisualizer.draw(this.resultMatrix.clone());
-            this.goalVisualizer.draw(this.resultMatrix.clone());
+            for (Visualizer visualizer: this.visualizers) {
+                Log.d("debugg", "disegno");
+                visualizer.draw(this.resultMatrix.clone());
+            }
         }
     }
 
@@ -158,6 +173,6 @@ public class RosRenderer implements GLSurfaceView.Renderer {
 
 
     public void onDestroy(){
-        NodesExecutor.getInstance().shutDownNodes(Arrays.asList(this.mapVisualizer, this.poseVisualizer));
+        NodesExecutor.getInstance().shutDownNodes(new ArrayList<>(this.nodes));
     }
 }
