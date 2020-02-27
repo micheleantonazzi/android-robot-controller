@@ -16,6 +16,8 @@ import javax.microedition.khronos.opengles.GL10;
 
 public class RosRenderer implements GLSurfaceView.Renderer {
 
+    public static final float GLOBAL_SCALE = 0.017f * 384f;
+
     private MapVisualizer mapVisualizer;
     private PoseVisualizer poseVisualizer;
 
@@ -109,12 +111,11 @@ public class RosRenderer implements GLSurfaceView.Renderer {
         Matrix.setIdentityM(scaleMatrix, 0);
         Matrix.scaleM(scaleMatrix, 0, this.scaleFactor, this.scaleFactor, 1.0f);
 
-        // Translate scale matrix
+        // Translate scale matrix based on screen orientation
         if(this.screenOrientation == Configuration.ORIENTATION_LANDSCAPE)
             Matrix.translateM(scaleMatrix, 0, this.moveX * this.ratio, this.moveY, 0.0f);
         else if(this.screenOrientation == Configuration.ORIENTATION_PORTRAIT)
             Matrix.translateM(scaleMatrix, 0, this.moveX, this.moveY * this.ratio, 0.0f);
-
 
         // Calculate scale rotation matrix
         Matrix.multiplyMM(rotationScaleMatrix, 0, scaleMatrix, 0, rotationMatrix, 0);
