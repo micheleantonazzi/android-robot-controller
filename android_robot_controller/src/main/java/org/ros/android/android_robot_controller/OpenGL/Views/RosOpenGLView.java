@@ -101,7 +101,14 @@ public class RosOpenGLView extends GLSurfaceView {
         }
         // If you are setting a goal
         else{
+            if(event.getPointerCount() == 1) {
 
+                switch (event.getAction()) {
+                    case MotionEvent.ACTION_DOWN:
+                        this.renderer.addGoalVisualizer();
+                        break;
+                }
+            }
         }
         return true;
     }

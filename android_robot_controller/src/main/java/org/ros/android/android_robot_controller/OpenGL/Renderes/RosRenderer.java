@@ -4,7 +4,6 @@ import android.content.res.Configuration;
 import android.opengl.GLES30;
 import android.opengl.GLSurfaceView;
 import android.opengl.Matrix;
-import android.util.Log;
 
 import org.ros.android.android_robot_controller.NodesExecutor;
 import org.ros.android.android_robot_controller.OpenGL.Visualizers.GoalVisualizer;
@@ -14,8 +13,8 @@ import org.ros.android.android_robot_controller.OpenGL.Visualizers.Visualizer;
 import org.ros.node.AbstractNodeMain;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 import javax.microedition.khronos.egl.EGLConfig;
@@ -25,8 +24,12 @@ public class RosRenderer implements GLSurfaceView.Renderer {
 
     public static final float GLOBAL_SCALE = 0.017f * 384f;
 
-    private Set<Visualizer> visualizers = new HashSet<>(0);
-    private Set<AbstractNodeMain> nodes = new HashSet<>(0);
+    private GoalVisualizer goalVisualizer = null;
+    // If this variable is true a new goalVisualizer is added in onDrawFrame
+    private volatile boolean addGoalVisualizer = false;
+
+    private List<Visualizer> visualizers = new ArrayList<>(0);
+    private List<AbstractNodeMain> nodes = new ArrayList<>(0);
 
     // Variables to move the map
     private float scaleFactor = 1;
@@ -72,9 +75,6 @@ public class RosRenderer implements GLSurfaceView.Renderer {
         this.nodes.add(poseVisualizer);
         this.visualizers.add(poseVisualizer);
 
-        GoalVisualizer goalVisualizer = new GoalVisualizer();
-        this.visualizers.add(goalVisualizer);
-
         NodesExecutor.getInstance().setNodes(this.nodes);
     }
 
@@ -102,8 +102,17 @@ public class RosRenderer implements GLSurfaceView.Renderer {
         GLES30.glClear(GLES30.GL_COLOR_BUFFER_BIT);
 
         synchronized (this) {
+
+            if (this.addGoalVisualizer) {
+                // Goal visualiser must be unique
+                if(this.goalVisualizer != null)
+                    this.visualizers.remove(this.goalVisualizer);
+
+                this.goalVisualizer = new GoalVisualizer();
+                this.visualizers.add(this.goalVisualizer);
+            }
+
             for (Visualizer visualizer: this.visualizers) {
-                Log.d("debugg", "disegno");
                 visualizer.draw(this.resultMatrix.clone());
             }
         }
@@ -170,8 +179,11 @@ public class RosRenderer implements GLSurfaceView.Renderer {
         this.updateViewMatrix();
     }
 
+    public void addGoalVisualizer(){
 
+        this.addGoalVisualizer = true;
 
+    }
     public void onDestroy(){
         NodesExecutor.getInstance().shutDownNodes(this.nodes);
     }

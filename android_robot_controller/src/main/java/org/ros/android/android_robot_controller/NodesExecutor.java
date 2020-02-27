@@ -5,8 +5,8 @@ import org.ros.node.NodeConfiguration;
 import org.ros.node.NodeMainExecutor;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 public class NodesExecutor {
 
@@ -52,7 +52,7 @@ public class NodesExecutor {
         this.executeNodes();
     }
 
-    public synchronized void setNodes(Set<AbstractNodeMain> nodes){
+    public synchronized void setNodes(List<AbstractNodeMain> nodes){
         for(AbstractNodeMain node : nodes){
             if(node != null){
                 this.nodes.put(node, false);
@@ -61,7 +61,7 @@ public class NodesExecutor {
         this.executeNodes();
     }
 
-    public synchronized void shutDownNodes(Set<AbstractNodeMain> nodesToShutdown){
+    public synchronized void shutDownNodes(List<AbstractNodeMain> nodesToShutdown){
         if(this.nodeMainExecutor != null) {
             for (AbstractNodeMain node : nodesToShutdown) {
                 if (node != null) {
