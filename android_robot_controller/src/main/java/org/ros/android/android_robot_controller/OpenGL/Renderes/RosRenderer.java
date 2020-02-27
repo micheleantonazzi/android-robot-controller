@@ -75,7 +75,7 @@ public class RosRenderer implements GLSurfaceView.Renderer {
         GoalVisualizer goalVisualizer = new GoalVisualizer();
         this.visualizers.add(goalVisualizer);
 
-        NodesExecutor.getInstance().setNodes(new ArrayList<>(this.nodes));
+        NodesExecutor.getInstance().setNodes(this.nodes);
     }
 
     @Override
@@ -173,6 +173,6 @@ public class RosRenderer implements GLSurfaceView.Renderer {
 
 
     public void onDestroy(){
-        NodesExecutor.getInstance().shutDownNodes(new ArrayList<>(this.nodes));
+        NodesExecutor.getInstance().shutDownNodes(this.nodes);
     }
 }
