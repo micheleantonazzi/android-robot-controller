@@ -178,7 +178,7 @@ public class RosRenderer implements GLSurfaceView.Renderer {
             Matrix.setIdentityM(matrix, 0);
 
             float translateX = -this.moveX + (newX - (width / 2)) / (width / 2) / this.scaleFactor;
-            float translateY = -this.moveY -(newY - (height / 2)) / (height / 2) / this.scaleFactor;
+            float translateY = (-this.moveY -(newY - (height / 2)) / (height / 2) + 0.5f) / this.scaleFactor;
 
             if(this.screenOrientation == Configuration.ORIENTATION_LANDSCAPE)
                 Matrix.translateM(matrix, 0, translateX * this.ratio, translateY, 0.0f);
@@ -194,8 +194,6 @@ public class RosRenderer implements GLSurfaceView.Renderer {
         this.onSurfaceChanged(null, width, height);
         this.updateViewMatrix();
     }
-
-
 
     public void addGoalVisualizer(){
         this.addGoalVisualizer = true;
