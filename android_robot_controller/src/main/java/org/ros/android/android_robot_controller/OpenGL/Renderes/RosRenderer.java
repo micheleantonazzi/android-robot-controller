@@ -161,8 +161,8 @@ public class RosRenderer implements GLSurfaceView.Renderer {
     private synchronized void updateResultMatrixGoalMarker(float width, float height, float oldX, float oldY, float newX, float newY){
 
         oldY = height - oldY;
-        float translateX = (oldX - (width / 2)) / (width / 2);
-        float translateY = (oldY - (height / 2)) / (height / 2);
+        float translateX = (oldX - (width / 2)) / (width / 2) / this.scaleFactor;
+        float translateY = (oldY - (height / 2)) / (height / 2) / this.scaleFactor;
 
         // Set the camera position (View matrix)
         float[] scaleMatrix = new float[16];
