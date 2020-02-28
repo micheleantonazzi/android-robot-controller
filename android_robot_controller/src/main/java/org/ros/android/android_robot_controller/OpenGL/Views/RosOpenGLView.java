@@ -3,6 +3,7 @@ package org.ros.android.android_robot_controller.OpenGL.Views;
 import android.content.Context;
 import android.opengl.GLSurfaceView;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.MotionEvent;
 import android.view.ScaleGestureDetector;
 import com.almeros.android.multitouch.RotateGestureDetector;
@@ -113,7 +114,10 @@ public class RosOpenGLView extends GLSurfaceView {
                     case MotionEvent.ACTION_MOVE:
                         this.renderer.setGoalVisualizerDimensions(this.getWidth(), this.getHeight(), this.oldX, this.oldY, event.getX(), event.getY());
                         break;
-
+                    case MotionEvent.ACTION_UP:
+                        Log.d("debugg", "lasciato");
+                        this.clickListenerButtonGoal.disable();
+                        break;
                 }
             }
         }

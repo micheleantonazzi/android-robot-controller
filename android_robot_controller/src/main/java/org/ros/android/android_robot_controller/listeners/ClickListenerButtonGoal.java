@@ -35,4 +35,8 @@ public class ClickListenerButtonGoal implements View.OnClickListener {
     public boolean isSettingGoal(){
         return this.setGoal;
     }
+
+    public void disable(){
+        this.button.performClick();
+    }
 }
