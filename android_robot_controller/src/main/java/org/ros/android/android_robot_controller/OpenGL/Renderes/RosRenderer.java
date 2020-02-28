@@ -36,8 +36,8 @@ public class RosRenderer implements GLSurfaceView.Renderer {
 
     private float[] projectionMatrix = new float[16];
     private float[] viewMatrix = new float[16];
-    private float[] projectionViewMatrix = new float[16];
-    private float[] resultMatrix = new float[16];
+    private float[] resultMatrixGlobal = new float[16];
+    private float[] resultMatrixGoalMarker = new float[16];
 
     private float ratio = 1;
 
@@ -61,8 +61,7 @@ public class RosRenderer implements GLSurfaceView.Renderer {
 
         // Set the view camera
         Matrix.setLookAtM(viewMatrix, 0, 0, 0, 1.0001f, 0f, 0f, 0f, 0f, 1.0f, 0f);
-        this.updateViewMatrix();
-
+        this.updateResultMatrixGlobal();
     }
 
     @Override
@@ -97,7 +96,7 @@ public class RosRenderer implements GLSurfaceView.Renderer {
             // in the onDrawFrame() method
             Matrix.frustumM(projectionMatrix, 0, -ratio, ratio, -1, 1, 1f, 7);
         }
-        this.updateViewMatrix();
+        this.updateResultMatrixGlobal();
     }
 
     @Override
@@ -118,20 +117,21 @@ public class RosRenderer implements GLSurfaceView.Renderer {
 
             for (Visualizer visualizer: this.visualizers) {
                 if(visualizer instanceof GoalVisualizer)
-                    visualizer.draw(this.projectionViewMatrix.clone());
+                    visualizer.draw(this.resultMatrixGoalMarker.clone());
                 else
-                    visualizer.draw(this.resultMatrix.clone());
+                    visualizer.draw(this.resultMatrixGlobal.clone());
             }
         }
     }
 
     // Scale * Rotation * Translation
-    private synchronized void updateViewMatrix(){
+    private synchronized void updateResultMatrixGlobal(){
 
         // Set the camera position (View matrix)
         float[] scaleMatrix = new float[16];
         float[] rotationMatrix = new float[16];
         float[] rotationScaleMatrix = new float[16];
+        float[] projectionViewMatrix = new float[16];
 
         // Set rotation to rotation matrix
         Matrix.setRotateM(rotationMatrix, 0, this.rotationAngle, 0f, 0f, 1.0f);
@@ -152,24 +152,62 @@ public class RosRenderer implements GLSurfaceView.Renderer {
         // Calculate the projection and view transformation
         Matrix.multiplyMM(projectionViewMatrix, 0, projectionMatrix, 0, viewMatrix, 0);
 
-        // Result matrix
-        Matrix.multiplyMM(this.resultMatrix, 0, projectionViewMatrix, 0, rotationScaleMatrix, 0);
+        // Result matrix complete
+        Matrix.multiplyMM(this.resultMatrixGlobal, 0, projectionViewMatrix, 0, rotationScaleMatrix, 0);
+
+    }
+
+    // Scale * Rotation * Translation
+    private synchronized void updateResultMatrixGoalMarker(float width, float height, float oldX, float oldY, float newX, float newY){
+
+        oldY = height - oldY;
+        float translateX = (oldX - (width / 2)) / (width / 2);
+        float translateY = (oldY - (height / 2)) / (height / 2);
+
+        // Set the camera position (View matrix)
+        float[] scaleMatrix = new float[16];
+        float[] rotationMatrix = new float[16];
+        float[] rotationScaleMatrix = new float[16];
+        float[] projectionViewMatrix = new float[16];
+
+        // Set rotation to rotation matrix
+        Matrix.setRotateM(rotationMatrix, 0, 0.0f, 0f, 0f, 1.0f);
+
+        // Set scale matrix
+        Matrix.setIdentityM(scaleMatrix, 0);
+        Matrix.scaleM(scaleMatrix, 0, this.scaleFactor, this.scaleFactor, 1.0f);
+
+        // Translate scale matrix based on screen orientation
+        if(this.screenOrientation == Configuration.ORIENTATION_LANDSCAPE)
+            Matrix.translateM(scaleMatrix, 0, translateX * this.ratio, translateY, 0.0f);
+        else if(this.screenOrientation == Configuration.ORIENTATION_PORTRAIT)
+            Matrix.translateM(scaleMatrix, 0, translateX, translateY * this.ratio, 0.0f);
+
+        // Calculate scale rotation matrix
+        Matrix.multiplyMM(rotationScaleMatrix, 0, scaleMatrix, 0, rotationMatrix, 0);
+
+        // Calculate the projection and view transformation
+        Matrix.multiplyMM(projectionViewMatrix, 0, projectionMatrix, 0, viewMatrix, 0);
+
+        // Result matrix complete
+        Matrix.multiplyMM(this.resultMatrixGoalMarker, 0, projectionViewMatrix, 0, rotationScaleMatrix, 0);
+
     }
 
     public synchronized void modifyScaleFactor(float scaleFactor) {
         this.scaleFactor *= scaleFactor;
-        this.updateViewMatrix();
+        this.updateResultMatrixGlobal();
     }
 
     public synchronized void modifyMoveValues(float moveX, float moveY){
         this.moveX += moveX * 2 / this.scaleFactor;
         this.moveY += moveY * 2 / this.scaleFactor;
-        this.updateViewMatrix();
+        this.updateResultMatrixGlobal();
     }
 
     public synchronized void modifyRotationAngle(float delta){
         this.rotationAngle += delta;
-        this.updateViewMatrix();
+        this.updateResultMatrixGlobal();
     }
 
     public synchronized void setScreenOrientation(int screenOrientation){
@@ -177,24 +215,14 @@ public class RosRenderer implements GLSurfaceView.Renderer {
     }
 
     public synchronized void setGoalVisualizerDimensions(float width, float height, float oldX, float oldY, float newX, float newY){
-        if(this.goalVisualizer != null){
 
-            float translateX = (newX - (width / 2)) / (width / 2);
-            float translateY = -(newY - (height / 2)) / (height / 2) + 0.5f;
-
-            if(this.screenOrientation == Configuration.ORIENTATION_LANDSCAPE)
-                translateX *= this.ratio;
-            else if(this.screenOrientation == Configuration.ORIENTATION_PORTRAIT)
-                translateY *= this.ratio;
-
-            this.goalVisualizer.setDimensions(translateX, translateY);
-        }
+            this.updateResultMatrixGoalMarker(width, height, oldX, oldY, newX, newY);
 
     }
 
     public void setViewDimensions(int width, int height){
         this.onSurfaceChanged(null, width, height);
-        this.updateViewMatrix();
+        this.updateResultMatrixGlobal();
     }
 
     public void addGoalVisualizer(){

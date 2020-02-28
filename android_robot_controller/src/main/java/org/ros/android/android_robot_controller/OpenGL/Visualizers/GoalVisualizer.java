@@ -14,6 +14,7 @@ public class GoalVisualizer implements Visualizer{
 
     // Variables used to draw goal marker
     float translateX, translateY;
+    float scale;
 
     private int openGLProgram;
 
@@ -92,9 +93,8 @@ public class GoalVisualizer implements Visualizer{
 
         synchronized (this) {
 
-            Log.d("debugg", "traslo");
-            Matrix.translateM(resultMatrix, 0, this.translateX, this.translateY, 0);
-
+            //Matrix.translateM(resultMatrix, 0, this.translateX, this.translateY, 0);
+            //Matrix.scaleM(resultMatrix, 0, this.scale, this.scale, 1.0f);
             // Pass the projection and view transformation to the shader
             GLES30.glUniformMatrix4fv(vPMatrixHandle, 1, false, resultMatrix, 0);
         }
@@ -113,10 +113,12 @@ public class GoalVisualizer implements Visualizer{
 
         GLES30.glDisableVertexAttribArray(this.vertexHandle);
     }
-
+    /*
     public synchronized void setDimensions(float translateX, float translateY){
         this.translateX = translateX;
         this.translateY = translateY;
     }
+
+     */
 
 }
