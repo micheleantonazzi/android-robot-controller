@@ -88,12 +88,7 @@ public class PoseVisualizer extends AbstractNodeMain implements Visualizer{
     @Override
     public void draw(float[] resultMatrix) {
 
-        synchronized (this){
-            // Set robot position and scale
-            Matrix.translateM(resultMatrix, 0, this.positionX, this.positionY, 0);
-            Matrix.rotateM(resultMatrix, 0, this.rotationAngle, 0, 0, 1);
-            Matrix.scaleM(resultMatrix, 0, this.scale , this.scale, 1.0f);
-        }
+
 
 
         // VERTEX
@@ -109,8 +104,16 @@ public class PoseVisualizer extends AbstractNodeMain implements Visualizer{
         // get handle to shape's transformation matrix
         int vPMatrixHandle = GLES30.glGetUniformLocation(this.openGLProgram, "uMVPMatrix");
 
-        // Pass the projection and view transformation to the shader
-        GLES30.glUniformMatrix4fv(vPMatrixHandle, 1, false, resultMatrix, 0);
+        synchronized (this){
+            // Set robot position and scale
+            Matrix.translateM(resultMatrix, 0, this.positionX, this.positionY, 0);
+            Matrix.rotateM(resultMatrix, 0, this.rotationAngle, 0, 0, 1);
+            Matrix.scaleM(resultMatrix, 0, this.scale , this.scale, 1.0f);
+
+            // Pass the projection and view transformation to the shader
+            GLES30.glUniformMatrix4fv(vPMatrixHandle, 1, false, resultMatrix, 0);
+        }
+
 
         // Get handle to fragment shader's vColor member
         colorHandle = GLES30.glGetUniformLocation(this.openGLProgram, "vColor");
