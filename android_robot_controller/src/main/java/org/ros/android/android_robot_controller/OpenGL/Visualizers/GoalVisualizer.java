@@ -12,9 +12,7 @@ import java.nio.FloatBuffer;
 
 public class GoalVisualizer implements Visualizer{
 
-    // Variables used to draw goal marker
-    float translateX, translateY;
-    float scale;
+    float scale = 0.25f;
 
     private int openGLProgram;
 
@@ -93,8 +91,8 @@ public class GoalVisualizer implements Visualizer{
 
         synchronized (this) {
 
-            //Matrix.translateM(resultMatrix, 0, this.translateX, this.translateY, 0);
-            //Matrix.scaleM(resultMatrix, 0, this.scale, this.scale, 1.0f);
+            Matrix.translateM(resultMatrix, 0, 0.0f, 1.0f * this.scale, 0);
+            Matrix.scaleM(resultMatrix, 0, this.scale, this.scale, 1.0f);
             // Pass the projection and view transformation to the shader
             GLES30.glUniformMatrix4fv(vPMatrixHandle, 1, false, resultMatrix, 0);
         }
@@ -113,12 +111,4 @@ public class GoalVisualizer implements Visualizer{
 
         GLES30.glDisableVertexAttribArray(this.vertexHandle);
     }
-    /*
-    public synchronized void setDimensions(float translateX, float translateY){
-        this.translateX = translateX;
-        this.translateY = translateY;
-    }
-
-     */
-
 }
