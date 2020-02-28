@@ -11,12 +11,8 @@ import org.ros.android.android_robot_controller.OpenGL.Visualizers.MapVisualizer
 import org.ros.android.android_robot_controller.OpenGL.Visualizers.PoseVisualizer;
 import org.ros.android.android_robot_controller.OpenGL.Visualizers.Visualizer;
 import org.ros.node.AbstractNodeMain;
-
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
-
 import javax.microedition.khronos.egl.EGLConfig;
 import javax.microedition.khronos.opengles.GL10;
 
@@ -110,6 +106,7 @@ public class RosRenderer implements GLSurfaceView.Renderer {
 
                 this.goalVisualizer = new GoalVisualizer();
                 this.visualizers.add(this.goalVisualizer);
+                this.addGoalVisualizer = false;
             }
 
             for (Visualizer visualizer: this.visualizers) {
@@ -174,16 +171,36 @@ public class RosRenderer implements GLSurfaceView.Renderer {
         this.screenOrientation = screenOrientation;
     }
 
+    public synchronized void setGoalVisualizerDimensions(float width, float height, float oldX, float oldY, float newX, float newY){
+        if(this.goalVisualizer != null){
+            float[] matrix = new float[16];
+            // Set scale matrix
+            Matrix.setIdentityM(matrix, 0);
+
+            float translateX = -this.moveX + (newX - (width / 2)) / (width / 2) / this.scaleFactor;
+            float translateY = -this.moveY -(newY - (height / 2)) / (height / 2) / this.scaleFactor;
+
+            if(this.screenOrientation == Configuration.ORIENTATION_LANDSCAPE)
+                Matrix.translateM(matrix, 0, translateX * this.ratio, translateY, 0.0f);
+            else if(this.screenOrientation == Configuration.ORIENTATION_PORTRAIT)
+                Matrix.translateM(matrix, 0, translateX, translateY * this.ratio, 0.0f);
+
+            this.goalVisualizer.setDimensions(matrix.clone());
+        }
+
+    }
+
     public void setViewDimensions(int width, int height){
         this.onSurfaceChanged(null, width, height);
         this.updateViewMatrix();
     }
 
+
+
     public void addGoalVisualizer(){
-
         this.addGoalVisualizer = true;
-
     }
+
     public void onDestroy(){
         NodesExecutor.getInstance().shutDownNodes(this.nodes);
     }

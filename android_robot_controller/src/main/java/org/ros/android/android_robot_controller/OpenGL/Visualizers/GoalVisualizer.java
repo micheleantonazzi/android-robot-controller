@@ -1,6 +1,8 @@
 package org.ros.android.android_robot_controller.OpenGL.Visualizers;
 
 import android.opengl.GLES30;
+import android.opengl.Matrix;
+import android.util.Log;
 
 import org.ros.android.android_robot_controller.OpenGL.Renderes.RosRenderer;
 
@@ -9,6 +11,11 @@ import java.nio.ByteOrder;
 import java.nio.FloatBuffer;
 
 public class GoalVisualizer implements Visualizer{
+
+    // Variables used to draw goal marker
+    float translateX, translateY;
+
+    float[] goalMatrix;
 
     private int openGLProgram;
 
@@ -43,6 +50,10 @@ public class GoalVisualizer implements Visualizer{
 
 
     public GoalVisualizer(){
+        float[] goalMatrix = new float[16];
+        Matrix.setIdentityM(goalMatrix, 0);
+        this.goalMatrix = goalMatrix;
+
         // Create the vertex buffer
         ByteBuffer bb = ByteBuffer.allocateDirect(
                 this.arrowCoordinates.length * 4); // 4 is float's length
@@ -84,8 +95,12 @@ public class GoalVisualizer implements Visualizer{
         // get handle to shape's transformation matrix
         int vPMatrixHandle = GLES30.glGetUniformLocation(this.openGLProgram, "uMVPMatrix");
 
-        // Pass the projection and view transformation to the shader
-        GLES30.glUniformMatrix4fv(vPMatrixHandle, 1, false, resultMatrix, 0);
+        synchronized (this) {
+
+            Matrix.multiplyMM(resultMatrix, 0, resultMatrix, 0, this.goalMatrix, 0);
+            // Pass the projection and view transformation to the shader
+            GLES30.glUniformMatrix4fv(vPMatrixHandle, 1, false, resultMatrix, 0);
+        }
 
         // Get handle to fragment shader's vColor member
         colorHandle = GLES30.glGetUniformLocation(this.openGLProgram, "vColor");
@@ -102,5 +117,8 @@ public class GoalVisualizer implements Visualizer{
         GLES30.glDisableVertexAttribArray(this.vertexHandle);
     }
 
+    public synchronized void setDimensions(float[] goalMatrix){
+        this.goalMatrix = goalMatrix;
+    }
 
 }

@@ -106,7 +106,14 @@ public class RosOpenGLView extends GLSurfaceView {
                 switch (event.getAction()) {
                     case MotionEvent.ACTION_DOWN:
                         this.renderer.addGoalVisualizer();
+                        this.oldX = event.getX();
+                        this.oldY = event.getY();
+                        this.renderer.setGoalVisualizerDimensions(this.getWidth(), this.getHeight(), this.oldX, this.oldY, this.oldX, this.oldY);
                         break;
+                    case MotionEvent.ACTION_MOVE:
+                        this.renderer.setGoalVisualizerDimensions(this.getWidth(), this.getHeight(), this.oldX, this.oldY, event.getX(), event.getY());
+                        break;
+
                 }
             }
         }
