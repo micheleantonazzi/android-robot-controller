@@ -15,8 +15,6 @@ public class GoalVisualizer implements Visualizer{
     // Variables used to draw goal marker
     float translateX, translateY;
 
-    float[] goalMatrix;
-
     private int openGLProgram;
 
     private int vertexHandle;
@@ -50,9 +48,6 @@ public class GoalVisualizer implements Visualizer{
 
 
     public GoalVisualizer(){
-        float[] goalMatrix = new float[16];
-        Matrix.setIdentityM(goalMatrix, 0);
-        this.goalMatrix = goalMatrix;
 
         // Create the vertex buffer
         ByteBuffer bb = ByteBuffer.allocateDirect(
@@ -97,7 +92,9 @@ public class GoalVisualizer implements Visualizer{
 
         synchronized (this) {
 
-            Matrix.multiplyMM(resultMatrix, 0, resultMatrix, 0, this.goalMatrix, 0);
+            Log.d("debugg", "traslo");
+            Matrix.translateM(resultMatrix, 0, this.translateX, this.translateY, 0);
+
             // Pass the projection and view transformation to the shader
             GLES30.glUniformMatrix4fv(vPMatrixHandle, 1, false, resultMatrix, 0);
         }
@@ -117,8 +114,9 @@ public class GoalVisualizer implements Visualizer{
         GLES30.glDisableVertexAttribArray(this.vertexHandle);
     }
 
-    public synchronized void setDimensions(float[] goalMatrix){
-        this.goalMatrix = goalMatrix;
+    public synchronized void setDimensions(float translateX, float translateY){
+        this.translateX = translateX;
+        this.translateY = translateY;
     }
 
 }

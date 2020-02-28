@@ -34,8 +34,11 @@ public class RosRenderer implements GLSurfaceView.Renderer {
     private float moveY = 0;
     private int screenOrientation = Configuration.ORIENTATION_LANDSCAPE;
 
+    private float[] projectionMatrix = new float[16];
+    private float[] viewMatrix = new float[16];
+    private float[] projectionViewMatrix = new float[16];
     private float[] resultMatrix = new float[16];
-    private float[] projectionMatrix= new float[16];
+
     private float ratio = 1;
 
     // This method compiles the OpenGL Shading Language
@@ -55,6 +58,9 @@ public class RosRenderer implements GLSurfaceView.Renderer {
 
     public RosRenderer() {
         Matrix.frustumM(projectionMatrix, 0, -1, 1, -1f, 1f, 1f, 7);
+
+        // Set the view camera
+        Matrix.setLookAtM(viewMatrix, 0, 0, 0, 1.0001f, 0f, 0f, 0f, 0f, 1.0f, 0f);
         this.updateViewMatrix();
 
     }
@@ -91,6 +97,7 @@ public class RosRenderer implements GLSurfaceView.Renderer {
             // in the onDrawFrame() method
             Matrix.frustumM(projectionMatrix, 0, -ratio, ratio, -1, 1, 1f, 7);
         }
+        this.updateViewMatrix();
     }
 
     @Override
@@ -110,7 +117,10 @@ public class RosRenderer implements GLSurfaceView.Renderer {
             }
 
             for (Visualizer visualizer: this.visualizers) {
-                visualizer.draw(this.resultMatrix.clone());
+                if(visualizer instanceof GoalVisualizer)
+                    visualizer.draw(this.projectionViewMatrix.clone());
+                else
+                    visualizer.draw(this.resultMatrix.clone());
             }
         }
     }
@@ -119,14 +129,9 @@ public class RosRenderer implements GLSurfaceView.Renderer {
     private synchronized void updateViewMatrix(){
 
         // Set the camera position (View matrix)
-        float[] viewMatrix = new float[16];
         float[] scaleMatrix = new float[16];
         float[] rotationMatrix = new float[16];
         float[] rotationScaleMatrix = new float[16];
-        float[] projectionViewMatrix = new float[16];
-
-        // Set the view camera
-        Matrix.setLookAtM(viewMatrix, 0, 0, 0, 1.0001f, 0f, 0f, 0f, 0f, 1.0f, 0f);
 
         // Set rotation to rotation matrix
         Matrix.setRotateM(rotationMatrix, 0, this.rotationAngle, 0f, 0f, 1.0f);
@@ -173,19 +178,16 @@ public class RosRenderer implements GLSurfaceView.Renderer {
 
     public synchronized void setGoalVisualizerDimensions(float width, float height, float oldX, float oldY, float newX, float newY){
         if(this.goalVisualizer != null){
-            float[] matrix = new float[16];
-            // Set scale matrix
-            Matrix.setIdentityM(matrix, 0);
 
-            float translateX = -this.moveX + (newX - (width / 2)) / (width / 2) / this.scaleFactor;
-            float translateY = (-this.moveY -(newY - (height / 2)) / (height / 2) + 0.5f) / this.scaleFactor;
+            float translateX = (newX - (width / 2)) / (width / 2);
+            float translateY = -(newY - (height / 2)) / (height / 2) + 0.5f;
 
             if(this.screenOrientation == Configuration.ORIENTATION_LANDSCAPE)
-                Matrix.translateM(matrix, 0, translateX * this.ratio, translateY, 0.0f);
+                translateX *= this.ratio;
             else if(this.screenOrientation == Configuration.ORIENTATION_PORTRAIT)
-                Matrix.translateM(matrix, 0, translateX, translateY * this.ratio, 0.0f);
+                translateY *= this.ratio;
 
-            this.goalVisualizer.setDimensions(matrix.clone());
+            this.goalVisualizer.setDimensions(translateX, translateY);
         }
 
     }
