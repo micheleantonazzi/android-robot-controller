@@ -88,9 +88,6 @@ public class PoseVisualizer extends AbstractNodeMain implements Visualizer{
     @Override
     public void draw(float[] resultMatrix) {
 
-
-
-
         // VERTEX
         this.vertexHandle = GLES30.glGetAttribLocation(this.openGLProgram, "vPosition");
         GLES30.glVertexAttribPointer(this.vertexHandle, 3,
