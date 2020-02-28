@@ -27,12 +27,16 @@ public class RosRenderer implements GLSurfaceView.Renderer {
     private List<Visualizer> visualizers = new ArrayList<>(0);
     private List<AbstractNodeMain> nodes = new ArrayList<>(0);
 
-    // Variables to move the map
+    // Variables to move all objects
     private float scaleFactor = 1;
     private float rotationAngle = 0;
     private float moveX = 0;
     private float moveY = 0;
     private int screenOrientation = Configuration.ORIENTATION_LANDSCAPE;
+
+    // Variables to move the goal marker
+    float translateX = 0.0f;
+    float translateY = 0.0f;
 
     private float[] projectionMatrix = new float[16];
     private float[] viewMatrix = new float[16];
@@ -158,11 +162,7 @@ public class RosRenderer implements GLSurfaceView.Renderer {
     }
 
     // Scale * Rotation * Translation
-    private synchronized void updateResultMatrixGoalMarker(float width, float height, float oldX, float oldY, float newX, float newY){
-
-        oldY = height - oldY;
-        float translateX = (oldX - (width / 2)) / (width / 2) / this.scaleFactor;
-        float translateY = (oldY - (height / 2)) / (height / 2) / this.scaleFactor;
+    private synchronized void updateResultMatrixGoalMarker(){
 
         // Set the camera position (View matrix)
         float[] scaleMatrix = new float[16];
@@ -179,9 +179,9 @@ public class RosRenderer implements GLSurfaceView.Renderer {
 
         // Translate scale matrix based on screen orientation
         if(this.screenOrientation == Configuration.ORIENTATION_LANDSCAPE)
-            Matrix.translateM(scaleMatrix, 0, translateX * this.ratio, translateY, 0.0f);
+            Matrix.translateM(scaleMatrix, 0, this.translateX * this.ratio, this.translateY, 0.0f);
         else if(this.screenOrientation == Configuration.ORIENTATION_PORTRAIT)
-            Matrix.translateM(scaleMatrix, 0, translateX, translateY * this.ratio, 0.0f);
+            Matrix.translateM(scaleMatrix, 0, this.translateX, this.translateY * this.ratio, 0.0f);
 
         // Calculate scale rotation matrix
         Matrix.multiplyMM(rotationScaleMatrix, 0, scaleMatrix, 0, rotationMatrix, 0);
@@ -216,8 +216,10 @@ public class RosRenderer implements GLSurfaceView.Renderer {
 
     public synchronized void setGoalVisualizerDimensions(float width, float height, float oldX, float oldY, float newX, float newY){
 
-            this.updateResultMatrixGoalMarker(width, height, oldX, oldY, newX, newY);
-
+        oldY = height - oldY;
+        this.translateX = (oldX - (width / 2)) / (width / 2) / this.scaleFactor;
+        this.translateY = (oldY - (height / 2)) / (height / 2) / this.scaleFactor;
+        this.updateResultMatrixGoalMarker();
     }
 
     public void setViewDimensions(int width, int height){
