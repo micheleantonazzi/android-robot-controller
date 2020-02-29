@@ -26,14 +26,14 @@ public class GoalVisualizer implements Visualizer{
     private FloatBuffer vertexBuffer;
 
     private float arrowCoordinates[] = {
-            -0.5f, 0.3f, 0.0f,   // triangle - bottom left
+            -0.15f, 0.65f, 0.0f,   // triangle - bottom left
             0.0f,  1.0f, 0.0f,   // triangle - top center
-            0.0f, 0.3f, 0.0f,    // triangle - center
-            0.5f,  0.3f, 0.0f,   // triangle - bottom right
-            -0.2f, -1.0f, 0.0f,  // rectangle - bottom left
-            -0.2f,  0.3f, 0.0f,  // rectangle - top left
-            0.2f, -1.0f, 0.0f,   // rectangle - bottom right
-            0.2f,  0.3f, 0.0f }; // rectangle - top right
+            0.0f, 0.65f, 0.0f,    // triangle - center
+            0.15f,  0.65f, 0.0f,   // triangle - bottom right
+            -0.05f, 0.0f, 0.0f,  // rectangle - bottom left
+            -0.05f,  0.65f, 0.0f,  // rectangle - top left
+            0.05f, 0.0f, 0.0f,   // rectangle - bottom right
+            0.05f,  0.65f, 0.0f }; // rectangle - top right
 
     private final String vertexShaderCode =
             "uniform mat4 uMVPMatrix;" +
