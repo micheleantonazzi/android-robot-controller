@@ -4,6 +4,7 @@ import android.content.res.Configuration;
 import android.opengl.GLES30;
 import android.opengl.GLSurfaceView;
 import android.opengl.Matrix;
+import android.util.Log;
 
 import org.ros.android.android_robot_controller.NodesExecutor;
 import org.ros.android.android_robot_controller.OpenGL.Visualizers.GoalVisualizer;
@@ -184,10 +185,11 @@ public class RosRenderer implements GLSurfaceView.Renderer {
         else if(this.screenOrientation == Configuration.ORIENTATION_PORTRAIT)
             translateY *= this.ratio;
 
-
+        float rotationMarker = (float) Math.toDegrees(Math.atan2(newY - oldY, newX - oldX)) + 90.0f;
+        Log.d("debugg", "rotation " + rotationMarker + "");
 
         if(this.goalVisualizer != null)
-            this.goalVisualizer.setAttributes(translateX, translateY, -this.rotationAngle);
+            this.goalVisualizer.setAttributes(translateX, translateY, -this.rotationAngle, -rotationMarker);
     }
 
     public void setViewDimensions(int width, int height){

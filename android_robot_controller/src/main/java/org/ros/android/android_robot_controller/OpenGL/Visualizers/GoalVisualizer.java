@@ -16,6 +16,7 @@ public class GoalVisualizer implements Visualizer{
 
     private float translateX = 0.0f;
     private float translateY = 0.0f;
+    private float rotationGlobal = 0.0f;
     private float rotation = 0.0f;
 
     private int openGLProgram;
@@ -95,9 +96,12 @@ public class GoalVisualizer implements Visualizer{
 
         synchronized (this) {
 
-            Matrix.rotateM(resultMatrix, 0, this.rotation, 0, 0, 1);
+            //Log.d("debugg", this.rotation + "");
+            Matrix.rotateM(resultMatrix, 0, this.rotationGlobal, 0, 0, 1);
 
             Matrix.translateM(resultMatrix, 0, this.translateX, this.translateY, 0.0f);
+
+            Matrix.rotateM(resultMatrix, 0, this.rotation, 0, 0, 1);
 
             // Pass the projection and view transformation to the shader
             GLES30.glUniformMatrix4fv(vPMatrixHandle, 1, false, resultMatrix, 0);
@@ -107,7 +111,7 @@ public class GoalVisualizer implements Visualizer{
         colorHandle = GLES30.glGetUniformLocation(this.openGLProgram, "vColor");
 
         // Set color for drawing the triangle
-        GLES30.glUniform4fv(colorHandle, 1, new float[]{1.0f, 0.2f, 0f, 1.0f}, 0);
+        GLES30.glUniform4fv(colorHandle, 1, new float[]{0.2f, 1.0f, 0.2f, 1.0f}, 0);
 
         // Draw the triangles
         GLES30.glDrawArrays(
@@ -118,9 +122,10 @@ public class GoalVisualizer implements Visualizer{
         GLES30.glDisableVertexAttribArray(this.vertexHandle);
     }
 
-    public synchronized void setAttributes(float translateX, float translateY, float rotation){
+    public synchronized void setAttributes(float translateX, float translateY, float rotationGlobal, float rotation){
         this.translateY = translateY;
         this.translateX = translateX;
+        this.rotationGlobal = rotationGlobal;
         this.rotation = rotation;
     }
 }
