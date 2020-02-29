@@ -12,7 +12,11 @@ import java.nio.FloatBuffer;
 
 public class GoalVisualizer implements Visualizer{
 
-    float scale = 0.25f;
+    private float scale = 0.25f;
+
+    private float translateX = 0.0f;
+    private float translateY = 0.0f;
+    private float rotation = 0.0f;
 
     private int openGLProgram;
 
@@ -91,8 +95,10 @@ public class GoalVisualizer implements Visualizer{
 
         synchronized (this) {
 
-            Matrix.translateM(resultMatrix, 0, 0.0f, 1.0f * this.scale, 0);
-            Matrix.scaleM(resultMatrix, 0, this.scale, this.scale, 1.0f);
+            Matrix.rotateM(resultMatrix, 0, this.rotation, 0, 0, 1);
+
+            Matrix.translateM(resultMatrix, 0, this.translateX, this.translateY, 0.0f);
+
             // Pass the projection and view transformation to the shader
             GLES30.glUniformMatrix4fv(vPMatrixHandle, 1, false, resultMatrix, 0);
         }
@@ -110,5 +116,11 @@ public class GoalVisualizer implements Visualizer{
                 GLES30.GL_TRIANGLE_STRIP, 4, 4);
 
         GLES30.glDisableVertexAttribArray(this.vertexHandle);
+    }
+
+    public synchronized void setAttributes(float translateX, float translateY, float rotation){
+        this.translateY = translateY;
+        this.translateX = translateX;
+        this.rotation = rotation;
     }
 }

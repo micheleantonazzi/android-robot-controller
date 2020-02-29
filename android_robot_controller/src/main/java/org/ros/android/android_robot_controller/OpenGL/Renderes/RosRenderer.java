@@ -34,14 +34,9 @@ public class RosRenderer implements GLSurfaceView.Renderer {
     private float moveY = 0;
     private int screenOrientation = Configuration.ORIENTATION_LANDSCAPE;
 
-    // Variables to move the goal marker
-    float translateX = 0.0f;
-    float translateY = 0.0f;
-
     private float[] projectionMatrix = new float[16];
     private float[] viewMatrix = new float[16];
     private float[] resultMatrixGlobal = new float[16];
-    private float[] resultMatrixGoalMarker = new float[16];
 
     private float ratio = 1;
 
@@ -120,10 +115,7 @@ public class RosRenderer implements GLSurfaceView.Renderer {
             }
 
             for (Visualizer visualizer: this.visualizers) {
-                if(visualizer instanceof GoalVisualizer)
-                    visualizer.draw(this.resultMatrixGoalMarker.clone());
-                else
-                    visualizer.draw(this.resultMatrixGlobal.clone());
+                visualizer.draw(this.resultMatrixGlobal.clone());
             }
         }
     }
@@ -161,39 +153,6 @@ public class RosRenderer implements GLSurfaceView.Renderer {
 
     }
 
-    // Scale * Rotation * Translation
-    private synchronized void updateResultMatrixGoalMarker(){
-
-        // Set the camera position (View matrix)
-        float[] scaleMatrix = new float[16];
-        float[] rotationMatrix = new float[16];
-        float[] rotationScaleMatrix = new float[16];
-        float[] projectionViewMatrix = new float[16];
-
-        // Set rotation to rotation matrix
-        Matrix.setRotateM(rotationMatrix, 0, 0.0f, 0f, 0f, 1.0f);
-
-        // Set scale matrix
-        Matrix.setIdentityM(scaleMatrix, 0);
-        Matrix.scaleM(scaleMatrix, 0, this.scaleFactor, this.scaleFactor, 1.0f);
-
-        // Translate scale matrix based on screen orientation
-        if(this.screenOrientation == Configuration.ORIENTATION_LANDSCAPE)
-            Matrix.translateM(scaleMatrix, 0, this.translateX * this.ratio, this.translateY, 0.0f);
-        else if(this.screenOrientation == Configuration.ORIENTATION_PORTRAIT)
-            Matrix.translateM(scaleMatrix, 0, this.translateX, this.translateY * this.ratio, 0.0f);
-
-        // Calculate scale rotation matrix
-        Matrix.multiplyMM(rotationScaleMatrix, 0, scaleMatrix, 0, rotationMatrix, 0);
-
-        // Calculate the projection and view transformation
-        Matrix.multiplyMM(projectionViewMatrix, 0, projectionMatrix, 0, viewMatrix, 0);
-
-        // Result matrix complete
-        Matrix.multiplyMM(this.resultMatrixGoalMarker, 0, projectionViewMatrix, 0, rotationScaleMatrix, 0);
-
-    }
-
     public synchronized void modifyScaleFactor(float scaleFactor) {
         this.scaleFactor *= scaleFactor;
         this.updateResultMatrixGlobal();
@@ -217,9 +176,18 @@ public class RosRenderer implements GLSurfaceView.Renderer {
     public synchronized void setGoalVisualizerDimensions(float width, float height, float oldX, float oldY, float newX, float newY){
 
         oldY = height - oldY;
-        this.translateX = (oldX - (width / 2)) / (width / 2) / this.scaleFactor;
-        this.translateY = (oldY - (height / 2)) / (height / 2) / this.scaleFactor;
-        this.updateResultMatrixGoalMarker();
+        float translateX = (oldX - (width / 2)) / (width / 2) / this.scaleFactor - this.moveX;
+        float translateY = (oldY - (height / 2)) / (height / 2) / this.scaleFactor - this.moveY;
+
+        if(this.screenOrientation == Configuration.ORIENTATION_LANDSCAPE)
+            translateX *= this.ratio;
+        else if(this.screenOrientation == Configuration.ORIENTATION_PORTRAIT)
+            translateY *= this.ratio;
+
+
+
+        if(this.goalVisualizer != null)
+            this.goalVisualizer.setAttributes(translateX, translateY, -this.rotationAngle);
     }
 
     public void setViewDimensions(int width, int height){
