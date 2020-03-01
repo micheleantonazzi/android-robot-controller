@@ -4,7 +4,6 @@ import android.content.res.Configuration;
 import android.opengl.GLES30;
 import android.opengl.GLSurfaceView;
 import android.opengl.Matrix;
-import android.util.Log;
 
 import org.ros.android.android_robot_controller.NodesExecutor;
 import org.ros.android.android_robot_controller.OpenGL.Visualizers.GoalVisualizer;
@@ -192,6 +191,13 @@ public class RosRenderer implements GLSurfaceView.Renderer {
 
     public synchronized void addGoalVisualizer(){
         this.visualizers.add(this.goalVisualizer);
+        NodesExecutor.getInstance().setNode(this.goalVisualizer);
+
+    }
+
+    public synchronized void goalMarkerSet(){
+        NodesExecutor.getInstance().shutDownNode(this.goalVisualizer);
+        this.goalVisualizer.goalMarkerSet();
     }
 
     public void onDestroy(){

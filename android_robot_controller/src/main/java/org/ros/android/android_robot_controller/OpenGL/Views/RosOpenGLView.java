@@ -116,6 +116,7 @@ public class RosOpenGLView extends GLSurfaceView {
                         break;
                     case MotionEvent.ACTION_UP:
                         this.clickListenerButtonGoal.disable();
+                        this.renderer.goalMarkerSet();
                         break;
                 }
             }

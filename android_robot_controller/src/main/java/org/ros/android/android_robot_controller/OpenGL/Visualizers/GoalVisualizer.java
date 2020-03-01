@@ -5,19 +5,28 @@ import android.opengl.Matrix;
 import android.util.Log;
 
 import org.ros.android.android_robot_controller.OpenGL.Renderes.RosRenderer;
+import org.ros.message.MessageListener;
+import org.ros.namespace.GraphName;
+import org.ros.node.AbstractNodeMain;
+import org.ros.node.ConnectedNode;
+import org.ros.node.topic.Subscriber;
 
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.nio.FloatBuffer;
 
-public class GoalVisualizer implements Visualizer{
+import nav_msgs.MapMetaData;
 
-    private float scale = 0.25f;
+public class GoalVisualizer extends AbstractNodeMain implements Visualizer{
+
+    private float scale = 50.0f;
 
     private float translateX = 0.0f;
     private float translateY = 0.0f;
     private float rotationGlobal = 0.0f;
     private float rotation = 0.0f;
+
+    private float mapWidth = Integer.MAX_VALUE;
 
     private int openGLProgram;
 
@@ -102,6 +111,8 @@ public class GoalVisualizer implements Visualizer{
 
             Matrix.rotateM(resultMatrix, 0, this.rotation, 0, 0, 1);
 
+            Matrix.scaleM(resultMatrix, 0, RosRenderer.GLOBAL_SCALE / this.mapWidth * this.scale, RosRenderer.GLOBAL_SCALE / this.mapWidth * this.scale, 1.0f);
+
             // Pass the projection and view transformation to the shader
             GLES30.glUniformMatrix4fv(vPMatrixHandle, 1, false, resultMatrix, 0);
         }
@@ -122,9 +133,35 @@ public class GoalVisualizer implements Visualizer{
     }
 
     public synchronized void setAttributes(float translateX, float translateY, float rotationGlobal, float rotation){
+        this.scale = 50.0f;
         this.translateY = translateY;
         this.translateX = translateX;
         this.rotationGlobal = rotationGlobal;
         this.rotation = rotation;
+    }
+
+    public synchronized void goalMarkerSet(){
+        this.scale = 25f;
+    }
+
+    private synchronized void setMapWidth(float width){
+        Log.d("debugg", "settatooo");
+        this.mapWidth = width;
+    }
+
+    @Override
+    public GraphName getDefaultNodeName() {
+        return GraphName.of("android_robot_controller/node_goal");
+    }
+
+    @Override
+    public void onStart(ConnectedNode connectedNode) {
+        Subscriber<MapMetaData> subscriberMapMetaData = connectedNode.newSubscriber("map_metadata", nav_msgs.MapMetaData._TYPE);
+        subscriberMapMetaData.addMessageListener(new MessageListener<MapMetaData>() {
+            @Override
+            public void onNewMessage (nav_msgs.MapMetaData message){
+                setMapWidth(message.getWidth());
+            }
+        });
     }
 }
