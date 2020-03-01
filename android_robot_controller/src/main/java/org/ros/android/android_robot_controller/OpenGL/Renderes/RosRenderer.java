@@ -177,6 +177,7 @@ public class RosRenderer implements GLSurfaceView.Renderer {
     public synchronized void setGoalVisualizerDimensions(float width, float height, float oldX, float oldY, float newX, float newY){
 
         oldY = height - oldY;
+        newY = height - newY;
         float translateX = (oldX - (width / 2)) / (width / 2) / this.scaleFactor - this.moveX;
         float translateY = (oldY - (height / 2)) / (height / 2) / this.scaleFactor - this.moveY;
 
@@ -185,11 +186,10 @@ public class RosRenderer implements GLSurfaceView.Renderer {
         else if(this.screenOrientation == Configuration.ORIENTATION_PORTRAIT)
             translateY *= this.ratio;
 
-        float rotationMarker = (float) Math.toDegrees(Math.atan2(newY - oldY, newX - oldX)) + 90.0f;
-        Log.d("debugg", "rotation " + rotationMarker + "");
+        float rotationMarker = (float) Math.toDegrees(Math.atan2(newY - oldY, newX - oldX)) - 90.0f;
 
         if(this.goalVisualizer != null)
-            this.goalVisualizer.setAttributes(translateX, translateY, -this.rotationAngle, -rotationMarker);
+            this.goalVisualizer.setAttributes(translateX, translateY, -this.rotationAngle, rotationMarker);
     }
 
     public void setViewDimensions(int width, int height){
