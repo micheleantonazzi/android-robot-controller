@@ -76,6 +76,8 @@ public class RosRenderer implements GLSurfaceView.Renderer {
         this.nodes.add(poseVisualizer);
         this.visualizers.add(poseVisualizer);
 
+        this.goalVisualizer = new GoalVisualizer();
+
         NodesExecutor.getInstance().setNodes(this.nodes);
     }
 
@@ -104,17 +106,6 @@ public class RosRenderer implements GLSurfaceView.Renderer {
         GLES30.glClear(GLES30.GL_COLOR_BUFFER_BIT);
 
         synchronized (this) {
-
-            if (this.addGoalVisualizer) {
-                // Goal visualiser must be unique
-                if(this.goalVisualizer != null)
-                    this.visualizers.remove(this.goalVisualizer);
-
-                this.goalVisualizer = new GoalVisualizer();
-                this.visualizers.add(this.goalVisualizer);
-                this.addGoalVisualizer = false;
-            }
-
             for (Visualizer visualizer: this.visualizers) {
                 visualizer.draw(this.resultMatrixGlobal.clone());
             }
@@ -176,6 +167,9 @@ public class RosRenderer implements GLSurfaceView.Renderer {
 
     public synchronized void setGoalVisualizerDimensions(float width, float height, float oldX, float oldY, float newX, float newY){
 
+        if(oldY == oldY)
+            oldY += 10.0f;
+
         oldY = height - oldY;
         newY = height - newY;
         float translateX = (oldX - (width / 2)) / (width / 2) / this.scaleFactor - this.moveX;
@@ -188,8 +182,7 @@ public class RosRenderer implements GLSurfaceView.Renderer {
 
         float rotationMarker = (float) Math.toDegrees(Math.atan2(newY - oldY, newX - oldX)) - 90.0f;
 
-        if(this.goalVisualizer != null)
-            this.goalVisualizer.setAttributes(translateX, translateY, -this.rotationAngle, rotationMarker);
+        this.goalVisualizer.setAttributes(translateX, translateY, -this.rotationAngle, rotationMarker);
     }
 
     public void setViewDimensions(int width, int height){
@@ -197,8 +190,8 @@ public class RosRenderer implements GLSurfaceView.Renderer {
         this.updateResultMatrixGlobal();
     }
 
-    public void addGoalVisualizer(){
-        this.addGoalVisualizer = true;
+    public synchronized void addGoalVisualizer(){
+        this.visualizers.add(this.goalVisualizer);
     }
 
     public void onDestroy(){

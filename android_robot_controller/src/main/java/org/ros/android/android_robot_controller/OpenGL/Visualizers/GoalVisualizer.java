@@ -96,7 +96,6 @@ public class GoalVisualizer implements Visualizer{
 
         synchronized (this) {
 
-            //Log.d("debugg", this.rotation + "");
             Matrix.rotateM(resultMatrix, 0, this.rotationGlobal, 0, 0, 1);
 
             Matrix.translateM(resultMatrix, 0, this.translateX, this.translateY, 0.0f);
