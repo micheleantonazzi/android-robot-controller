@@ -82,10 +82,6 @@ public class MainActivity extends RosActivity implements  NavigationView.OnNavig
     @Override
     public void onResume(){
         super.onResume();
-        //this.openGLViewMap.onResume();
-
-        // Set the screen orientation
-        ((RosOpenGLView) findViewById(R.id.RosOpenGLView)).setScreenOrientation(getResources().getConfiguration().orientation);
     }
 
     @Override

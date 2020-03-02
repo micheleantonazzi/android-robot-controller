@@ -145,7 +145,6 @@ public class GoalVisualizer extends AbstractNodeMain implements Visualizer{
     }
 
     private synchronized void setMapWidth(float width){
-        Log.d("debugg", "settatooo");
         this.mapWidth = width;
     }
 

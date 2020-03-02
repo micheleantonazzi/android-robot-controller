@@ -136,7 +136,7 @@ public class PoseVisualizer extends AbstractNodeMain implements Visualizer{
     private synchronized void setPositions(float positionX, float positionY){
         this.positionX = (this.mapDimension / 2f - ((positionY - this.mapOriginY) / this.mapResolution)) / (this.mapDimension / 2f);
         this.positionY = (-this.mapDimension / 2f + ((positionX - this.mapOriginX) / this.mapResolution)) / (this.mapDimension / 2f);
-        this.scale = RosRenderer.GLOBAL_SCALE / this.mapDimension;
+        this.scale = RosRenderer.GLOBAL_SCALE / this.mapDimension * 2.0f;
     }
 
     @Override

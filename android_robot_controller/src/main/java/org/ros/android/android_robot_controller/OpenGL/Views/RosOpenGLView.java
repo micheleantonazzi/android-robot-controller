@@ -135,11 +135,6 @@ public class RosOpenGLView extends GLSurfaceView {
         this.renderer.onDestroy();
     }
 
-    public void setScreenOrientation(int screenOrientation){
-
-        this.renderer.setScreenOrientation(screenOrientation);
-    }
-
     public void setClickListenerButtonGoal(ClickListenerButtonGoal clickListenerButtonGoal){
         this.clickListenerButtonGoal = clickListenerButtonGoal;
     }
