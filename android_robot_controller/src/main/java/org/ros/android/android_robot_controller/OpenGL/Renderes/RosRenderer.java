@@ -39,7 +39,8 @@ public class RosRenderer implements GLSurfaceView.Renderer {
     private float[] viewMatrix = new float[16];
     private float[] resultMatrixGlobal = new float[16];
 
-    private float ratio = 1;
+    private float ratioX = 1;
+    private float ratioY = 1;
 
     // This method compiles the OpenGL Shading Language
     // Create a vertex shader type (GLES30.GL_VERTEX_SHADER)
@@ -88,18 +89,18 @@ public class RosRenderer implements GLSurfaceView.Renderer {
         this.viewHeight = height;
 
         if(height >= width) {
-            this.ratio = (float) height / width;
+            this.ratioY = (float) height / width;
 
             // this projection matrix is applied to object coordinates
             // in the onDrawFrame() method
-            Matrix.frustumM(projectionMatrix, 0, -1, 1, -ratio, ratio, 1f, 7);
+            Matrix.frustumM(projectionMatrix, 0, -this.ratioX, this.ratioX, -this.ratioY, this.ratioY, 1f, 7);
         }
         else{
-            this.ratio = (float) width / height;
+            this.ratioX = (float) width / height;
 
             // this projection matrix is applied to object coordinates
             // in the onDrawFrame() method
-            Matrix.frustumM(projectionMatrix, 0, -ratio, ratio, -1, 1, 1f, 7);
+            Matrix.frustumM(projectionMatrix, 0, -this.ratioX, this.ratioX, -this.ratioY, this.ratioY, 1f, 7);
         }
         this.updateResultMatrixGlobal();
     }
@@ -132,11 +133,7 @@ public class RosRenderer implements GLSurfaceView.Renderer {
         Matrix.scaleM(scaleMatrix, 0, this.scaleFactor, this.scaleFactor, 1.0f);
 
         // Translate scale matrix based on screen orientation
-        if(this.viewHeight >= this.viewWidth)
-            Matrix.translateM(scaleMatrix, 0, this.moveX, this.moveY * this.ratio, 0.0f);
-        else
-            Matrix.translateM(scaleMatrix, 0, this.moveX * this.ratio, this.moveY, 0.0f);
-
+        Matrix.translateM(scaleMatrix, 0, this.moveX * this.ratioX, this.moveY * this.ratioY, 0.0f);
 
         // Calculate scale rotation matrix
         Matrix.multiplyMM(rotationScaleMatrix, 0, scaleMatrix, 0, rotationMatrix, 0);
@@ -175,15 +172,11 @@ public class RosRenderer implements GLSurfaceView.Renderer {
         float translateX = (oldX - (width / 2)) / (width / 2) / this.scaleFactor - this.moveX;
         float translateY = (oldY - (height / 2)) / (height / 2) / this.scaleFactor - this.moveY;
 
-        // Translate scale matrix based on screen orientation
-        if(this.viewHeight >= this.viewWidth)
-            translateY *= this.ratio;
-        else
-            translateX *= this.ratio;
-
         float rotationMarker = (float) Math.toDegrees(Math.atan2(newY - oldY, newX - oldX)) - 90.0f;
 
-        this.goalVisualizer.setAttributes(translateX, translateY, -this.rotationAngle, rotationMarker);
+        this.goalVisualizer.setAttributes(translateX * this.ratioX, translateY * this.ratioY, -this.rotationAngle, rotationMarker);
+
+        //float positionX =
     }
 
     public void setViewDimensions(int width, int height){
