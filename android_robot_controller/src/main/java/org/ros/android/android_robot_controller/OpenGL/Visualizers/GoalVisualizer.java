@@ -6,27 +6,36 @@ import android.util.Log;
 
 import org.ros.android.android_robot_controller.OpenGL.Renderes.RosRenderer;
 import org.ros.message.MessageListener;
+import org.ros.message.Time;
 import org.ros.namespace.GraphName;
 import org.ros.node.AbstractNodeMain;
 import org.ros.node.ConnectedNode;
+import org.ros.node.topic.Publisher;
 import org.ros.node.topic.Subscriber;
 
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.nio.FloatBuffer;
-
+import geometry_msgs.PoseStamped;
 import nav_msgs.MapMetaData;
 
 public class GoalVisualizer extends AbstractNodeMain implements Visualizer{
 
-    private float scale = 50.0f;
+    private Publisher<PoseStamped> publisherGoal;
+
+    private float scale = 30.0f;
 
     private float translateX = 0.0f;
     private float translateY = 0.0f;
     private float rotationGlobal = 0.0f;
     private float rotation = 0.0f;
 
+    // Map metadata
     private float mapWidth = Integer.MAX_VALUE;
+    private float mapHeight = Integer.MAX_VALUE;
+    private float mapResolution = 0.0f;
+    private float mapOriginX = 0.0f;
+    private float mapOriginY = 0.0f;
 
     private int openGLProgram;
 
@@ -141,11 +150,29 @@ public class GoalVisualizer extends AbstractNodeMain implements Visualizer{
     }
 
     public synchronized void goalMarkerSet(){
-        this.scale = 25f;
+        this.scale = 15f;
+
+        float positionY = -((this.translateX - 1.0f) / 2.0f * this.mapWidth) * this.mapResolution + this.mapOriginX;
+        float positionX = ((this.translateY + 1.0f) / 2.0f * this.mapHeight) * this.mapResolution + this.mapOriginY;
+        Log.d("debugg", translateX + " " + positionY + "");
+        Log.d("debugg", "X " + translateY + " " + positionX + "");
+
+        PoseStamped goalMessage = this.publisherGoal.newMessage();
+        goalMessage.getHeader().setFrameId("map");
+
+        goalMessage.getPose().getPosition().setX(positionX);
+        goalMessage.getPose().getPosition().setY(positionY);
+        goalMessage.getPose().getOrientation().setW(1.0f);
+
+        this.publisherGoal.publish(goalMessage);
     }
 
-    private synchronized void setMapWidth(float width){
+    private synchronized void setMapMetadata(float width, float height, float resolution, float originX, float originY){
         this.mapWidth = width;
+        this.mapHeight = height;
+        this.mapResolution = resolution;
+        this.mapOriginX = originX;
+        this.mapOriginY = originY;
     }
 
     @Override
@@ -159,8 +186,11 @@ public class GoalVisualizer extends AbstractNodeMain implements Visualizer{
         subscriberMapMetaData.addMessageListener(new MessageListener<MapMetaData>() {
             @Override
             public void onNewMessage (nav_msgs.MapMetaData message){
-                setMapWidth(message.getWidth());
+                setMapMetadata(message.getWidth(), message.getHeight(), message.getResolution(),
+                        (float) message.getOrigin().getPosition().getX(), (float) message.getOrigin().getPosition().getY());
             }
         });
+
+        this.publisherGoal = connectedNode.newPublisher("move_base_simple/goal", PoseStamped._TYPE);
     }
 }
