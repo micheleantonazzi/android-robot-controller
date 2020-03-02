@@ -21,14 +21,14 @@ import geometry_msgs.TransformStamped;
 
 public class PoseVisualizer extends AbstractNodeMain implements Visualizer{
 
-    float mapDimension = 1;
-    float mapResolution = 1;
-    float mapOriginX = 1;
-    float mapOriginY = 1;
-    float positionX = 0;
-    float positionY = 0;
-    float rotationAngle = 0;
-    float scale = 0.05f;
+    private float mapDimension = 1;
+    private float mapResolution = 1;
+    private float mapOriginX = 1;
+    private float mapOriginY = 1;
+    private float positionX = 0;
+    private float positionY = 0;
+    private float rotationAngle = 0;
+    private float scale = 0.05f;
 
     private int openGLProgram;
 
