@@ -12,6 +12,8 @@ import org.ros.node.AbstractNodeMain;
 import org.ros.node.ConnectedNode;
 import org.ros.node.topic.Publisher;
 import org.ros.node.topic.Subscriber;
+import org.ros.rosjava_geometry.Quaternion;
+import org.ros.rosjava_geometry.Vector3;
 
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
@@ -154,15 +156,16 @@ public class GoalVisualizer extends AbstractNodeMain implements Visualizer{
 
         float positionY = -((this.translateX - 1.0f) / 2.0f * this.mapWidth) * this.mapResolution + this.mapOriginX;
         float positionX = ((this.translateY + 1.0f) / 2.0f * this.mapHeight) * this.mapResolution + this.mapOriginY;
-        Log.d("debugg", translateX + " " + positionY + "");
-        Log.d("debugg", "X " + translateY + " " + positionX + "");
+        Quaternion goalRotation = Quaternion.fromAxisAngle(Vector3.zAxis(), (this.rotation) * (Math.PI / 180.0));
 
         PoseStamped goalMessage = this.publisherGoal.newMessage();
         goalMessage.getHeader().setFrameId("map");
-
+        // Orientation
+        goalMessage.getPose().getOrientation().setZ(goalRotation.getZ());
+        goalMessage.getPose().getOrientation().setW(goalRotation.getW());
+        // Position
         goalMessage.getPose().getPosition().setX(positionX);
         goalMessage.getPose().getPosition().setY(positionY);
-        goalMessage.getPose().getOrientation().setW(1.0f);
 
         this.publisherGoal.publish(goalMessage);
     }
