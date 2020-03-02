@@ -133,9 +133,10 @@ public class PoseVisualizer extends AbstractNodeMain implements Visualizer{
         this.mapOriginY = mapOriginY;
     }
 
-    private synchronized void setPositions(float positionX, float positionY){
+    private synchronized void setPosition(float positionX, float positionY, float rotationAngle){
         this.positionX = (this.mapDimension / 2f - ((positionY - this.mapOriginY) / this.mapResolution)) / (this.mapDimension / 2f);
         this.positionY = (-this.mapDimension / 2f + ((positionX - this.mapOriginX) / this.mapResolution)) / (this.mapDimension / 2f);
+        this.rotationAngle = rotationAngle;
         this.scale = RosRenderer.GLOBAL_SCALE / this.mapDimension * 2.0f;
     }
 
@@ -166,10 +167,10 @@ public class PoseVisualizer extends AbstractNodeMain implements Visualizer{
                     double siny_cosp = 2 * (q.getW() * q.getZ() + q.getX() * q.getY());
                     double cosy_cosp = 1 - 2 * (q.getY() * q.getY() + q.getZ() * q.getZ());
                     float theta = (float) Math.atan2(siny_cosp, cosy_cosp);
-                    rotationAngle = theta * 180f / (float) Math.PI ;
+                    float rotation = theta * 180f / (float) Math.PI ;
 
-                    setPositions((float)frameTransform.getTransform().getTranslation().getX(),
-                            (float) frameTransform.getTransform().getTranslation().getY());
+                    setPosition((float)frameTransform.getTransform().getTranslation().getX(),
+                            (float) frameTransform.getTransform().getTranslation().getY(), rotation);
                 }
             }
         });
