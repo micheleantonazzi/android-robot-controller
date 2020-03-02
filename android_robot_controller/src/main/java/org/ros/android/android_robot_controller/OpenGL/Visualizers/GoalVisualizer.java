@@ -142,7 +142,7 @@ public class GoalVisualizer extends AbstractNodeMain implements Visualizer{
     }
 
     public synchronized void setAttributes(float translateX, float translateY, float rotationGlobal, float rotation){
-        this.scale = 50.0f;
+        this.scale = 30.0f;
         this.translateY = translateY;
         this.translateX = translateX;
         this.rotationGlobal = rotationGlobal;
