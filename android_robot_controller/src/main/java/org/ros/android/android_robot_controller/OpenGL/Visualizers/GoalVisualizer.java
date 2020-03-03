@@ -154,24 +154,29 @@ public class GoalVisualizer extends AbstractNodeMain implements Visualizer{
     public synchronized void goalMarkerSet(){
         this.scale = 15f;
 
+        // Rotation of X and Y based of rotation global
         float [] matrixGoal = new float[16];
         Matrix.setIdentityM(matrixGoal, 0);
-
-        float positionY = -((this.translateX - 1.0f) / 2.0f * this.mapWidth) * this.mapResolution + this.mapOriginX;
-        float positionX = ((this.translateY + 1.0f) / 2.0f * this.mapHeight) * this.mapResolution + this.mapOriginY;
-        Matrix.translateM(matrixGoal, 0, positionX, positionY, 0.0f);
+        Matrix.translateM(matrixGoal, 0, this.translateX, translateY, 0.0f);
         Matrix.rotateM(matrixGoal, 0, -this.rotationGlobal, 0, 0, 1);
+        // Matrix multiply
+        float rotateX = matrixGoal[0] * matrixGoal[12] + matrixGoal[1] * matrixGoal[13];
+        float rotateY = matrixGoal[4] * matrixGoal[12] + matrixGoal[5] * matrixGoal[13];
+        //The new X and Y point after rotation
+        float positionY = -((rotateX - 1.0f) / 2.0f * this.mapWidth) * this.mapResolution + this.mapOriginX;
+        float positionX = ((rotateY + 1.0f) / 2.0f * this.mapHeight) * this.mapResolution + this.mapOriginY;
 
+        // Add arrow rotation
         Quaternion goalRotation = Quaternion.fromAxisAngle(Vector3.zAxis(), (this.rotation + this.rotationGlobal) * (Math.PI / 180.0));
 
         PoseStamped goalMessage = this.publisherGoal.newMessage();
         goalMessage.getHeader().setFrameId("map");
-        // Orientation
+        // Set orientation
         goalMessage.getPose().getOrientation().setZ(goalRotation.getZ());
         goalMessage.getPose().getOrientation().setW(goalRotation.getW());
-        // Position
-        goalMessage.getPose().getPosition().setX((matrixGoal[0] * matrixGoal[12] + matrixGoal[1] * matrixGoal[13]));
-        goalMessage.getPose().getPosition().setY((matrixGoal[4] * matrixGoal[12] + matrixGoal[5] * matrixGoal[13]));
+        // Set position
+        goalMessage.getPose().getPosition().setX(positionX);
+        goalMessage.getPose().getPosition().setY(positionY);
 
         this.publisherGoal.publish(goalMessage);
     }
