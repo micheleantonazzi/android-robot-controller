@@ -8,6 +8,10 @@
         android:checkable="true"/>
 
     <item
+        android:id="@+id/menu_item_camera"
+        android:icon="@drawable/ic_linked_camera_24px"
+        android:title="@string/menu_item_camera" />
+    <item
         android:id="@+id/menu_item_settings"
         android:title="@string/menu_item_settings"
         android:icon="@drawable/ic_settings_black_24dp"

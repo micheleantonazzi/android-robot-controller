@@ -8,6 +8,7 @@
 
     <!-- Main menu items -->
     <string name="menu_item_monitor">Robot monitor</string>
+    <string name="menu_item_camera">Streaming camera</string>
     <string name="menu_item_settings">Settings</string>
 
     <!-- Default setting -->
