@@ -27,9 +27,6 @@ public class RosRenderer implements GLSurfaceView.Renderer {
     private List<Visualizer> visualizers = new ArrayList<>(0);
     private List<AbstractNodeMain> nodes = new ArrayList<>(0);
 
-    private float viewWidth = 0.0f;
-    private float viewHeight = 0.0f;
-
     // Variables to move all objects
     private float scaleFactor = 1;
     private float rotationAngle = 0;
@@ -86,9 +83,6 @@ public class RosRenderer implements GLSurfaceView.Renderer {
 
     @Override
     public void onSurfaceChanged(GL10 gl, int width, int height) {
-
-        this.viewWidth = width;
-        this.viewHeight = height;
 
         if(height >= width) {
             this.ratioY = (float) height / width;
@@ -190,6 +184,14 @@ public class RosRenderer implements GLSurfaceView.Renderer {
 
     public synchronized void goalMarkerSet(){
         this.goalVisualizer.goalMarkerSet();
+    }
+
+    public synchronized void centerMap(){
+        this.scaleFactor = 1.0f;
+        this.rotationAngle = 0.0f;
+        this.moveX = 0.0f;
+        this.moveY = 0.0f;
+        this.updateResultMatrixGlobal();
     }
 
     public void onDestroy(){

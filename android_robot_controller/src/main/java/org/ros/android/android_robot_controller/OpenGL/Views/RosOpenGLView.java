@@ -131,6 +131,11 @@ public class RosOpenGLView extends GLSurfaceView {
         this.renderer.setViewDimensions(this.getWidth(), this.getHeight());
     }
 
+    public void centerMap(){
+        if(this.renderer != null)
+            this.renderer.centerMap();
+    }
+
     public void onDestroy(){
         this.renderer.onDestroy();
     }

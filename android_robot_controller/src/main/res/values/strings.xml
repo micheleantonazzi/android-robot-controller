@@ -15,4 +15,6 @@
 
     <!-- Fragment monitor -->
     <string name="button_goal">Set goal</string>
+    <!-- Fragment monitor -->
+    <string name="button_center_map">Center map</string>
 </resources>

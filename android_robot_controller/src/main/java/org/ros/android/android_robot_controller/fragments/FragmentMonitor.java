@@ -29,6 +29,14 @@ public class FragmentMonitor extends Fragment {
         ClickListenerButtonGoal clickListenerButtonGoal = new ClickListenerButtonGoal(buttonGoal);
         buttonGoal.setOnClickListener(clickListenerButtonGoal);
 
+        Button buttonCenterMap = view.findViewById(R.id.buttonCenterMap);
+        buttonCenterMap.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                rosOpenGLView.centerMap();
+            }
+        });
+
         this.rosOpenGLView.setClickListenerButtonGoal(clickListenerButtonGoal);
         return view;
     }
