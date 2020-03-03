@@ -3,17 +3,16 @@ package org.ros.android.android_robot_controller.OpenGL.Views;
 import android.content.Context;
 import android.opengl.GLSurfaceView;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.MotionEvent;
 import android.view.ScaleGestureDetector;
-
 import com.almeros.android.multitouch.RotateGestureDetector;
-
 import org.ros.android.android_robot_controller.OpenGL.Renderes.RosRenderer;
-import org.ros.node.AbstractNodeMain;
-
-import java.util.List;
+import org.ros.android.android_robot_controller.listeners.ClickListenerButtonGoal;
 
 public class RosOpenGLView extends GLSurfaceView {
+
+    private ClickListenerButtonGoal clickListenerButtonGoal;
 
     // This variable is true as long as all fingers leave the screen after a multitouch action
     private boolean multiTouchInProgress = false;
@@ -71,38 +70,58 @@ public class RosOpenGLView extends GLSurfaceView {
     @Override
     public boolean onTouchEvent(MotionEvent event) {
 
-        this.scaleGestureDetector.onTouchEvent(event);
-        this.rotateGestureDetector.onTouchEvent(event);
-        // Start a multitouch gesture
-        if(event.getPointerCount() > 1) {
-            this.multiTouchInProgress = true;
+        // If you are not setting a goal
+        if(!this.clickListenerButtonGoal.isSettingGoal()) {
+            this.scaleGestureDetector.onTouchEvent(event);
+            this.rotateGestureDetector.onTouchEvent(event);
+            // Start a multitouch gesture
+            if (event.getPointerCount() > 1) {
+                this.multiTouchInProgress = true;
+            }
+
+            // Multitouch gesture terminates
+            if (this.multiTouchInProgress && event.getAction() == MotionEvent.ACTION_UP)
+                this.multiTouchInProgress = false;
+
+            // Move the map
+            if (!this.multiTouchInProgress && event.getPointerCount() == 1) {
+                switch (event.getAction()) {
+                    case MotionEvent.ACTION_DOWN:
+                        this.oldX = event.getX();
+                        this.oldY = event.getY();
+                        break;
+                    case MotionEvent.ACTION_MOVE:
+                        float deltaX = event.getX() - this.oldX;
+                        float deltaY = this.oldY - event.getY();
+                        this.renderer.modifyMoveValues(deltaX / this.getWidth(), deltaY / this.getHeight());
+                        this.oldX = event.getX();
+                        this.oldY = event.getY();
+                        break;
+                }
+            }
         }
+        // If you are setting a goal
+        else{
+            if(event.getPointerCount() == 1) {
 
-        // Multitouch gesture terminates
-        if (this.multiTouchInProgress && event.getAction() == MotionEvent.ACTION_UP)
-            this.multiTouchInProgress = false;
-
-        // Move the map
-        if(!this.multiTouchInProgress && event.getPointerCount() == 1){
-            switch (event.getAction()){
-                case MotionEvent.ACTION_DOWN:
-                    this.oldX = event.getX();
-                    this.oldY = event.getY();
-                    break;
-                case MotionEvent.ACTION_MOVE:
-                    float deltaX = event.getX() - this.oldX;
-                    float deltaY = this.oldY - event.getY();
-                    this.renderer.modifyMoveValues(deltaX / this.getWidth(), deltaY / this.getHeight());
-                    this.oldX = event.getX();
-                    this.oldY = event.getY();
-                    break;
+                switch (event.getAction()) {
+                    case MotionEvent.ACTION_DOWN:
+                        this.oldX = event.getX();
+                        this.oldY = event.getY();
+                        this.renderer.setGoalVisualizerDimensions(this.getWidth(), this.getHeight(), this.oldX, this.oldY, this.oldX, this.oldY);
+                        this.renderer.addGoalVisualizer();
+                        break;
+                    case MotionEvent.ACTION_MOVE:
+                        this.renderer.setGoalVisualizerDimensions(this.getWidth(), this.getHeight(), this.oldX, this.oldY, event.getX(), event.getY());
+                        break;
+                    case MotionEvent.ACTION_UP:
+                        this.clickListenerButtonGoal.disable();
+                        this.renderer.goalMarkerSet();
+                        break;
+                }
             }
         }
         return true;
-    }
-
-    public List<AbstractNodeMain> getVisualizers(){
-        return this.renderer.getVisualizers();
     }
 
     @Override
@@ -110,5 +129,18 @@ public class RosOpenGLView extends GLSurfaceView {
     {
         super.onSizeChanged(xNew, yNew, xOld, yOld);
         this.renderer.setViewDimensions(this.getWidth(), this.getHeight());
+    }
+
+    public void centerMap(){
+        if(this.renderer != null)
+            this.renderer.centerMap();
+    }
+
+    public void onDestroy(){
+        this.renderer.onDestroy();
+    }
+
+    public void setClickListenerButtonGoal(ClickListenerButtonGoal clickListenerButtonGoal){
+        this.clickListenerButtonGoal = clickListenerButtonGoal;
     }
 }

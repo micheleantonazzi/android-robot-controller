@@ -19,15 +19,16 @@ import java.nio.ByteOrder;
 import java.nio.FloatBuffer;
 import geometry_msgs.TransformStamped;
 
-public class PoseVisualizer extends AbstractNodeMain {
+public class PoseVisualizer extends AbstractNodeMain implements Visualizer{
 
-    float mapDimension = 1;
-    float mapResolution = 1;
-    float mapOriginX = 1;
-    float mapOriginY = 1;
-    float positionX = 0;
-    float positionY = 0;
-    float rotationAngle = 0;
+    private float mapDimension = 1;
+    private float mapResolution = 1;
+    private float mapOriginX = 1;
+    private float mapOriginY = 1;
+    private float positionX = 0;
+    private float positionY = 0;
+    private float rotationAngle = 0;
+    private float scale = 0.05f;
 
     private int openGLProgram;
 
@@ -84,12 +85,8 @@ public class PoseVisualizer extends AbstractNodeMain {
 
     }
 
-    public synchronized void draw(float[] resultMatrix) {
-
-        // Set robot position and scale
-        Matrix.translateM(resultMatrix, 0, this.positionX, this.positionY, 0);
-        Matrix.rotateM(resultMatrix, 0, this.rotationAngle, 0, 0, 1);
-        Matrix.scaleM(resultMatrix, 0, 0.017f , 0.017f, 1.0f);
+    @Override
+    public void draw(float[] resultMatrix) {
 
         // VERTEX
         this.vertexHandle = GLES30.glGetAttribLocation(this.openGLProgram, "vPosition");
@@ -104,8 +101,16 @@ public class PoseVisualizer extends AbstractNodeMain {
         // get handle to shape's transformation matrix
         int vPMatrixHandle = GLES30.glGetUniformLocation(this.openGLProgram, "uMVPMatrix");
 
-        // Pass the projection and view transformation to the shader
-        GLES30.glUniformMatrix4fv(vPMatrixHandle, 1, false, resultMatrix, 0);
+        synchronized (this){
+            // Set robot position and scale
+            Matrix.translateM(resultMatrix, 0, this.positionX, this.positionY, 0);
+            Matrix.rotateM(resultMatrix, 0, this.rotationAngle, 0, 0, 1);
+            Matrix.scaleM(resultMatrix, 0, this.scale , this.scale, 1.0f);
+
+            // Pass the projection and view transformation to the shader
+            GLES30.glUniformMatrix4fv(vPMatrixHandle, 1, false, resultMatrix, 0);
+        }
+
 
         // Get handle to fragment shader's vColor member
         colorHandle = GLES30.glGetUniformLocation(this.openGLProgram, "vColor");
@@ -128,10 +133,11 @@ public class PoseVisualizer extends AbstractNodeMain {
         this.mapOriginY = mapOriginY;
     }
 
-    private synchronized void setPositions(float positionX, float positionY){
-        this.positionX = -(positionY / (this.mapDimension * this.mapResolution / 2f)) + (this.mapOriginY / this.mapDimension);
-        this.positionY = (positionX / (this.mapDimension * this.mapResolution / 2f)) - (this.mapOriginX / this.mapDimension);
-
+    private synchronized void setPosition(float positionX, float positionY, float rotationAngle){
+        this.positionX = (this.mapDimension / 2f - ((positionY - this.mapOriginY) / this.mapResolution)) / (this.mapDimension / 2f);
+        this.positionY = (-this.mapDimension / 2f + ((positionX - this.mapOriginX) / this.mapResolution)) / (this.mapDimension / 2f);
+        this.rotationAngle = rotationAngle;
+        this.scale = RosRenderer.GLOBAL_SCALE / this.mapDimension * 2.0f;
     }
 
     @Override
@@ -161,10 +167,10 @@ public class PoseVisualizer extends AbstractNodeMain {
                     double siny_cosp = 2 * (q.getW() * q.getZ() + q.getX() * q.getY());
                     double cosy_cosp = 1 - 2 * (q.getY() * q.getY() + q.getZ() * q.getZ());
                     float theta = (float) Math.atan2(siny_cosp, cosy_cosp);
-                    rotationAngle = theta * 180f / (float) Math.PI ;
+                    float rotation = theta * 180f / (float) Math.PI ;
 
-                    setPositions((float)frameTransform.getTransform().getTranslation().getX(),
-                            (float) frameTransform.getTransform().getTranslation().getY());
+                    setPosition((float)frameTransform.getTransform().getTranslation().getX(),
+                            (float) frameTransform.getTransform().getTranslation().getY(), rotation);
                 }
             }
         });
