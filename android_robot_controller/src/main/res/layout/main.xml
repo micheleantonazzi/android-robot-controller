@@ -28,10 +28,9 @@
                     android:minHeight="@dimen/toolbarHeight">
 
                     <TextView
-                        android:id="@+id/text_view_fragment_title"
+                        android:id="@+id/textViewTitle"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="TextView"
                         android:textSize="@dimen/fragmentTitle"
                         android:textStyle="bold" />
                 </androidx.appcompat.widget.Toolbar>

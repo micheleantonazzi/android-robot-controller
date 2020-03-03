@@ -16,23 +16,18 @@
 
 package org.ros.android.android_robot_controller;
 
-import android.app.Fragment;
 import android.app.FragmentManager;
 import android.app.FragmentTransaction;
-import android.content.res.Configuration;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.MenuItem;
+import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.widget.Toolbar;
 import androidx.drawerlayout.widget.DrawerLayout;
-
 import com.google.android.material.navigation.NavigationView;
-
 import org.ros.android.RosActivity;
-import org.ros.android.android_robot_controller.OpenGL.Views.RosOpenGLView;
 import org.ros.android.android_robot_controller.fragments.FragmentMonitor;
 import org.ros.android.android_robot_controller.fragments.FragmentSettings;
 import org.ros.android.android_robot_controller.fragments.RosFragment;
@@ -44,8 +39,7 @@ public class MainActivity extends RosActivity implements  NavigationView.OnNavig
     private FragmentMonitor fragmentMonitor;
     private FragmentSettings fragmentSettings;
 
-    private RosFragment rosFragmentActive = null;
-
+    private TextView textViewTitle;
     public MainActivity() {
         // The RosActivity constructor configures the notification title and ticker
         // messages.
@@ -72,11 +66,15 @@ public class MainActivity extends RosActivity implements  NavigationView.OnNavig
         NavigationView navigationView = (NavigationView)findViewById(R.id.navigation_view);
         navigationView.setNavigationItemSelectedListener(this);
 
+        this.textViewTitle = findViewById(R.id.textViewTitle);
+
         // Control if fragment is already created
         if(savedInstanceState == null) {
             navigationView.setCheckedItem(navigationView.getMenu().getItem(0));
             this.onNavigationItemSelected(navigationView.getCheckedItem());
         }
+
+
     }
 
     @Override
@@ -115,6 +113,8 @@ public class MainActivity extends RosActivity implements  NavigationView.OnNavig
 
                 fragmentTransaction.replace(R.id.linear_layout, this.fragmentMonitor, "fragment_monitor");
                 fragmentTransaction.commit();
+                if(this.textViewTitle != null)
+                    this.textViewTitle.setText(R.string.fragment_monitor_title);
                 break;
             case R.id.menu_item_settings:
                 if(this.getFragmentManager().findFragmentByTag("fragment_settings") == null)
@@ -124,6 +124,8 @@ public class MainActivity extends RosActivity implements  NavigationView.OnNavig
 
                 fragmentTransaction.replace(R.id.linear_layout, this.fragmentSettings, "fragment_settings");
                 fragmentTransaction.commit();
+                if(this.textViewTitle != null)
+                    this.textViewTitle.setText(R.string.fragment_settings_title);
                 break;
         }
 

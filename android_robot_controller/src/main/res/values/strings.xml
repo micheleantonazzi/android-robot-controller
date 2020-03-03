@@ -14,7 +14,10 @@
     <string name="default_map_topic">map</string>
 
     <!-- Fragment monitor -->
+    <string name="fragment_monitor_title">Monitor</string>
     <string name="button_goal">Set goal</string>
-    <!-- Fragment monitor -->
     <string name="button_center_map">Center map</string>
+
+    <!-- Fragment settings -->
+    <string name="fragment_settings_title">Settings</string>
 </resources>
