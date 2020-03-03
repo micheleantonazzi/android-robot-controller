@@ -21,16 +21,19 @@
             <com.google.android.material.appbar.AppBarLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
+
                 <androidx.appcompat.widget.Toolbar
                     android:id="@+id/toolbar"
                     android:layout_width="match_parent"
                     android:layout_height="@dimen/toolbarHeight"
+                    android:background="@android:color/black"
                     android:minHeight="@dimen/toolbarHeight">
 
                     <TextView
                         android:id="@+id/textViewTitle"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:background="@android:color/black"
                         android:textSize="@dimen/fragmentTitle"
                         android:textStyle="bold" />
                 </androidx.appcompat.widget.Toolbar>
@@ -44,12 +47,13 @@
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
         android:layout_gravity="start"
-        android:fitsSystemWindows="false"
         android:layout_marginTop="@dimen/toolbarHeight"
+        android:background="@color/darkGray"
+        android:fitsSystemWindows="false"
+        app:headerLayout="@layout/main_menu_header"
+        app:itemBackground="@android:color/transparent"
         app:itemIconTint="@color/item_selector"
         app:itemTextColor="@color/item_selector"
-        app:itemBackground="@android:color/transparent"
-        app:headerLayout="@layout/main_menu_header"
         app:menu="@menu/main_menu_items">
 
     </com.google.android.material.navigation.NavigationView>

@@ -103,6 +103,7 @@ public class RosRenderer implements GLSurfaceView.Renderer {
 
     @Override
     public void onDrawFrame(GL10 gl) {
+        GLES30.glClearColor(33.0f / 255.0f,33.0f / 255.0f,33.0f / 255.0f,1);
         GLES30.glClear(GLES30.GL_COLOR_BUFFER_BIT);
 
         synchronized (this) {
