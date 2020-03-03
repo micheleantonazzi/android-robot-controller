@@ -9,6 +9,7 @@
 
     <item
         android:id="@+id/menu_item_camera"
+        android:checkable="true"
         android:icon="@drawable/ic_linked_camera_24px"
         android:title="@string/menu_item_camera" />
     <item

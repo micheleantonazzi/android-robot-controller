@@ -19,6 +19,9 @@
     <string name="button_goal">Set goal</string>
     <string name="button_center_map">Center map</string>
 
+    <!-- Fragment camera -->
+    <string name="fragment_camera_title">Streaming camera</string>
+
     <!-- Fragment settings -->
     <string name="fragment_settings_title">Settings</string>
 </resources>
