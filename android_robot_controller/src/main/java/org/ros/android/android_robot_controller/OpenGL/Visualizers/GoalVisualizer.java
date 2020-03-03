@@ -154,8 +154,23 @@ public class GoalVisualizer extends AbstractNodeMain implements Visualizer{
     public synchronized void goalMarkerSet(){
         this.scale = 15f;
 
+        float [] matrixGoal = new float[16];
+        Matrix.setIdentityM(matrixGoal, 0);
+
         float positionY = -((this.translateX - 1.0f) / 2.0f * this.mapWidth) * this.mapResolution + this.mapOriginX;
         float positionX = ((this.translateY + 1.0f) / 2.0f * this.mapHeight) * this.mapResolution + this.mapOriginY;
+        Matrix.translateM(matrixGoal, 0, positionX, positionY, 0.0f);
+        Matrix.rotateM(matrixGoal, 0, -this.rotationGlobal, 0, 0, 1);
+
+
+        Log.d("debugg", positionX + " " + positionY);
+        for(int i = 0; i < 4; i++){
+
+                Log.d("debugg", matrixGoal[i * 4] + " " + matrixGoal[i * 4 + 1] + " " + matrixGoal[i * 4 + 2] + " " + matrixGoal[i * 4 + 3]  );
+
+        }
+        Log.d("debugg", ((matrixGoal[0] * matrixGoal[12] + matrixGoal[1] * matrixGoal[13]) + (- 1.0f + matrixGoal[0]))  + " <----> " + (matrixGoal[4] * matrixGoal[12] + matrixGoal[5] * matrixGoal[13]));
+
         Quaternion goalRotation = Quaternion.fromAxisAngle(Vector3.zAxis(), (this.rotation) * (Math.PI / 180.0));
 
         PoseStamped goalMessage = this.publisherGoal.newMessage();
@@ -164,9 +179,10 @@ public class GoalVisualizer extends AbstractNodeMain implements Visualizer{
         goalMessage.getPose().getOrientation().setZ(goalRotation.getZ());
         goalMessage.getPose().getOrientation().setW(goalRotation.getW());
         // Position
-        goalMessage.getPose().getPosition().setX(positionX);
-        goalMessage.getPose().getPosition().setY(positionY);
+        goalMessage.getPose().getPosition().setX((matrixGoal[0] * matrixGoal[12] + matrixGoal[1] * matrixGoal[13]));
+        goalMessage.getPose().getPosition().setY((matrixGoal[4] * matrixGoal[12] + matrixGoal[5] * matrixGoal[13]));
 
+        Log.d("debugg", "func " + Math.sin(this.rotationGlobal) + " " + Math.cosh(-this.rotationGlobal));
         this.publisherGoal.publish(goalMessage);
     }
 
