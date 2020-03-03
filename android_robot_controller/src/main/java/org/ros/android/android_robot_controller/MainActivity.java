@@ -106,23 +106,23 @@ public class MainActivity extends RosActivity implements  NavigationView.OnNavig
 
         switch (item.getItemId()){
             case R.id.menu_item_monitor:
-                if(this.getFragmentManager().findFragmentByTag("fragment_monitor") == null)
+                if(this.getFragmentManager().findFragmentByTag(FragmentMonitor.TAG) == null)
                     this.fragmentMonitor = new FragmentMonitor();
                 else
-                    this.fragmentMonitor = (FragmentMonitor) this.getFragmentManager().findFragmentByTag("fragment_monitor");
+                    this.fragmentMonitor = (FragmentMonitor) this.getFragmentManager().findFragmentByTag(FragmentMonitor.TAG);
 
-                fragmentTransaction.replace(R.id.linear_layout, this.fragmentMonitor, "fragment_monitor");
+                fragmentTransaction.replace(R.id.linear_layout, this.fragmentMonitor, FragmentMonitor.TAG);
                 fragmentTransaction.commit();
                 if(this.textViewTitle != null)
                     this.textViewTitle.setText(R.string.fragment_monitor_title);
                 break;
             case R.id.menu_item_settings:
-                if(this.getFragmentManager().findFragmentByTag("fragment_settings") == null)
+                if(this.getFragmentManager().findFragmentByTag(FragmentSettings.TAG) == null)
                     this.fragmentSettings = new FragmentSettings();
                 else
-                    this.fragmentSettings = (FragmentSettings) this.getFragmentManager().findFragmentByTag("fragment_settings");
+                    this.fragmentSettings = (FragmentSettings) this.getFragmentManager().findFragmentByTag(FragmentSettings.TAG);
 
-                fragmentTransaction.replace(R.id.linear_layout, this.fragmentSettings, "fragment_settings");
+                fragmentTransaction.replace(R.id.linear_layout, this.fragmentSettings, FragmentSettings.TAG);
                 fragmentTransaction.commit();
                 if(this.textViewTitle != null)
                     this.textViewTitle.setText(R.string.fragment_settings_title);
