@@ -70,8 +70,7 @@ public class NodesExecutor {
     public synchronized void shutDownNode(AbstractNodeMain node){
         this.shutDownNodes(Arrays.asList(node));
     }
-
-    public synchronized void shutDownNodes(List<AbstractNodeMain> nodesToShutdown){
+    private synchronized void shutDownNodesPrivate(List<AbstractNodeMain> nodesToShutdown){
         if(this.nodeMainExecutor != null) {
             for (AbstractNodeMain node : nodesToShutdown) {
                 if (node != null) {
@@ -80,5 +79,14 @@ public class NodesExecutor {
                 }
             }
         }
+    }
+
+    public synchronized void shutDownNodes(List<AbstractNodeMain> nodesToShutdown){
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                shutDownNodesPrivate(nodesToShutdown);
+            }
+        }).start();
     }
 }
