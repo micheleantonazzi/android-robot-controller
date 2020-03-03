@@ -30,7 +30,6 @@ import com.google.android.material.navigation.NavigationView;
 import org.ros.android.RosActivity;
 import org.ros.android.android_robot_controller.fragments.FragmentMonitor;
 import org.ros.android.android_robot_controller.fragments.FragmentSettings;
-import org.ros.android.android_robot_controller.fragments.RosFragment;
 import org.ros.node.NodeConfiguration;
 import org.ros.node.NodeMainExecutor;
 
