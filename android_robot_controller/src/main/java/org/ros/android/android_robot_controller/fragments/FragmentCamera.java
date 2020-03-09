@@ -43,6 +43,10 @@ public class FragmentCamera extends Fragment {
     @Override
     public void onPause(){
         super.onPause();
+    }
+    @Override
+    public void onDestroy(){
+        super.onDestroy();
         NodesExecutor.getInstance().shutDownNode(this.nodeReadImage);
     }
 }
