@@ -2,11 +2,8 @@ package org.ros.android.android_robot_controller.OpenGL.Visualizers;
 
 import android.opengl.GLES30;
 import android.opengl.Matrix;
-import android.util.Log;
-
 import org.ros.android.android_robot_controller.OpenGL.Renderes.RosRenderer;
 import org.ros.message.MessageListener;
-import org.ros.message.Time;
 import org.ros.namespace.GraphName;
 import org.ros.node.AbstractNodeMain;
 import org.ros.node.ConnectedNode;
