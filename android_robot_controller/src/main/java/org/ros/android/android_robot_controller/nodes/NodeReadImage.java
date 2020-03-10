@@ -1,6 +1,7 @@
 package org.ros.android.android_robot_controller.nodes;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.util.Log;
 import android.widget.ImageView;
 import org.ros.message.MessageListener;
 import org.ros.namespace.GraphName;
