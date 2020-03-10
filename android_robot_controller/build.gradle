@@ -53,7 +53,7 @@ android {
   compileSdkVersion 29
 
   defaultConfig {
-    minSdkVersion 23
+    minSdkVersion 19
     applicationId "org.ros.android.android_robot_controller"
     targetSdkVersion 29
     versionCode 1

@@ -1,6 +1,6 @@
 package org.ros.android.android_robot_controller.OpenGL.Visualizers;
 
-import android.opengl.GLES30;
+import android.opengl.GLES20;
 import android.opengl.Matrix;
 import android.util.Log;
 
@@ -68,20 +68,20 @@ public class PoseVisualizer extends AbstractNodeMain implements Visualizer{
         this.vertexBuffer.position(0);
 
         // Compile the shaders
-        int vertexShader = RosRenderer.loadShader(GLES30.GL_VERTEX_SHADER, vertexShaderCode);
-        int fragmentShader = RosRenderer.loadShader(GLES30.GL_FRAGMENT_SHADER, fragmentShaderCode);
+        int vertexShader = RosRenderer.loadShader(GLES20.GL_VERTEX_SHADER, vertexShaderCode);
+        int fragmentShader = RosRenderer.loadShader(GLES20.GL_FRAGMENT_SHADER, fragmentShaderCode);
 
         // Create empty OpenGL ES Program
-        this.openGLProgram = GLES30.glCreateProgram();
+        this.openGLProgram = GLES20.glCreateProgram();
 
         // add the vertex shader to program
-        GLES30.glAttachShader(this.openGLProgram, vertexShader);
+        GLES20.glAttachShader(this.openGLProgram, vertexShader);
 
         // add the fragment shader to program
-        GLES30.glAttachShader(this.openGLProgram, fragmentShader);
+        GLES20.glAttachShader(this.openGLProgram, fragmentShader);
 
         // creates OpenGL ES program executables
-        GLES30.glLinkProgram(this.openGLProgram);
+        GLES20.glLinkProgram(this.openGLProgram);
 
     }
 
@@ -89,17 +89,17 @@ public class PoseVisualizer extends AbstractNodeMain implements Visualizer{
     public void draw(float[] resultMatrix) {
 
         // VERTEX
-        this.vertexHandle = GLES30.glGetAttribLocation(this.openGLProgram, "vPosition");
-        GLES30.glVertexAttribPointer(this.vertexHandle, 3,
-                GLES30.GL_FLOAT, false,
+        this.vertexHandle = GLES20.glGetAttribLocation(this.openGLProgram, "vPosition");
+        GLES20.glVertexAttribPointer(this.vertexHandle, 3,
+                GLES20.GL_FLOAT, false,
                 3 * 4, this.vertexBuffer);
-        GLES30.glEnableVertexAttribArray(this.vertexHandle);
+        GLES20.glEnableVertexAttribArray(this.vertexHandle);
 
         // Add program to OpenGL ES environment
-        GLES30.glUseProgram(this.openGLProgram);
+        GLES20.glUseProgram(this.openGLProgram);
 
         // get handle to shape's transformation matrix
-        int vPMatrixHandle = GLES30.glGetUniformLocation(this.openGLProgram, "uMVPMatrix");
+        int vPMatrixHandle = GLES20.glGetUniformLocation(this.openGLProgram, "uMVPMatrix");
 
         synchronized (this){
             // Set robot position and scale
@@ -108,21 +108,21 @@ public class PoseVisualizer extends AbstractNodeMain implements Visualizer{
             Matrix.scaleM(resultMatrix, 0, this.scale , this.scale, 1.0f);
 
             // Pass the projection and view transformation to the shader
-            GLES30.glUniformMatrix4fv(vPMatrixHandle, 1, false, resultMatrix, 0);
+            GLES20.glUniformMatrix4fv(vPMatrixHandle, 1, false, resultMatrix, 0);
         }
 
 
         // Get handle to fragment shader's vColor member
-        colorHandle = GLES30.glGetUniformLocation(this.openGLProgram, "vColor");
+        colorHandle = GLES20.glGetUniformLocation(this.openGLProgram, "vColor");
 
         // Set color for drawing the triangle
-        GLES30.glUniform4fv(colorHandle, 1, new float[]{0.1f, 0.1f, 0.8f, 1.0f}, 0);
+        GLES20.glUniform4fv(colorHandle, 1, new float[]{0.1f, 0.1f, 0.8f, 1.0f}, 0);
 
         // Draw the triangles
-        GLES30.glDrawArrays(
-                GLES30.GL_TRIANGLE_STRIP, 0, 4);
+        GLES20.glDrawArrays(
+                GLES20.GL_TRIANGLE_STRIP, 0, 4);
 
-        GLES30.glDisableVertexAttribArray(this.vertexHandle);
+        GLES20.glDisableVertexAttribArray(this.vertexHandle);
 
     }
 

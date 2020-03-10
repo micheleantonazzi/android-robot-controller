@@ -25,7 +25,7 @@ public class RosOpenGLView extends GLSurfaceView {
     private float oldX, oldY;
 
     private void init(Context context) {
-        this.setEGLContextClientVersion(3);
+        this.setEGLContextClientVersion(2);
         this.renderer = new RosRenderer();
         this.setRenderer(this.renderer);
 
