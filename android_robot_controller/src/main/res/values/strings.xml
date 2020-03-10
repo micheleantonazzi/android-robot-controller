@@ -7,21 +7,25 @@
     <string name="application_acronym">Mobile Ros Visualizer</string>
 
     <!-- Main menu items -->
-    <string name="menu_item_monitor">Robot monitor</string>
+    <string name="menu_item_monitor">Robot localization</string>
     <string name="menu_item_camera">Streaming camera</string>
+    <string name="menu_item_control">Robot control</string>
     <string name="menu_item_settings">Settings</string>
 
-    <!-- Default setting -->
-    <string name="default_map_topic">map</string>
-
     <!-- Fragment monitor -->
-    <string name="fragment_monitor_title">Monitor</string>
+    <string name="fragment_monitor_title">Robot localization</string>
     <string name="button_goal">Set goal</string>
     <string name="button_center_map">Center map</string>
 
     <!-- Fragment camera -->
     <string name="fragment_camera_title">Streaming camera</string>
 
+    <!-- Fragment control -->
+    <string name="fragment_control_title">Robot control</string>
+
     <!-- Fragment settings -->
     <string name="fragment_settings_title">Settings</string>
+
+    <!-- Default setting -->
+    <string name="default_map_topic">map</string>
 </resources>

@@ -29,6 +29,7 @@ import androidx.drawerlayout.widget.DrawerLayout;
 import com.google.android.material.navigation.NavigationView;
 import org.ros.android.RosActivity;
 import org.ros.android.android_robot_controller.fragments.FragmentCamera;
+import org.ros.android.android_robot_controller.fragments.FragmentControl;
 import org.ros.android.android_robot_controller.fragments.FragmentMonitor;
 import org.ros.android.android_robot_controller.fragments.FragmentSettings;
 import org.ros.node.NodeConfiguration;
@@ -38,6 +39,7 @@ public class MainActivity extends RosActivity implements  NavigationView.OnNavig
 
     private FragmentMonitor fragmentMonitor;
     private FragmentCamera fragmentCamera;
+    private FragmentControl fragmentControl;
     private FragmentSettings fragmentSettings;
 
     private TextView textViewTitle;
@@ -127,6 +129,17 @@ public class MainActivity extends RosActivity implements  NavigationView.OnNavig
                 fragmentTransaction.commit();
                 if(this.textViewTitle != null)
                     this.textViewTitle.setText(R.string.fragment_camera_title);
+                break;
+            case R.id.menu_item_control:
+                if(this.getFragmentManager().findFragmentByTag(FragmentControl.TAG) == null)
+                    this.fragmentControl = new FragmentControl();
+                else
+                    this.fragmentControl = (FragmentControl) this.getFragmentManager().findFragmentByTag(FragmentControl.TAG);
+
+                fragmentTransaction.replace(R.id.linear_layout, this.fragmentControl, FragmentControl.TAG);
+                fragmentTransaction.commit();
+                if(this.textViewTitle != null)
+                    this.textViewTitle.setText(R.string.fragment_control_title);
                 break;
             case R.id.menu_item_settings:
                 if(this.getFragmentManager().findFragmentByTag(FragmentSettings.TAG) == null)
