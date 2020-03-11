@@ -2,6 +2,8 @@ package org.ros.android.android_robot_controller.OpenGL.Visualizers;
 
 import android.opengl.GLES20;
 import android.opengl.Matrix;
+import android.util.Log;
+
 import org.ros.android.android_robot_controller.OpenGL.Renderes.RosRenderer;
 import org.ros.message.MessageListener;
 import org.ros.namespace.GraphName;
@@ -129,7 +131,7 @@ public class GoalVisualizer extends AbstractNodeMain implements Visualizer{
         colorHandle = GLES20.glGetUniformLocation(this.openGLProgram, "vColor");
 
         // Set color for drawing the triangle
-        GLES20.glUniform4fv(colorHandle, 1, new float[]{0.2f, 1.0f, 0.2f, 1.0f}, 0);
+        GLES20.glUniform4fv(colorHandle, 1, new float[]{0f, 0.6f, 0.544f, 1.0f}, 0);
 
         // Draw the triangles
         GLES20.glDrawArrays(

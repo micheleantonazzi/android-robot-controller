@@ -116,7 +116,7 @@ public class PoseVisualizer extends AbstractNodeMain implements Visualizer{
         colorHandle = GLES20.glGetUniformLocation(this.openGLProgram, "vColor");
 
         // Set color for drawing the triangle
-        GLES20.glUniform4fv(colorHandle, 1, new float[]{0.1f, 0.1f, 0.8f, 1.0f}, 0);
+        GLES20.glUniform4fv(colorHandle, 1, new float[]{1.0f, 0.44f, 0.256f, 1.0f}, 0);
 
         // Draw the triangles
         GLES20.glDrawArrays(
