@@ -24,7 +24,7 @@ public class FragmentCamera extends Fragment {
         View view = inflater.inflate(R.layout.fragment_camera, container, false);
         ImageView imageView = view.findViewById(R.id.ImageViewCamera);
         this.nodeReadImage = new NodeReadImage(imageView);
-        NodesExecutor.getInstance().setNode(this.nodeReadImage);
+        NodesExecutor.getInstance().executeNode(this.nodeReadImage);
 
         // Inflate the layout for this fragment
         return view;

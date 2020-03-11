@@ -1,10 +1,8 @@
 package org.ros.android.android_robot_controller.OpenGL.Renderes;
 
-import android.content.res.Configuration;
 import android.opengl.GLES20;
 import android.opengl.GLSurfaceView;
 import android.opengl.Matrix;
-import android.util.Log;
 
 import org.ros.android.android_robot_controller.NodesExecutor;
 import org.ros.android.android_robot_controller.OpenGL.Visualizers.GoalVisualizer;
@@ -78,7 +76,7 @@ public class RosRenderer implements GLSurfaceView.Renderer {
         this.goalVisualizer = new GoalVisualizer();
         this.nodes.add(this.goalVisualizer);
 
-        NodesExecutor.getInstance().setNodes(this.nodes);
+        NodesExecutor.getInstance().executeNodes(this.nodes);
     }
 
     @Override

@@ -4,7 +4,6 @@ import org.ros.node.AbstractNodeMain;
 import org.ros.node.NodeConfiguration;
 import org.ros.node.NodeMainExecutor;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
@@ -54,7 +53,7 @@ public class NodesExecutor {
         this.executeNodes();
     }
 
-    public synchronized void setNodes(List<AbstractNodeMain> nodes){
+    public synchronized void executeNodes(List<AbstractNodeMain> nodes){
         for(AbstractNodeMain node : nodes){
             if(node != null){
                 this.nodes.put(node, false);
@@ -63,8 +62,8 @@ public class NodesExecutor {
         this.executeNodes();
     }
 
-    public synchronized void setNode(AbstractNodeMain node){
-        this.setNodes(Arrays.asList(node));
+    public synchronized void executeNode(AbstractNodeMain node){
+        this.executeNodes(Arrays.asList(node));
     }
 
     public synchronized void shutDownNode(AbstractNodeMain node){
