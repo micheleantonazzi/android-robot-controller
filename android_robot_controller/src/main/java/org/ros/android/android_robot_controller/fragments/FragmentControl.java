@@ -11,8 +11,6 @@ import org.ros.android.android_robot_controller.NodesExecutor;
 import org.ros.android.android_robot_controller.R;
 import org.ros.android.android_robot_controller.nodes.NodeControl;
 import org.ros.android.android_robot_controller.nodes.NodeReadImage;
-import org.ros.android.view.VirtualJoystickView;
-
 import java.util.Arrays;
 
 import io.github.controlwear.virtual.joystick.android.JoystickView;
@@ -31,13 +29,28 @@ public class FragmentControl extends Fragment {
         View view = inflater.inflate(R.layout.fragment_control, container, false);
 
         this.nodeControl = new NodeControl();
-        JoystickView joystick = (JoystickView) view.findViewById(R.id.JoystickHorizontal);
-        joystick.setOnMoveListener(new JoystickView.OnMoveListener() {
+        JoystickView joystickVertical = (JoystickView) view.findViewById(R.id.JoystickVertical);
+        joystickVertical.setOnMoveListener(new JoystickView.OnMoveListener() {
             @Override
             public void onMove(int angle, int strength) {
-                nodeControl.publish(angle, strength);
-                angle = (angle+270) % 360 %180;
-                Log.d("debugg", angle + " " + strength);
+                if(angle == 90)
+                    angle = NodeControl.DIRECTION_UP;
+                else
+                    angle = NodeControl.DIRECTION_DOWN;
+                nodeControl.publishVertical(angle, strength / 100f * 0.5f);
+            }
+        }, 200);
+
+        JoystickView joystickHorizontal = (JoystickView) view.findViewById(R.id.JoystickHorizontal);
+        joystickHorizontal.setOnMoveListener(new JoystickView.OnMoveListener() {
+            @Override
+            public void onMove(int angle, int strength) {
+                if(angle == 180)
+                    angle = NodeControl.DIRECTION_LEFT;
+                else
+                    angle = NodeControl.DIRECTION_RIGHT;
+
+                nodeControl.publishHorizontal(angle, strength / 100.0f);
             }
         }, 200);
         NodesExecutor.getInstance().executeNode(this.nodeControl);
