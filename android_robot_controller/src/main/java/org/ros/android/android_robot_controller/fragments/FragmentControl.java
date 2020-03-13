@@ -6,6 +6,9 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.CompoundButton;
+import android.widget.Switch;
+import android.widget.TextView;
 
 import org.ros.android.android_robot_controller.NodesExecutor;
 import org.ros.android.android_robot_controller.R;
@@ -57,6 +60,24 @@ public class FragmentControl extends Fragment {
 
         this.nodeReadImage = new NodeReadImage(view.findViewById(R.id.ImageViewCamera));
         NodesExecutor.getInstance().executeNode(this.nodeReadImage);
+
+        TextView textViewSwitch = view.findViewById(R.id.TextViewSwitchGyroscope);
+
+        Switch switchGyroscope = view.findViewById(R.id.SwitchGyroscope);
+        switchGyroscope.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                if(isChecked){
+                    textViewSwitch.setText(R.string.fragment_control_switch_gyroscope_on);
+                    joystickHorizontal.setEnabled(false);
+                    joystickHorizontal.setVisibility(View.INVISIBLE);
+                }
+                else{
+                    textViewSwitch.setText(R.string.fragment_control_switch_gyroscope_off);
+                    joystickHorizontal.setEnabled(true);
+                    joystickHorizontal.setVisibility(View.VISIBLE);
+                }
+            }
+        });
 
         return view;
     }
