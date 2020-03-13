@@ -4,6 +4,13 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent" >
 
+    <ImageView
+        android:id="@+id/ImageViewCamera"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:adjustViewBounds="true"
+        android:scaleType="fitCenter" />
+
     <io.github.controlwear.virtual.joystick.android.JoystickView
         android:id="@+id/JoystickVertical"
         android:layout_width="140dp"
@@ -25,7 +32,7 @@
         android:layout_width="140dp"
         android:layout_height="140dp"
         android:layout_alignParentBottom="true"
-        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true"
         android:layout_marginBottom="10dp"
         custom:JV_buttonImage="@drawable/ic_double_arrow_horizontal"
         android:background="#00730000"
