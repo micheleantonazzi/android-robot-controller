@@ -16,6 +16,7 @@ import android.widget.TextView;
 
 import org.ros.android.android_robot_controller.NodesExecutor;
 import org.ros.android.android_robot_controller.R;
+import org.ros.android.android_robot_controller.listeners.TouchListenerButtonEnableGyroscope;
 import org.ros.android.android_robot_controller.nodes.NodeControl;
 import org.ros.android.android_robot_controller.nodes.NodeReadImage;
 import java.util.Arrays;
@@ -94,6 +95,8 @@ public class FragmentControl extends Fragment {
                 }
             }
         });
+
+        buttonEnableGyroscope.setOnTouchListener(new TouchListenerButtonEnableGyroscope());
 
         return view;
     }

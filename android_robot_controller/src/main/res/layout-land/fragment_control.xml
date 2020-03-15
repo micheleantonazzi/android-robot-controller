@@ -99,7 +99,7 @@
             android:layout_alignParentEnd="true"
             android:layout_alignParentBottom="true"
             android:layout_gravity="center"
-            android:background="@drawable/button_enable_gyroscope"
+            android:background="@drawable/button_enable_gyroscope_off"
             android:src="@drawable/ic_screen_rotation" />
     </LinearLayout>
 </RelativeLayout>
