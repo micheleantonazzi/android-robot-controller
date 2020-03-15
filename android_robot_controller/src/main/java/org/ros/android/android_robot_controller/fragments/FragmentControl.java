@@ -1,6 +1,10 @@
 package org.ros.android.android_robot_controller.fragments;
 
 import android.app.Fragment;
+import android.hardware.Sensor;
+import android.hardware.SensorEvent;
+import android.hardware.SensorEventListener;
+import android.hardware.SensorManager;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -16,12 +20,15 @@ import android.widget.TextView;
 
 import org.ros.android.android_robot_controller.NodesExecutor;
 import org.ros.android.android_robot_controller.R;
+import org.ros.android.android_robot_controller.listeners.EventListenerAccelerometerMagnetometer;
 import org.ros.android.android_robot_controller.listeners.TouchListenerButtonEnableGyroscope;
 import org.ros.android.android_robot_controller.nodes.NodeControl;
 import org.ros.android.android_robot_controller.nodes.NodeReadImage;
 import java.util.Arrays;
 
 import io.github.controlwear.virtual.joystick.android.JoystickView;
+
+import static android.content.Context.SENSOR_SERVICE;
 
 public class FragmentControl extends Fragment {
 
@@ -75,6 +82,7 @@ public class FragmentControl extends Fragment {
         buttonEnableGyroscope.setEnabled(false);
         linearLayoutEnableGyroscope.setVisibility(View.INVISIBLE);
 
+        // Set behaviour of switch that enables gyroscope
         Switch switchGyroscope = view.findViewById(R.id.SwitchGyroscope);
         switchGyroscope.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
@@ -96,7 +104,25 @@ public class FragmentControl extends Fragment {
             }
         });
 
-        buttonEnableGyroscope.setOnTouchListener(new TouchListenerButtonEnableGyroscope());
+        TouchListenerButtonEnableGyroscope listenerButtonEnableGyroscope = new TouchListenerButtonEnableGyroscope();
+        buttonEnableGyroscope.setOnTouchListener(listenerButtonEnableGyroscope);
+
+        // Set up the orientation sensor
+        SensorManager sensorManager = (SensorManager) view.getContext().getSystemService(SENSOR_SERVICE);
+
+        SensorEventListener sensorEventListener = new EventListenerAccelerometerMagnetometer();
+
+        Sensor accelerometer = sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
+        if (accelerometer != null) {
+            sensorManager.registerListener(sensorEventListener, accelerometer,
+                    SensorManager.SENSOR_DELAY_NORMAL, SensorManager.SENSOR_DELAY_UI);
+        }
+
+        Sensor magneticField = sensorManager.getDefaultSensor(Sensor.TYPE_MAGNETIC_FIELD);
+        if (magneticField != null) {
+            sensorManager.registerListener(sensorEventListener, magneticField,
+                    SensorManager.SENSOR_DELAY_NORMAL, SensorManager.SENSOR_DELAY_UI);
+        }
 
         return view;
     }

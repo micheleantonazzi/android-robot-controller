@@ -9,7 +9,7 @@ public class TouchListenerButtonEnableGyroscope implements View.OnTouchListener 
 
     private volatile boolean gyroscopeActivated = false;
 
-    public boolean isGyroscopeIsActivated(){
+    public boolean isGyroscopeActivated(){
         return this.gyroscopeActivated;
     }
 
