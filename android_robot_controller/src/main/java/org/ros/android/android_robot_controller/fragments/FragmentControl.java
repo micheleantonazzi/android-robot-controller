@@ -4,9 +4,13 @@ import android.app.Fragment;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.CompoundButton;
+import android.widget.ImageButton;
+import android.widget.LinearLayout;
 import android.widget.Switch;
 import android.widget.TextView;
 
@@ -63,6 +67,13 @@ public class FragmentControl extends Fragment {
 
         TextView textViewSwitch = view.findViewById(R.id.TextViewSwitchGyroscope);
 
+        // Enable gyroscope components
+        LinearLayout linearLayoutEnableGyroscope = view.findViewById(R.id.LinearLayoutEnableGyroscope);
+        ImageButton buttonEnableGyroscope = view.findViewById(R.id.ButtonEnableGyroscope);
+        TextView textViewEnableGyroscope = view.findViewById(R.id.TextViewEnableGyroscope);
+        buttonEnableGyroscope.setEnabled(false);
+        linearLayoutEnableGyroscope.setVisibility(View.INVISIBLE);
+
         Switch switchGyroscope = view.findViewById(R.id.SwitchGyroscope);
         switchGyroscope.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
@@ -70,11 +81,16 @@ public class FragmentControl extends Fragment {
                     textViewSwitch.setText(R.string.fragment_control_switch_gyroscope_on);
                     joystickHorizontal.setEnabled(false);
                     joystickHorizontal.setVisibility(View.INVISIBLE);
+                    buttonEnableGyroscope.setEnabled(true);
+                    linearLayoutEnableGyroscope.setVisibility(View.VISIBLE);
                 }
                 else{
                     textViewSwitch.setText(R.string.fragment_control_switch_gyroscope_off);
-                    joystickHorizontal.setEnabled(true);
+                    buttonEnableGyroscope.setEnabled(false);
                     joystickHorizontal.setVisibility(View.VISIBLE);
+                    joystickHorizontal.setEnabled(true);
+                    linearLayoutEnableGyroscope.setVisibility(View.INVISIBLE);
+
                 }
             }
         });

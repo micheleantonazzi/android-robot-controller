@@ -71,4 +71,35 @@
             android:trackTint="@color/white"
             android:layout_marginBottom="5dp"/>
     </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/LinearLayoutEnableGyroscope"
+        android:layout_width="100dp"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentRight="true"
+        android:layout_marginBottom="44dp"
+        android:layout_marginRight="20dp"
+
+        >
+        <TextView
+            android:id="@+id/TextViewEnableGyroscope"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_above="@+id/ButtonEnableGyroscope"
+            android:gravity="center"
+            android:layout_marginBottom="10dp"
+            android:text="@string/fragment_control_switch_gyroscope_off" />
+
+        <ImageButton
+            android:id="@+id/ButtonEnableGyroscope"
+            android:layout_width="70dp"
+            android:layout_height="70dp"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentBottom="true"
+            android:layout_gravity="center"
+            android:background="@drawable/button_enable_gyroscope"
+            android:src="@drawable/ic_screen_rotation" />
+    </LinearLayout>
 </RelativeLayout>
