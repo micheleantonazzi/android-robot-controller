@@ -5,31 +5,36 @@ import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
 import android.util.Log;
+import android.widget.TextView;
+
+import org.ros.android.android_robot_controller.nodes.NodeControl;
 
 public class EventListenerAccelerometerMagnetometer implements SensorEventListener {
 
-    private float[] accelerometerReading = new float[3];
-    private float[] magnetometerReading = new float[3];
-    private float[] rotationMatrix = new float[9];
-    private float[] orientationAngles = new float[3];
+    private TextView textViewOrientation;
+    private NodeControl nodeControl;
+
+    public EventListenerAccelerometerMagnetometer(TextView textView, NodeControl nodeControl){
+        this.nodeControl = nodeControl;
+        this.textViewOrientation = textView;
+    }
 
     @Override
     public void onSensorChanged(SensorEvent event) {
 
-        if (event.sensor.getType() == Sensor.TYPE_ACCELEROMETER) {
-            System.arraycopy(event.values, 0, accelerometerReading,
-                    0, accelerometerReading.length);
-        } else if (event.sensor.getType() == Sensor.TYPE_MAGNETIC_FIELD) {
-            System.arraycopy(event.values, 0, magnetometerReading,
-                    0, magnetometerReading.length);
-        }
-        SensorManager.getRotationMatrix(rotationMatrix, null,
-                accelerometerReading, magnetometerReading);
+        float[] rotationMatrix = new float[16], remappedRotationMatrix = new float[16];
+        SensorManager.getRotationMatrixFromVector(
+                rotationMatrix, event.values);
 
-        // "mRotationMatrix" now has up-to-date information.
+        SensorManager.remapCoordinateSystem(rotationMatrix,
+                SensorManager.AXIS_X,
+                SensorManager.AXIS_Z,
+                remappedRotationMatrix);
 
-        SensorManager.getOrientation(rotationMatrix, orientationAngles);
-        Log.d("debugg", Math.toDegrees(orientationAngles[0]) + " " + Math.toDegrees(orientationAngles[1]) + " " + Math.toDegrees(orientationAngles[2]));
+        // Convert to orientations
+        float[] orientations = new float[3];
+        SensorManager.getOrientation(remappedRotationMatrix, orientations);
+        Log.d("debugg", "fitoo");
     }
 
     @Override

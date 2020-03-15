@@ -2,16 +2,12 @@ package org.ros.android.android_robot_controller.fragments;
 
 import android.app.Fragment;
 import android.hardware.Sensor;
-import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.CompoundButton;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
@@ -21,7 +17,7 @@ import android.widget.TextView;
 import org.ros.android.android_robot_controller.NodesExecutor;
 import org.ros.android.android_robot_controller.R;
 import org.ros.android.android_robot_controller.listeners.EventListenerAccelerometerMagnetometer;
-import org.ros.android.android_robot_controller.listeners.TouchListenerButtonEnableGyroscope;
+import org.ros.android.android_robot_controller.listeners.TouchListenerButtonEnableRotationVector;
 import org.ros.android.android_robot_controller.nodes.NodeControl;
 import org.ros.android.android_robot_controller.nodes.NodeReadImage;
 import java.util.Arrays;
@@ -44,6 +40,8 @@ public class FragmentControl extends Fragment {
         View view = inflater.inflate(R.layout.fragment_control, container, false);
 
         this.nodeControl = new NodeControl();
+
+        // Set the two joysticks
         JoystickView joystickVertical = (JoystickView) view.findViewById(R.id.JoystickVertical);
         joystickVertical.setOnMoveListener(new JoystickView.OnMoveListener() {
             @Override
@@ -68,61 +66,54 @@ public class FragmentControl extends Fragment {
                 nodeControl.publishHorizontal(angle, strength / 100.0f);
             }
         }, 200);
+
+        // Execute nodeControl
         NodesExecutor.getInstance().executeNode(this.nodeControl);
 
+        // Setup the node to show the camera's view
         this.nodeReadImage = new NodeReadImage(view.findViewById(R.id.ImageViewCamera));
         NodesExecutor.getInstance().executeNode(this.nodeReadImage);
 
-        TextView textViewSwitch = view.findViewById(R.id.TextViewSwitchGyroscope);
+        // Get the graphic elements
+        LinearLayout linearLayoutEnableRotationVector = view.findViewById(R.id.LinearLayoutEnableRotationVector);
+        TextView textViewSwitch = view.findViewById(R.id.TextViewSwitchRotationVector);
+        ImageButton buttonEnableRotationVector = view.findViewById(R.id.ButtonEnableRotationVector);
+        TextView textViewRotationVector = view.findViewById(R.id.TextViewRotationVector);
 
-        // Enable gyroscope components
-        LinearLayout linearLayoutEnableGyroscope = view.findViewById(R.id.LinearLayoutEnableGyroscope);
-        ImageButton buttonEnableGyroscope = view.findViewById(R.id.ButtonEnableGyroscope);
-        TextView textViewEnableGyroscope = view.findViewById(R.id.TextViewEnableGyroscope);
-        buttonEnableGyroscope.setEnabled(false);
-        linearLayoutEnableGyroscope.setVisibility(View.INVISIBLE);
+        // Disable rotationVector components
+        buttonEnableRotationVector.setEnabled(false);
+        linearLayoutEnableRotationVector.setVisibility(View.INVISIBLE);
+
+        EventListenerAccelerometerMagnetometer listenerAccelerometerMagnetometer = new EventListenerAccelerometerMagnetometer(textViewRotationVector, this.nodeControl);
 
         // Set behaviour of switch that enables gyroscope
-        Switch switchGyroscope = view.findViewById(R.id.SwitchGyroscope);
+        Switch switchGyroscope = view.findViewById(R.id.SwitchRotationVector);
         switchGyroscope.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 if(isChecked){
-                    textViewSwitch.setText(R.string.fragment_control_switch_gyroscope_on);
+                    textViewSwitch.setText(R.string.fragment_control_switch_rotation_vector_on);
                     joystickHorizontal.setEnabled(false);
                     joystickHorizontal.setVisibility(View.INVISIBLE);
-                    buttonEnableGyroscope.setEnabled(true);
-                    linearLayoutEnableGyroscope.setVisibility(View.VISIBLE);
+                    buttonEnableRotationVector.setEnabled(true);
+                    linearLayoutEnableRotationVector.setVisibility(View.VISIBLE);
                 }
                 else{
-                    textViewSwitch.setText(R.string.fragment_control_switch_gyroscope_off);
-                    buttonEnableGyroscope.setEnabled(false);
+                    textViewSwitch.setText(R.string.fragment_control_switch_rotation_vector_off);
+                    buttonEnableRotationVector.setEnabled(false);
                     joystickHorizontal.setVisibility(View.VISIBLE);
                     joystickHorizontal.setEnabled(true);
-                    linearLayoutEnableGyroscope.setVisibility(View.INVISIBLE);
+                    linearLayoutEnableRotationVector.setVisibility(View.INVISIBLE);
 
                 }
             }
         });
 
-        TouchListenerButtonEnableGyroscope listenerButtonEnableGyroscope = new TouchListenerButtonEnableGyroscope();
-        buttonEnableGyroscope.setOnTouchListener(listenerButtonEnableGyroscope);
+        // Setup listeners about buttonEnableRotationVector
 
-        // Set up the orientation sensor
         SensorManager sensorManager = (SensorManager) view.getContext().getSystemService(SENSOR_SERVICE);
+        EventListenerAccelerometerMagnetometer sensorEventListener = new EventListenerAccelerometerMagnetometer(textViewRotationVector, this.nodeControl);
 
-        SensorEventListener sensorEventListener = new EventListenerAccelerometerMagnetometer();
-
-        Sensor accelerometer = sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
-        if (accelerometer != null) {
-            sensorManager.registerListener(sensorEventListener, accelerometer,
-                    SensorManager.SENSOR_DELAY_NORMAL, SensorManager.SENSOR_DELAY_UI);
-        }
-
-        Sensor magneticField = sensorManager.getDefaultSensor(Sensor.TYPE_MAGNETIC_FIELD);
-        if (magneticField != null) {
-            sensorManager.registerListener(sensorEventListener, magneticField,
-                    SensorManager.SENSOR_DELAY_NORMAL, SensorManager.SENSOR_DELAY_UI);
-        }
+        buttonEnableRotationVector.setOnTouchListener(new TouchListenerButtonEnableRotationVector(sensorManager, sensorEventListener));
 
         return view;
     }

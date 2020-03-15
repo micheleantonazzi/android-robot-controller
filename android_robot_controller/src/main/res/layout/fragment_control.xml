@@ -43,16 +43,16 @@
         custom:JV_buttonSizeRatio="40%" />
 
     <TextView
-        android:id="@+id/TextViewSwitchGyroscope"
+        android:id="@+id/TextViewSwitchRotationVector"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_above="@+id/SwitchGyroscope"
+        android:layout_above="@+id/SwitchRotationVector"
         android:layout_marginBottom="10dp"
         android:layout_centerHorizontal="true"
-        android:text="@string/fragment_control_switch_gyroscope_off" />
+        android:text="@string/fragment_control_switch_rotation_vector_off" />
 
     <Switch
-        android:id="@+id/SwitchGyroscope"
+        android:id="@+id/SwitchRotationVector"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
@@ -65,7 +65,7 @@
         android:layout_marginBottom="30dp"/>
 
     <LinearLayout
-        android:id="@+id/LinearLayoutEnableGyroscope"
+        android:id="@+id/LinearLayoutEnableRotationVector"
         android:layout_width="100dp"
         android:layout_height="wrap_content"
         android:orientation="vertical"
@@ -76,22 +76,22 @@
 
         >
         <TextView
-            android:id="@+id/TextViewEnableGyroscope"
+            android:id="@+id/TextViewRotationVector"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_above="@+id/ButtonEnableGyroscope"
+            android:layout_above="@+id/ButtonEnableRotationVector"
             android:gravity="center"
             android:layout_marginBottom="10dp"
-            android:text="@string/fragment_control_switch_gyroscope_off" />
+            android:text="@string/fragment_control_switch_rotation_vector_off" />
 
         <ImageButton
-            android:id="@+id/ButtonEnableGyroscope"
+            android:id="@+id/ButtonEnableRotationVector"
             android:layout_width="70dp"
             android:layout_height="70dp"
             android:layout_alignParentEnd="true"
             android:layout_alignParentBottom="true"
             android:layout_gravity="center"
-            android:background="@drawable/button_enable_gyroscope_off"
+            android:background="@drawable/button_enable_rotation_vector_off"
             android:src="@drawable/ic_screen_rotation" />
     </LinearLayout>
 
