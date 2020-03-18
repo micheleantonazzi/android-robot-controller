@@ -21,6 +21,8 @@
     <string name="fragment_camera_title">Streaming camera</string>
 
     <!-- Fragment control -->
+    <string name="fragment_control_switch_map">Show camera</string>
+    <string name="fragment_control_switch_camera">Show map</string>
     <string name="fragment_control_switch_rotation_vector_on">Gyroscope ON</string>
     <string name="fragment_control_switch_rotation_vector_off">Gyroscope OFF</string>
     <string name="fragment_control_title">Robot control</string>

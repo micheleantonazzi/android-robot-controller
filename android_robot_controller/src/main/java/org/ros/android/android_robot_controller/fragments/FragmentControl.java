@@ -3,23 +3,22 @@ package org.ros.android.android_robot_controller.fragments;
 import android.annotation.SuppressLint;
 import android.app.Fragment;
 import android.hardware.Sensor;
-import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
 import android.os.Bundle;
 import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
-import android.view.Surface;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.CompoundButton;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.Switch;
 import android.widget.TextView;
 
 import org.ros.android.android_robot_controller.NodesExecutor;
+import org.ros.android.android_robot_controller.OpenGL.Views.RosOpenGLView;
 import org.ros.android.android_robot_controller.R;
 import org.ros.android.android_robot_controller.listeners.ListenerRotationVector;
 import org.ros.android.android_robot_controller.listeners.RotationListener;
@@ -35,6 +34,7 @@ public class FragmentControl extends Fragment {
 
     public final static String TAG = "fragment_control";
 
+    private RosOpenGLView rosOpenGLView;
     private NodeControl nodeControl;
     private NodeReadImage nodeReadImage;
 
@@ -52,6 +52,7 @@ public class FragmentControl extends Fragment {
         ImageButton buttonEnableRotationVector = view.findViewById(R.id.ButtonEnableRotationVector);
         TextView textViewRotationVector = view.findViewById(R.id.TextViewRotationVector);
         Switch switchGyroscope = view.findViewById(R.id.SwitchRotationVector);
+        ImageView imageViewCamera = view.findViewById(R.id.ImageViewCamera);
 
         // Set the two joysticks listeners
         joystickVertical.setOnMoveListener((angle, strength) -> {
@@ -74,7 +75,7 @@ public class FragmentControl extends Fragment {
         NodesExecutor.getInstance().executeNode(this.nodeControl);
 
         // Setup the node to show the camera's view
-        this.nodeReadImage = new NodeReadImage(view.findViewById(R.id.ImageViewCamera));
+        this.nodeReadImage = new NodeReadImage(imageViewCamera);
         NodesExecutor.getInstance().executeNode(this.nodeReadImage);
 
         // Disable rotation vector components
@@ -143,12 +144,44 @@ public class FragmentControl extends Fragment {
         };
         buttonEnableRotationVector.setOnTouchListener(touchListener);
 
+
+        // Set up  switch between Camera and Map
+        // Collecting variables
+        this.rosOpenGLView = view.findViewById(R.id.RosOpenGLViewControl);
+        TextView textViewMapCamera = view.findViewById(R.id.TextViewMapCamera);
+        Switch switchMapCamera = view.findViewById(R.id.SwitchMapCamera);
+
+        switchMapCamera.setOnCheckedChangeListener((buttonView, isChecked) -> {
+            if (isChecked) {
+                textViewMapCamera.setText(R.string.fragment_control_switch_map);
+                this.rosOpenGLView.setEnabled(true);
+                this.rosOpenGLView.setVisibility(View.VISIBLE);
+                imageViewCamera.setVisibility(View.INVISIBLE);
+                NodesExecutor.getInstance().shutDownNode(this.nodeReadImage);
+            } else {
+                textViewMapCamera.setText(R.string.fragment_control_switch_camera);
+
+                this.rosOpenGLView.setVisibility(View.INVISIBLE);
+                imageViewCamera.setVisibility(View.VISIBLE);
+                NodesExecutor.getInstance().executeNode(this.nodeReadImage);
+                this.rosOpenGLView.setEnabled(false);
+
+            }
+        });
+
         return view;
+    }
+
+    public void onResume(){
+        super.onResume();
+        rosOpenGLView.setEnabled(false);
+        rosOpenGLView.setVisibility(View.INVISIBLE);
     }
 
     @Override
     public void onDestroy(){
         super.onDestroy();
         NodesExecutor.getInstance().shutDownNodes(Arrays.asList(this.nodeControl, this.nodeReadImage));
+        this.rosOpenGLView.onDestroy();
     }
 }
