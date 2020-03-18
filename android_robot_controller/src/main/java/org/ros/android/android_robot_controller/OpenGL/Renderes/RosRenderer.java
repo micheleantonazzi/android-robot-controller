@@ -193,6 +193,14 @@ public class RosRenderer implements GLSurfaceView.Renderer {
         this.updateResultMatrixGlobal();
     }
 
+    public void executeNodes(){
+        NodesExecutor.getInstance().executeNodes(this.nodes);
+    }
+
+    public void shutDownNodes(){
+        NodesExecutor.getInstance().shutDownNodes(this.nodes);
+    }
+
     public void onDestroy(){
         NodesExecutor.getInstance().shutDownNodes(this.nodes);
     }
