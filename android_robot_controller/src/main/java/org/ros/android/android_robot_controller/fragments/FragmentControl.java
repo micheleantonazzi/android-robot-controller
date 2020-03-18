@@ -66,7 +66,6 @@ public class FragmentControl extends Fragment {
                 angle = NodeControl.DIRECTION_LEFT;
             else
                 angle = NodeControl.DIRECTION_RIGHT;
-
             nodeControl.publishHorizontal(angle, strength / 100.0f);
         }, 200);
 
@@ -97,7 +96,6 @@ public class FragmentControl extends Fragment {
                 joystickHorizontal.setVisibility(View.VISIBLE);
                 joystickHorizontal.setEnabled(true);
                 linearLayoutEnableRotationVector.setVisibility(View.INVISIBLE);
-
             }
         });
 
@@ -108,6 +106,11 @@ public class FragmentControl extends Fragment {
         // Sensor listener rotation vector
         RotationListener rotationListener = roll -> {
             textViewRotationVector.setText(Integer.toString((int) roll) + "°");
+            int direction = NodeControl.DIRECTION_LEFT;
+            if(roll >=0)
+                direction = NodeControl.DIRECTION_RIGHT;
+
+            this.nodeControl.publishHorizontal(direction, Math.abs(roll * 2) / 90.0f);
         };
         SensorEventListener listenerRotation = new ListenerRotationVector(
                 getActivity().getWindowManager().getDefaultDisplay().getRotation(), rotationListener);
@@ -131,7 +134,7 @@ public class FragmentControl extends Fragment {
                     sensorManager.unregisterListener(listenerRotation);
                     textViewRotationVector.setText(R.string.fragment_control_switch_rotation_vector_off);
                     textViewRotationVector.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 14);
-                    //nodeControl.publishHorizontal(0, 0);
+                    nodeControl.publishHorizontal(NodeControl.DIRECTION_LEFT, 0);
                     button.setBackgroundResource(R.drawable.button_enable_rotation_vector_off);
                     break;
             }
