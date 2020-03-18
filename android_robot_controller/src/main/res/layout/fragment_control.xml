@@ -75,14 +75,16 @@
         android:layout_marginRight="20dp"
 
         >
+
         <TextView
             android:id="@+id/TextViewRotationVector"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_above="@+id/ButtonEnableRotationVector"
+            android:layout_marginBottom="20dp"
             android:gravity="center"
-            android:layout_marginBottom="10dp"
-            android:text="@string/fragment_control_switch_rotation_vector_off" />
+            android:text="@string/fragment_control_switch_rotation_vector_off"
+            android:textAlignment="center" />
 
         <ImageButton
             android:id="@+id/ButtonEnableRotationVector"

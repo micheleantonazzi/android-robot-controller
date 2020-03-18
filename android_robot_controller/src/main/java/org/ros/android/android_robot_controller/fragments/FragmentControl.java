@@ -2,10 +2,14 @@ package org.ros.android.android_robot_controller.fragments;
 
 import android.app.Fragment;
 import android.hardware.Sensor;
+import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
+import android.view.Surface;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CompoundButton;
@@ -84,8 +88,6 @@ public class FragmentControl extends Fragment {
         buttonEnableRotationVector.setEnabled(false);
         linearLayoutEnableRotationVector.setVisibility(View.INVISIBLE);
 
-        EventListenerAccelerometerMagnetometer listenerAccelerometerMagnetometer = new EventListenerAccelerometerMagnetometer(textViewRotationVector, this.nodeControl);
-
         // Set behaviour of switch that enables gyroscope
         Switch switchGyroscope = view.findViewById(R.id.SwitchRotationVector);
         switchGyroscope.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
@@ -108,12 +110,90 @@ public class FragmentControl extends Fragment {
             }
         });
 
-        // Setup listeners about buttonEnableRotationVector
-
+        // Sensor listener accelerometer and magnetometer
         SensorManager sensorManager = (SensorManager) view.getContext().getSystemService(SENSOR_SERVICE);
-        EventListenerAccelerometerMagnetometer sensorEventListener = new EventListenerAccelerometerMagnetometer(textViewRotationVector, this.nodeControl);
+        SensorEventListener listenerRotation = new SensorEventListener() {
+            @Override
+            public void onSensorChanged(SensorEvent event) {
+                float[] rotationMatrix = new float[9];
+                SensorManager.getRotationMatrixFromVector(rotationMatrix, event.values);
 
-        buttonEnableRotationVector.setOnTouchListener(new TouchListenerButtonEnableRotationVector(sensorManager, sensorEventListener));
+                final int worldAxisForDeviceAxisX;
+                final int worldAxisForDeviceAxisY;
+
+                // Remap the axes as if the device screen was the instrument panel,
+                // and adjust the rotation matrix for the device orientation.
+                switch (getActivity().getWindowManager().getDefaultDisplay().getRotation()) {
+                    case Surface.ROTATION_0:
+                    default:
+                        worldAxisForDeviceAxisX = SensorManager.AXIS_X;
+                        worldAxisForDeviceAxisY = SensorManager.AXIS_Z;
+                        break;
+                    case Surface.ROTATION_90:
+                        worldAxisForDeviceAxisX = SensorManager.AXIS_Z;
+                        worldAxisForDeviceAxisY = SensorManager.AXIS_MINUS_X;
+                        break;
+                    case Surface.ROTATION_180:
+                        worldAxisForDeviceAxisX = SensorManager.AXIS_MINUS_X;
+                        worldAxisForDeviceAxisY = SensorManager.AXIS_MINUS_Z;
+                        break;
+                    case Surface.ROTATION_270:
+                        worldAxisForDeviceAxisX = SensorManager.AXIS_MINUS_Z;
+                        worldAxisForDeviceAxisY = SensorManager.AXIS_X;
+                        break;
+                }
+
+                float[] adjustedRotationMatrix = new float[9];
+                SensorManager.remapCoordinateSystem(rotationMatrix, worldAxisForDeviceAxisX,
+                        worldAxisForDeviceAxisY, adjustedRotationMatrix);
+
+                // Transform rotation matrix into azimuth/pitch/roll
+                float[] orientation = new float[3];
+                SensorManager.getOrientation(adjustedRotationMatrix, orientation);
+
+                // Convert radians to degrees
+                float roll = (float) Math.toDegrees(orientation[2]);
+                if(roll < -90.0f)
+                    roll = -90.0f;
+                else if (roll >90.0f)
+                    roll = 90.0f;
+
+                textViewRotationVector.setText(Integer.toString((int) roll) + "°");
+
+            }
+
+            @Override
+            public void onAccuracyChanged(Sensor sensor, int accuracy) {
+
+            }
+        };
+
+        Sensor sensorGameRotation = sensorManager.getDefaultSensor(Sensor.TYPE_ROTATION_VECTOR);
+
+        // Button enable rotation listener
+        View.OnTouchListener touchListener = new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                ImageButton button = v.findViewById(R.id.ButtonEnableRotationVector);
+
+                switch (event.getAction()){
+                    case MotionEvent.ACTION_DOWN:
+
+                        // Set up the rotation vector sensor
+                        sensorManager.registerListener(listenerRotation, sensorGameRotation, SensorManager.SENSOR_DELAY_NORMAL, SensorManager.SENSOR_DELAY_UI);
+                        button.setBackgroundResource(R.drawable.button_enable_rotation_vector_on);
+                        break;
+                    case MotionEvent.ACTION_UP:
+
+                        sensorManager.unregisterListener(listenerRotation);
+                        button.setBackgroundResource(R.drawable.button_enable_rotation_vector_off);
+                        break;
+                }
+
+                return true;
+            }
+        };
+        buttonEnableRotationVector.setOnTouchListener(touchListener);
 
         return view;
     }

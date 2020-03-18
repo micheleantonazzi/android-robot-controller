@@ -1,20 +1,18 @@
 package org.ros.android.android_robot_controller.listeners;
 import android.hardware.Sensor;
+import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.ImageButton;
-
 import org.ros.android.android_robot_controller.R;
-
-import static android.content.Context.SENSOR_SERVICE;
 
 public class TouchListenerButtonEnableRotationVector implements View.OnTouchListener {
 
     private SensorManager sensorManager;
-    private EventListenerAccelerometerMagnetometer listenerAccelerometerMagnetometer;
+    private SensorEventListener listenerAccelerometerMagnetometer;
 
-    public TouchListenerButtonEnableRotationVector(SensorManager sensorManager, EventListenerAccelerometerMagnetometer listenerAccelerometerMagnetometer){
+    public TouchListenerButtonEnableRotationVector(SensorManager sensorManager, SensorEventListener listenerAccelerometerMagnetometer){
         this.listenerAccelerometerMagnetometer = listenerAccelerometerMagnetometer;
         this.sensorManager = sensorManager;
     }
