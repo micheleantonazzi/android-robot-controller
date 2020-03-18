@@ -144,13 +144,13 @@ public class FragmentControl extends Fragment {
         };
         buttonEnableRotationVector.setOnTouchListener(touchListener);
 
-
         // Set up  switch between Camera and Map
         // Collecting variables
         this.rosOpenGLView = view.findViewById(R.id.RosOpenGLViewControl);
         TextView textViewMapCamera = view.findViewById(R.id.TextViewMapCamera);
         Switch switchMapCamera = view.findViewById(R.id.SwitchMapCamera);
-
+        rosOpenGLView.setEnabled(false);
+        rosOpenGLView.setVisibility(View.INVISIBLE);
         switchMapCamera.setOnCheckedChangeListener((buttonView, isChecked) -> {
             if (isChecked) {
                 textViewMapCamera.setText(R.string.fragment_control_switch_map);
@@ -168,14 +168,11 @@ public class FragmentControl extends Fragment {
 
             }
         });
-
         return view;
     }
 
     public void onResume(){
         super.onResume();
-        rosOpenGLView.setEnabled(false);
-        rosOpenGLView.setVisibility(View.INVISIBLE);
     }
 
     @Override
