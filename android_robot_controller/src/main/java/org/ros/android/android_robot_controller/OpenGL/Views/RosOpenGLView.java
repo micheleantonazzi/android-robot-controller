@@ -71,7 +71,7 @@ public class RosOpenGLView extends GLSurfaceView {
     public boolean onTouchEvent(MotionEvent event) {
 
         // If you are not setting a goal
-        if(!this.clickListenerButtonGoal.isSettingGoal()) {
+        if(this.clickListenerButtonGoal == null || (this.clickListenerButtonGoal != null && !this.clickListenerButtonGoal.isSettingGoal())) {
             this.scaleGestureDetector.onTouchEvent(event);
             this.rotateGestureDetector.onTouchEvent(event);
             // Start a multitouch gesture
