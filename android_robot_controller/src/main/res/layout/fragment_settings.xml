@@ -12,14 +12,13 @@
             android:layout_height="wrap_content"
             android:layout_margin="15dp">
 
-
-
             <TextView
                 android:id="@+id/TextViewNamespace"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="@string/fragment_settings_text_view_namespace"
-                android:textColor="@color/white" />
+                android:textColor="@color/white"
+                />
 
             <EditText
                 android:id="@+id/TextEditNamespace"
@@ -29,7 +28,8 @@
                 android:inputType="textPersonName"
                 android:text=""
                 android:textColor="#FFFFFF"
-                android:layout_marginBottom="25dp"/>
+                android:layout_marginBottom="25dp"
+                android:focusable="false"/>
 
             <TextView
                 android:id="@+id/TextViewMapTopic"
@@ -46,7 +46,8 @@
                 android:inputType="textPersonName"
                 android:text=""
                 android:textColor="#FFFFFF"
-                android:layout_marginBottom="25dp"/>
+                android:layout_marginBottom="25dp"
+                android:focusable="false"/>
 
             <TextView
                 android:id="@+id/TextViewMapMetadata"
@@ -63,7 +64,8 @@
                 android:inputType="textPersonName"
                 android:text=""
                 android:textColor="#FFFFFF"
-                android:layout_marginBottom="25dp"/>
+                android:layout_marginBottom="25dp"
+                android:focusable="false"/>
 
             <TextView
                 android:id="@+id/TextViewTFTopic"
@@ -80,7 +82,8 @@
                 android:inputType="textPersonName"
                 android:text=""
                 android:textColor="#FFFFFF"
-                android:layout_marginBottom="25dp"/>
+                android:layout_marginBottom="25dp"
+                android:focusable="false"/>
 
             <TextView
                 android:id="@+id/TextViewGoalTopic"
@@ -97,7 +100,8 @@
                 android:inputType="textPersonName"
                 android:text=""
                 android:textColor="#FFFFFF"
-                android:layout_marginBottom="25dp"/>
+                android:layout_marginBottom="25dp"
+                android:focusable="false"/>
 
             <TextView
                 android:id="@+id/TextViewCameraTopic"
@@ -114,7 +118,8 @@
                 android:inputType="textPersonName"
                 android:text=""
                 android:textColor="#FFFFFF"
-                android:layout_marginBottom="25dp"/>
+                android:layout_marginBottom="25dp"
+                android:focusable="false"/>
 
             <TextView
                 android:id="@+id/TextViewControlTopic"
@@ -131,7 +136,8 @@
                 android:inputType="textPersonName"
                 android:text=""
                 android:textColor="#FFFFFF"
-                android:layout_marginBottom="20dp"/>
+                android:layout_marginBottom="20dp"
+                android:focusable="false"/>
         </LinearLayout>
     </ScrollView>
 </LinearLayout>
