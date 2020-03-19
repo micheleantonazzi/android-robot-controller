@@ -19,6 +19,7 @@ package org.ros.android.android_robot_controller;
 import android.app.FragmentManager;
 import android.app.FragmentTransaction;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.MenuItem;
 import android.widget.TextView;
 
@@ -41,8 +42,8 @@ public class MainActivity extends RosActivity implements  NavigationView.OnNavig
     private FragmentCamera fragmentCamera;
     private FragmentControl fragmentControl;
     private FragmentSettings fragmentSettings;
-
     private TextView textViewTitle;
+
     public MainActivity() {
         // The RosActivity constructor configures the notification title and ticker
         // messages.
@@ -76,8 +77,6 @@ public class MainActivity extends RosActivity implements  NavigationView.OnNavig
             navigationView.setCheckedItem(navigationView.getMenu().getItem(0));
             this.onNavigationItemSelected(navigationView.getCheckedItem());
         }
-
-
     }
 
     @Override

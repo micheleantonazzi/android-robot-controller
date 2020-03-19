@@ -35,7 +35,9 @@
                         android:layout_height="wrap_content"
                         android:background="@android:color/black"
                         android:textSize="@dimen/fragmentTitle"
-                        android:textStyle="bold" />
+                        android:textStyle="bold"
+                        android:freezesText="true"
+                        />
                 </androidx.appcompat.widget.Toolbar>
             </com.google.android.material.appbar.AppBarLayout>
         </androidx.coordinatorlayout.widget.CoordinatorLayout>
