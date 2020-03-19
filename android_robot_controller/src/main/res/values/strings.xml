@@ -36,4 +36,5 @@
     <string name="fragment_settings_text_view_goal_topic">Goal topic</string>
     <string name="fragment_settings_text_view_camera_topic">Camera compressed topic</string>
     <string name="fragment_settings_text_view_control_topic">Control topic</string>
+    <string name="dialog_change_preferences_save_button">Save</string>
 </resources>
