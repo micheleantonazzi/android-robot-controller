@@ -32,7 +32,7 @@ public class FragmentSettings extends Fragment implements DialogChangePreference
         editTextNamespace.setOnClickListener(v -> {
             Bundle dialogArgs = new Bundle();
             dialogArgs.putString(DialogChangePreference.PARAM_TITLE, "Change namespace");
-            dialogArgs.putString(DialogChangePreference.PARAM_PREFERENCE, GlobalSettings.PREFERENCES_NAMESPACE);
+            dialogArgs.putString(DialogChangePreference.PARAM_PREFERENCE, GlobalSettings.PREFERENCE_NAMESPACE);
 
             DialogFragment dialog = new DialogChangePreference();
             dialog.setArguments(dialogArgs);
@@ -65,7 +65,7 @@ public class FragmentSettings extends Fragment implements DialogChangePreference
     public void onSave(String preferenceName, String value) {
         GlobalSettings.getInstance().setPreferenceFromName(preferenceName, value);
         switch (preferenceName){
-            case GlobalSettings.PREFERENCES_NAMESPACE:
+            case GlobalSettings.PREFERENCE_NAMESPACE:
                 this.editTextNamespace.setText(value);
         }
     }
