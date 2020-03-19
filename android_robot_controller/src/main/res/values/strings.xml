@@ -36,7 +36,4 @@
     <string name="fragment_settings_text_view_goal_topic">Goal topic</string>
     <string name="fragment_settings_text_view_camera_topic">Camera compressed topic</string>
     <string name="fragment_settings_text_view_control_topic">Control topic</string>
-
-    <!-- Default setting -->
-    <string name="default_map_topic">map</string>
 </resources>

@@ -77,6 +77,8 @@ public class MainActivity extends RosActivity implements  NavigationView.OnNavig
             navigationView.setCheckedItem(navigationView.getMenu().getItem(0));
             this.onNavigationItemSelected(navigationView.getCheckedItem());
         }
+
+        GlobalSettings.getInstance().setPreferencesSettings(getSharedPreferences(GlobalSettings.PREFERENCES_SETTINGS, MODE_PRIVATE));
     }
 
     @Override
