@@ -29,6 +29,13 @@
 
     <!-- Fragment settings -->
     <string name="fragment_settings_title">Settings</string>
+    <string name="fragment_settings_text_view_namespace">Application namespace</string>
+    <string name="fragment_settings_text_view_map_topic">Map topic</string>
+    <string name="fragment_settings_text_view_map_metadata">Map metadata topic</string>
+    <string name="fragment_settings_text_view_tf_topic">TF topic</string>
+    <string name="fragment_settings_text_view_goal_topic">Goal topic</string>
+    <string name="fragment_settings_text_view_camera_topic">Camera compressed topic</string>
+    <string name="fragment_settings_text_view_control_topic">Control topic</string>
 
     <!-- Default setting -->
     <string name="default_map_topic">map</string>

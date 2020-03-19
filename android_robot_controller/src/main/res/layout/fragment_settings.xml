@@ -1,13 +1,31 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical" android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:layout_margin="15dp">
+
+    <TextView
+        android:id="@+id/TextViewNamespace"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/fragment_settings_text_view_namespace"
+        android:textColor="@color/white" />
+
+    <EditText
+        android:id="@+id/TextEditNamespace"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:ems="10"
+        android:inputType="textPersonName"
+        android:text=""
+        android:textColor="#FFFFFF"
+        android:layout_marginBottom="25dp"/>
 
     <TextView
         android:id="@+id/TextViewMapTopic"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Map topic"
+        android:text="@string/fragment_settings_text_view_map_topic"
         android:textColor="@color/white" />
 
     <EditText
@@ -16,6 +34,92 @@
         android:layout_height="wrap_content"
         android:ems="10"
         android:inputType="textPersonName"
-        android:text="@string/default_map_topic"
-        android:textColor="#FFFFFF" />
+        android:text=""
+        android:textColor="#FFFFFF"
+        android:layout_marginBottom="25dp"/>
+
+    <TextView
+        android:id="@+id/TextViewMapMetadata"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/fragment_settings_text_view_map_metadata"
+        android:textColor="@color/white" />
+
+    <EditText
+        android:id="@+id/TextEditMapMetadata"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:ems="10"
+        android:inputType="textPersonName"
+        android:text=""
+        android:textColor="#FFFFFF"
+        android:layout_marginBottom="25dp"/>
+
+    <TextView
+        android:id="@+id/TextViewTFTopic"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/fragment_settings_text_view_tf_topic"
+        android:textColor="@color/white" />
+
+    <EditText
+        android:id="@+id/TextEditTFTopic"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:ems="10"
+        android:inputType="textPersonName"
+        android:text=""
+        android:textColor="#FFFFFF"
+        android:layout_marginBottom="25dp"/>
+
+    <TextView
+        android:id="@+id/TextViewGoalTopic"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/fragment_settings_text_view_goal_topic"
+        android:textColor="@color/white" />
+
+    <EditText
+        android:id="@+id/TextEditGoalTopic"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:ems="10"
+        android:inputType="textPersonName"
+        android:text=""
+        android:textColor="#FFFFFF"
+        android:layout_marginBottom="25dp"/>
+
+    <TextView
+        android:id="@+id/TextViewCameraTopic"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/fragment_settings_text_view_camera_topic"
+        android:textColor="@color/white" />
+
+    <EditText
+        android:id="@+id/TextEditCameraTopic"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:ems="10"
+        android:inputType="textPersonName"
+        android:text=""
+        android:textColor="#FFFFFF"
+        android:layout_marginBottom="25dp"/>
+
+    <TextView
+        android:id="@+id/TextViewControlTopic"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/fragment_settings_text_view_control_topic"
+        android:textColor="@color/white" />
+
+    <EditText
+        android:id="@+id/TextEditControlTopic"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:ems="10"
+        android:inputType="textPersonName"
+        android:text=""
+        android:textColor="#FFFFFF"
+        android:layout_marginBottom="20dp"/>
 </LinearLayout>
