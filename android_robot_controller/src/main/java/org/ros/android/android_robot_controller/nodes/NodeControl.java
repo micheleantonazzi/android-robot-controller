@@ -1,11 +1,10 @@
 package org.ros.android.android_robot_controller.nodes;
 
+import org.ros.android.android_robot_controller.GlobalSettings;
 import org.ros.namespace.GraphName;
 import org.ros.node.AbstractNodeMain;
 import org.ros.node.ConnectedNode;
 import org.ros.node.topic.Publisher;
-import org.ros.rosjava_geometry.Vector3;
-
 import geometry_msgs.Twist;
 
 public class NodeControl extends AbstractNodeMain {
@@ -55,11 +54,11 @@ public class NodeControl extends AbstractNodeMain {
 
     @Override
     public GraphName getDefaultNodeName() {
-        return GraphName.of("android_robot_controller/node_control");
+        return GraphName.of(GlobalSettings.getInstance().getApplicationNamespace()).join("node_control");
     }
 
     @Override
     public void onStart(ConnectedNode connectedNode) {
-        this.publisher = connectedNode.newPublisher("/cmd_vel", Twist._TYPE);
+        this.publisher = connectedNode.newPublisher(GlobalSettings.getInstance().getControlTopic(), Twist._TYPE);
     }
 }
