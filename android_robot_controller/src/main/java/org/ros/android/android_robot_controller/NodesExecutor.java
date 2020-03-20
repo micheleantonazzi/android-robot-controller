@@ -75,7 +75,7 @@ public class NodesExecutor {
         new Thread(() -> shutDownNodesPrivate(Arrays.asList(node))).start();
     }
 
-    public synchronized void shutDownNodes(List<AbstractNodeMain> nodesToShutdown){
+    public void shutDownNodes(List<AbstractNodeMain> nodesToShutdown){
         new Thread(() -> shutDownNodesPrivate(nodesToShutdown)).start();
     }
 
