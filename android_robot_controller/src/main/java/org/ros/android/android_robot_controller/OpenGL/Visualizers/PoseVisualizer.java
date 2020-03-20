@@ -4,6 +4,7 @@ import android.opengl.GLES20;
 import android.opengl.Matrix;
 import android.util.Log;
 
+import org.ros.android.android_robot_controller.GlobalSettings;
 import org.ros.android.android_robot_controller.OpenGL.Renderes.RosRenderer;
 import org.ros.message.MessageListener;
 import org.ros.namespace.GraphName;
@@ -142,7 +143,7 @@ public class PoseVisualizer extends AbstractNodeMain implements Visualizer{
 
     @Override
     public GraphName getDefaultNodeName() {
-        return GraphName.of("android_robot_controller/node_pose_reader");
+        return GraphName.of(GlobalSettings.getInstance().getApplicationNamespace()).join("node_pose_reader");
     }
 
     FrameTransformTree transformTree = new FrameTransformTree();
@@ -150,7 +151,7 @@ public class PoseVisualizer extends AbstractNodeMain implements Visualizer{
     @Override
     public void onStart(ConnectedNode connectedNode) {
 
-        Subscriber<tf2_msgs.TFMessage> subscriberTF = connectedNode.newSubscriber("tf", tf2_msgs.TFMessage._TYPE);
+        Subscriber<tf2_msgs.TFMessage> subscriberTF = connectedNode.newSubscriber(GlobalSettings.getInstance().getTFTopic(), tf2_msgs.TFMessage._TYPE);
         subscriberTF.addMessageListener(new MessageListener<tf2_msgs.TFMessage>() {
             @Override
             public void onNewMessage (tf2_msgs.TFMessage message){
@@ -175,7 +176,7 @@ public class PoseVisualizer extends AbstractNodeMain implements Visualizer{
             }
         });
 
-        Subscriber<nav_msgs.MapMetaData> subscriberMapMetaData = connectedNode.newSubscriber("map_metadata", nav_msgs.MapMetaData._TYPE);
+        Subscriber<nav_msgs.MapMetaData> subscriberMapMetaData = connectedNode.newSubscriber(GlobalSettings.getInstance().getMapMetadataTopic(), nav_msgs.MapMetaData._TYPE);
         subscriberMapMetaData.addMessageListener(new MessageListener<nav_msgs.MapMetaData>() {
             @Override
             public void onNewMessage (nav_msgs.MapMetaData message){
