@@ -3,6 +3,8 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.util.Log;
 import android.widget.ImageView;
+
+import org.ros.android.android_robot_controller.GlobalSettings;
 import org.ros.message.MessageListener;
 import org.ros.namespace.GraphName;
 import org.ros.node.AbstractNodeMain;
@@ -20,12 +22,12 @@ public class NodeReadImage extends AbstractNodeMain {
 
     @Override
     public GraphName getDefaultNodeName() {
-        return GraphName.of("android_robot_controller/node_read_image");
+        return GraphName.of(GlobalSettings.getInstance().getApplicationNamespace()).join("node_read_image");
     }
 
     @Override
     public void onStart(ConnectedNode connectedNode) {
-        Subscriber<CompressedImage> subscriberReadImage = connectedNode.newSubscriber("/usb_cam/image_raw/compressed", CompressedImage._TYPE);
+        Subscriber<CompressedImage> subscriberReadImage = connectedNode.newSubscriber(GlobalSettings.getInstance().getCameraCompressedTopic(), CompressedImage._TYPE);
         subscriberReadImage.addMessageListener(new MessageListener<CompressedImage>() {
             @Override
             public void onNewMessage (CompressedImage message){
