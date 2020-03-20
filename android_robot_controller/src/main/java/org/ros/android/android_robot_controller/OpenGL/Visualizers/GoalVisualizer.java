@@ -4,6 +4,7 @@ import android.opengl.GLES20;
 import android.opengl.Matrix;
 import android.util.Log;
 
+import org.ros.android.android_robot_controller.GlobalSettings;
 import org.ros.android.android_robot_controller.OpenGL.Renderes.RosRenderer;
 import org.ros.message.MessageListener;
 import org.ros.namespace.GraphName;
@@ -190,12 +191,12 @@ public class GoalVisualizer extends AbstractNodeMain implements Visualizer{
 
     @Override
     public GraphName getDefaultNodeName() {
-        return GraphName.of("android_robot_controller/node_goal");
+        return GraphName.of(GlobalSettings.getInstance().getApplicationNamespace()).join("node_goal");
     }
 
     @Override
     public void onStart(ConnectedNode connectedNode) {
-        Subscriber<MapMetaData> subscriberMapMetaData = connectedNode.newSubscriber("map_metadata", nav_msgs.MapMetaData._TYPE);
+        Subscriber<MapMetaData> subscriberMapMetaData = connectedNode.newSubscriber(GlobalSettings.getInstance().getMapMetadataTopic(), nav_msgs.MapMetaData._TYPE);
         subscriberMapMetaData.addMessageListener(new MessageListener<MapMetaData>() {
             @Override
             public void onNewMessage (nav_msgs.MapMetaData message){
@@ -204,6 +205,6 @@ public class GoalVisualizer extends AbstractNodeMain implements Visualizer{
             }
         });
 
-        this.publisherGoal = connectedNode.newPublisher("move_base_simple/goal", PoseStamped._TYPE);
+        this.publisherGoal = connectedNode.newPublisher(GlobalSettings.getInstance().getGoalTopic(), PoseStamped._TYPE);
     }
 }
