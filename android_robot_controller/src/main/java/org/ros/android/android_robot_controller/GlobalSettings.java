@@ -133,7 +133,7 @@ public class GlobalSettings {
     }
 
     public void setGoalTopic(String goalTopic){
-        this.preferencesSettings.edit().putString(PREFERENCE_TF_TOPIC, goalTopic).apply();
+        this.preferencesSettings.edit().putString(PREFERENCE_GOAL_TOPIC, goalTopic).apply();
     }
 
     public String getCameraCompressedTopic(){
