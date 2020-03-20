@@ -5,6 +5,7 @@ import android.opengl.Matrix;
 import android.util.Log;
 
 import org.jboss.netty.buffer.ChannelBuffer;
+import org.ros.android.android_robot_controller.GlobalSettings;
 import org.ros.android.android_robot_controller.OpenGL.Renderes.RosRenderer;
 import org.ros.message.MessageListener;
 import org.ros.namespace.GraphName;
@@ -183,12 +184,12 @@ public class MapVisualizer extends AbstractNodeMain implements Visualizer{
 
     @Override
     public GraphName getDefaultNodeName() {
-        return GraphName.of("android_robot_controller/node_map_reader");
+        return GraphName.of(GlobalSettings.getInstance().getApplicationNamespace()).join("node_map_reader");
     }
 
     @Override
     public void onStart(ConnectedNode connectedNode) {
-        Subscriber<OccupancyGrid> subscriber = connectedNode.newSubscriber("map", nav_msgs.OccupancyGrid._TYPE);
+        Subscriber<OccupancyGrid> subscriber = connectedNode.newSubscriber(GlobalSettings.getInstance().getMapTopic(), nav_msgs.OccupancyGrid._TYPE);
         subscriber.addMessageListener(new MessageListener<OccupancyGrid>() {
             @Override
             public void onNewMessage (nav_msgs.OccupancyGrid message){
