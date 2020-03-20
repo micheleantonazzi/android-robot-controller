@@ -28,6 +28,8 @@
             android:backgroundTint="@color/mediumGray"
             android:text="@string/button_goal"
             android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+            android:textColor="@color/primaryColor"
+            android:textStyle="bold"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent" />
 
