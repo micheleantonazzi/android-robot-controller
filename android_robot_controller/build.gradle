@@ -29,6 +29,7 @@ dependencies {
   compile 'com.github.Almeros:android-gesture-detectors:v1.0'
   compile 'com.android.support:appcompat-v7:+.'
   compile "com.android.support:support-core-utils:29.0.0"
+  compile 'io.github.controlwear:virtualjoystick:1.10.1'
 }
 
 buildscript {
@@ -53,7 +54,7 @@ android {
   compileSdkVersion 29
 
   defaultConfig {
-    minSdkVersion 23
+    minSdkVersion 19
     applicationId "org.ros.android.android_robot_controller"
     targetSdkVersion 29
     versionCode 1

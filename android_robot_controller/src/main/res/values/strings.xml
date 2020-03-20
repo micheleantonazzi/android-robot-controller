@@ -1,20 +1,40 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">AndroidRobotController</string>
+    <string name="app_name">Robot Controller</string>
 
     <!-- Main menu header-->
     <string name="application_name">MViz</string>
     <string name="application_acronym">Mobile Ros Visualizer</string>
 
     <!-- Main menu items -->
-    <string name="menu_item_monitor">Robot monitor</string>
+    <string name="menu_item_monitor">Robot localization</string>
+    <string name="menu_item_camera">Streaming camera</string>
+    <string name="menu_item_control">Robot control</string>
     <string name="menu_item_settings">Settings</string>
 
-    <!-- Default setting -->
-    <string name="default_map_topic">map</string>
-
     <!-- Fragment monitor -->
+    <string name="fragment_monitor_title">Robot localization</string>
     <string name="button_goal">Set goal</string>
-    <!-- Fragment monitor -->
     <string name="button_center_map">Center map</string>
+
+    <!-- Fragment camera -->
+    <string name="fragment_camera_title">Streaming camera</string>
+
+    <!-- Fragment control -->
+    <string name="fragment_control_switch_map">Show camera</string>
+    <string name="fragment_control_switch_camera">Show map</string>
+    <string name="fragment_control_switch_rotation_vector_on">Gyroscope ON</string>
+    <string name="fragment_control_switch_rotation_vector_off">Gyroscope OFF</string>
+    <string name="fragment_control_title">Robot control</string>
+
+    <!-- Fragment settings -->
+    <string name="fragment_settings_title">Settings</string>
+    <string name="fragment_settings_text_view_namespace">Application namespace</string>
+    <string name="fragment_settings_text_view_map_topic">Map topic</string>
+    <string name="fragment_settings_text_view_map_metadata">Map metadata topic</string>
+    <string name="fragment_settings_text_view_tf_topic">TF topic</string>
+    <string name="fragment_settings_text_view_goal_topic">Goal topic</string>
+    <string name="fragment_settings_text_view_camera_topic">Camera compressed topic</string>
+    <string name="fragment_settings_text_view_control_topic">Control topic</string>
+    <string name="dialog_change_preferences_save_button">Save</string>
 </resources>

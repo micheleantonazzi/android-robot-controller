@@ -25,7 +25,7 @@ public class RosOpenGLView extends GLSurfaceView {
     private float oldX, oldY;
 
     private void init(Context context) {
-        this.setEGLContextClientVersion(3);
+        this.setEGLContextClientVersion(2);
         this.renderer = new RosRenderer();
         this.setRenderer(this.renderer);
 
@@ -71,7 +71,7 @@ public class RosOpenGLView extends GLSurfaceView {
     public boolean onTouchEvent(MotionEvent event) {
 
         // If you are not setting a goal
-        if(!this.clickListenerButtonGoal.isSettingGoal()) {
+        if(this.clickListenerButtonGoal == null || (this.clickListenerButtonGoal != null && !this.clickListenerButtonGoal.isSettingGoal())) {
             this.scaleGestureDetector.onTouchEvent(event);
             this.rotateGestureDetector.onTouchEvent(event);
             // Start a multitouch gesture
@@ -129,6 +129,17 @@ public class RosOpenGLView extends GLSurfaceView {
     {
         super.onSizeChanged(xNew, yNew, xOld, yOld);
         this.renderer.setViewDimensions(this.getWidth(), this.getHeight());
+    }
+
+    @Override
+    public void setEnabled(boolean enabled){
+        super.setEnabled(enabled);
+        if(enabled)
+            this.renderer.executeNodes();
+        else
+            this.renderer.shutDownNodes();
+
+
     }
 
     public void centerMap(){

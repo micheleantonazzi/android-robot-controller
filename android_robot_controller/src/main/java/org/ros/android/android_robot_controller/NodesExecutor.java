@@ -4,7 +4,7 @@ import org.ros.node.AbstractNodeMain;
 import org.ros.node.NodeConfiguration;
 import org.ros.node.NodeMainExecutor;
 
-import java.util.ArrayList;
+import java.lang.reflect.Array;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
@@ -54,7 +54,15 @@ public class NodesExecutor {
         this.executeNodes();
     }
 
-    public synchronized void setNodes(List<AbstractNodeMain> nodes){
+    public void executeNodes(List<AbstractNodeMain> nodes){
+        new Thread(() -> executeNodesPrivate(nodes)).start();
+    }
+
+    public void executeNode(AbstractNodeMain node){
+        new Thread(() -> executeNodesPrivate(Arrays.asList(node))).start();
+    }
+
+    private synchronized void executeNodesPrivate(List<AbstractNodeMain> nodes){
         for(AbstractNodeMain node : nodes){
             if(node != null){
                 this.nodes.put(node, false);
@@ -63,15 +71,15 @@ public class NodesExecutor {
         this.executeNodes();
     }
 
-    public synchronized void setNode(AbstractNodeMain node){
-        this.setNodes(Arrays.asList(node));
+    public void shutDownNode(AbstractNodeMain node){
+        new Thread(() -> shutDownNodesPrivate(Arrays.asList(node))).start();
     }
 
-    public synchronized void shutDownNode(AbstractNodeMain node){
-        this.shutDownNodes(Arrays.asList(node));
+    public void shutDownNodes(List<AbstractNodeMain> nodesToShutdown){
+        new Thread(() -> shutDownNodesPrivate(nodesToShutdown)).start();
     }
 
-    public synchronized void shutDownNodes(List<AbstractNodeMain> nodesToShutdown){
+    private synchronized void shutDownNodesPrivate(List<AbstractNodeMain> nodesToShutdown){
         if(this.nodeMainExecutor != null) {
             for (AbstractNodeMain node : nodesToShutdown) {
                 if (node != null) {

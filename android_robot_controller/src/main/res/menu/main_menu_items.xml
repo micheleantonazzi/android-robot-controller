@@ -3,10 +3,20 @@
     >
     <item
         android:id="@+id/menu_item_monitor"
-        android:icon="@drawable/ic_airplay_black_24dp"
+        android:icon="@drawable/ic_location_on_24px"
         android:title="@string/menu_item_monitor"
         android:checkable="true"/>
 
+    <item
+        android:id="@+id/menu_item_camera"
+        android:checkable="true"
+        android:icon="@drawable/ic_linked_camera_24px"
+        android:title="@string/menu_item_camera" />
+    <item
+        android:id="@+id/menu_item_control"
+        android:checkable="true"
+        android:icon="@drawable/ic_control_camera_24px"
+        android:title="@string/menu_item_control" />
     <item
         android:id="@+id/menu_item_settings"
         android:title="@string/menu_item_settings"

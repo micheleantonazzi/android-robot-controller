@@ -1,0 +1,138 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:custom="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/tools"
+    app:ignore="NamespaceTypo">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        xmlns:tools="http://schemas.android.com/tools"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <ImageView
+            android:id="@+id/ImageViewCamera"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:adjustViewBounds="true"
+            android:scaleType="fitCenter"
+            android:src="@drawable/ic_no_camera"/>
+
+        <org.ros.android.android_robot_controller.OpenGL.Views.RosOpenGLView
+            android:id="@+id/RosOpenGLViewControl"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:background="@android:color/transparent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintDimensionRatio="w,1:1" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <TextView
+        android:id="@+id/TextViewMapCamera"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="16dp"
+        android:text="@string/fragment_control_switch_camera" />
+
+    <Switch
+        android:id="@+id/SwitchMapCamera"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text=""
+        android:trackTint="@color/white"
+        android:layout_marginTop="40dp"
+        android:switchMinWidth="60dp"
+        android:layout_centerHorizontal="true"/>
+
+    <io.github.controlwear.virtual.joystick.android.JoystickView
+        android:id="@+id/JoystickVertical"
+        android:layout_width="140dp"
+        android:layout_height="140dp"
+        android:layout_alignParentBottom="true"
+        android:layout_marginBottom="10dp"
+        custom:JV_buttonImage="@drawable/ic_double_arrow_vertical"
+        android:background="#00730000"
+        custom:JV_backgroundColor="#009688"
+        custom:JV_backgroundSizeRatio="60%"
+        custom:JV_borderColor="#00796B"
+        custom:JV_borderWidth="4dp"
+        custom:JV_buttonDirection="vertical"
+        custom:JV_buttonSizeRatio="40%" />
+
+    <io.github.controlwear.virtual.joystick.android.JoystickView
+        android:id="@+id/JoystickHorizontal"
+        android:layout_width="140dp"
+        android:layout_height="140dp"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentEnd="true"
+        android:layout_marginBottom="10dp"
+        custom:JV_buttonImage="@drawable/ic_double_arrow_horizontal"
+        android:background="#00730000"
+        custom:JV_backgroundColor="#009688"
+        custom:JV_backgroundSizeRatio="60%"
+        custom:JV_borderColor="#00796B"
+        custom:JV_borderWidth="4dp"
+        custom:JV_buttonDirection="horizontal"
+        custom:JV_buttonSizeRatio="40%" />
+
+    <TextView
+        android:id="@+id/TextViewSwitchRotationVector"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/SwitchRotationVector"
+        android:layout_marginBottom="10dp"
+        android:layout_centerHorizontal="true"
+        android:text="@string/fragment_control_switch_rotation_vector_off" />
+
+    <Switch
+        android:id="@+id/SwitchRotationVector"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:switchMinWidth="60dp"
+        android:trackTint="@color/white"
+        android:textAlignment="viewStart"
+        android:textColor="#FFFFFF"
+        android:textColorHint="#FFFFFF"
+        android:layout_marginBottom="30dp"/>
+
+    <LinearLayout
+        android:id="@+id/LinearLayoutEnableRotationVector"
+        android:layout_width="100dp"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentEnd="true"
+        android:layout_marginBottom="44dp"
+        android:layout_marginEnd="20dp"
+
+        >
+
+        <TextView
+            android:id="@+id/TextViewRotationVector"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="20dp"
+            android:gravity="center"
+            android:text="@string/fragment_control_switch_rotation_vector_off"
+            android:textAlignment="center" />
+
+        <ImageButton
+            android:id="@+id/ButtonEnableRotationVector"
+            android:layout_width="70dp"
+            android:layout_height="70dp"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentBottom="true"
+            android:layout_gravity="center"
+            android:background="@drawable/button_enable_rotation_vector_off"
+            android:src="@drawable/ic_screen_rotation" />
+    </LinearLayout>
+
+</RelativeLayout>
